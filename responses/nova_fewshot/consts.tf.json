@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "fewshot",
+  "file": "consts.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-16T23:05:15",
+  "response": "Here are the identified security misconfigurations in the provided Terraform configuration:\n\n```json\n[\n  {\n    \"resource\": \"variable.password\",\n    \"issue\": \"Hardcoded sensitive information\",\n    \"risk\": \"Hardcoding sensitive information like passwords poses a significant security risk as it can be exposed in version control systems or logs.\",\n    \"remediation\": \"Use Terraform sensitive variables or secret management services like AWS Secrets Manager. Replace the hardcoded value with a reference to a secret.\"\n  },\n  {\n    \"resource\": \"variable.neptune-dbname\",\n    \"issue\": \"Hardcoded sensitive information\",\n    \"risk\": \"Hardcoding sensitive information like database names can lead to exposure of critical infrastructure details.\",\n    \"remediation\": \"Avoid hardcoding sensitive information. Use Terraform variables with sensitive flag or retrieve from a secure source.\"\n  }\n]\n```"
+}

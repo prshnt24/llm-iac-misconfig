@@ -1,0 +1,55 @@
+{
+ "file": "lambda.tf",
+ "findings": [
+  {
+   "resource": "aws_lambda_function.analysis_lambda",
+   "issue": "Hardcoded AWS access key in Lambda environment variables",
+   "risk": "Embedding an AWS access key in plaintext environment variables exposes long-lived credentials to anyone who can read the function configuration, Terraform state, logs, or deployment artifacts, increasing the risk of unauthorized AWS access.",
+   "remediation": "Remove the `access_key` entry from `environment.variables` and use the Lambda execution role (`role = aws_iam_role.iam_for_lambda.arn`) with least-privilege IAM permissions instead. If a secret is truly required, store it in AWS Secrets Manager or SSM Parameter Store and retrieve it at runtime."
+  },
+  {
+   "resource": "aws_lambda_function.analysis_lambda",
+   "issue": "Hardcoded AWS secret key in Lambda environment variables",
+   "risk": "Embedding an AWS secret access key in plaintext environment variables exposes sensitive credentials in Terraform code and state, enabling credential theft and privilege abuse if the configuration or state is accessed.",
+   "remediation": "Remove the `secret_key` entry from `environment.variables`. Do not store secrets directly in Terraform configuration for Lambda environment variables. Use the Lambda IAM role for AWS access, or store secrets in AWS Secrets Manager or SSM Parameter Store and fetch them securely at runtime."
+  },
+  {
+   "resource": "aws_lambda_function.analysis_lambda",
+   "issue": "Outdated Lambda runtime",
+   "risk": "Using `nodejs12.x` leaves the function on an end-of-life runtime that no longer receives security updates, increasing exposure to known vulnerabilities and unsupported platform behavior.",
+   "remediation": "Update the `runtime` attribute from `nodejs12.x` to a currently supported runtime such as `nodejs20.x` after validating application compatibility."
+  },
+  {
+   "resource": "aws_lambda_function.analysis_lambda",
+   "issue": "Lambda environment variables not protected with a customer-managed KMS key",
+   "risk": "Without a `kms_key_arn`, Lambda environment variables rely on default service-managed encryption and cannot be tightly access-controlled or audited with a dedicated customer-managed key, reducing control over sensitive configuration protection.",
+   "remediation": "Add the `kms_key_arn` attribute to `aws_lambda_function.analysis_lambda` and reference a customer-managed AWS KMS key, for example: `kms_key_arn = aws_kms_key.lambda_env.arn`."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c96"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c96"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c95"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c93"
+   ]
+  }
+ ]
+}

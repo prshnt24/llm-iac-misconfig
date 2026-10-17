@@ -1,0 +1,27 @@
+{
+ "file": "gh27.tf",
+ "findings": [
+  {
+   "resource": "aws_sns_topic_policy.billing_alert_policy",
+   "issue": "Wildcard Principal in SNS Topic Policy",
+   "risk": "Allows any AWS account to subscribe to the SNS topic, potentially leading to unauthorized access to sensitive notifications.",
+   "remediation": "Replace \"*\" with specific AWS account IDs or use more restrictive conditions to limit who can subscribe."
+  },
+  {
+   "resource": "aws_sns_topic_subscription.email_alerts",
+   "issue": "Lack of Subscription Confirmation",
+   "risk": "Email subscriptions to the SNS topic are not automatically confirmed, which may result in missed alerts if the recipient does not manually confirm the subscription.",
+   "remediation": "Set `confirm_subscription` to `true` to automatically confirm subscriptions, or ensure a process is in place for manual confirmation."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  }
+ ]
+}

@@ -1,0 +1,27 @@
+{
+ "file": "gh08.tf",
+ "findings": [
+  {
+   "resource": "data.aws_iam_policy_document.ecr",
+   "issue": "Wildcard Resource",
+   "risk": "Allows access to all ECR resources, not just the intended ones.",
+   "remediation": "Replace `resources = [\"*\"]` with the specific ARN of the ECR repository to limit access."
+  },
+  {
+   "resource": "aws_ecr_repository.example",
+   "issue": "Insecure Tag Value",
+   "risk": "Using `true` as a tag value may not be correctly interpreted in all contexts.",
+   "remediation": "Change the tag value from `true` to a string like `\"true\"`."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  }
+ ]
+}

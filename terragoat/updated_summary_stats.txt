@@ -1,0 +1,12 @@
+TERRAGOAT AWS TOOL COMPARISON SUMMARY
+Checkov Terraform findings (raw): 215
+Trivy Terraform findings (raw): 113
+Manually crosswalked Trivy policy IDs: 41
+Unique resource and canonical-policy groups: 223
+Manual semantic consensus groups: 75
+Checkov-only groups: 140
+Trivy-only groups: 8
+
+Strict numeric ID normalization yielded zero matches because Trivy reports AWS-00xx Aqua IDs, not CKV_AWS IDs. The revised candidate ground truth uses the explicit mapping in manual_policy_crosswalk.csv, and requires the same filename and Terraform resource. Multiple Trivy controls mapping to one Checkov policy on one resource are grouped to prevent duplicate counting.
+
+The crosswalk is analyst-adjudicated, not an independently validated expert gold standard. Ambiguous or non-equivalent controls were excluded from mapping and remain tool-only. Review this crosswalk with the supervisor or a second security reviewer before treating the file as final ground truth. This is not an LLM model evaluation and does not support GPT-4o, Claude, Gemini, precision/recall/F1, category-performance, or remediation-quality claims.

@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "reg05.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:16:30",
+  "response": "[\n  {\n    \"resource\": \"aws_acm_certificate.this\",\n    \"issue\": \"Certificate Transparency Logging Disabled\",\n    \"risk\": \"Disabling certificate transparency logging can hide the issuance of the certificate, which may be a security risk if malicious certificates are issued.\",\n    \"remediation\": \"Set `certificate_transparency_logging_preference` to `ENABLED` to ensure transparency logging is enabled.\\n```\\noptions {\\n  certificate_transparency_logging_preference = \\\"ENABLED\\\"\\n  export                                      = var.export\\n}\\n```\"\n  },\n  {\n    \"resource\": \"aws_acm_certificate.this\",\n    \"issue\": \"Use of Insecure Key Algorithm\",\n    \"risk\": \"Using an insecure key algorithm can lead to vulnerabilities in the certificate, making it easier for attackers to compromise the security of the communications.\",\n    \"remediation\": \"Ensure `key_algorithm` is set to a secure algorithm like `RSA_2048` or `EC_prime256v1`.\\n```\\nkey_algorithm             = \\\"RSA_2048\\\"\\n```\"\n  },\n  {\n    \"resource\": \"aws_route53_record.validation\",\n    \"issue\": \"Overwriting Existing DNS Records\",\n    \"risk\": \"Allowing overwrite of existing DNS records can lead to unintended changes and potential security issues.\",\n    \"remediation\": \"Set `allow_overwrite` to `false` to prevent overwriting existing records.\\n```\\nallow_overwrite = false\\n```\"\n  }\n]"
+}

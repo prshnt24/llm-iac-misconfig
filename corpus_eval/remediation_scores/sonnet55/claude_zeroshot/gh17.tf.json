@@ -1,0 +1,28 @@
+{
+ "items": [
+  {
+   "finding": 2,
+   "known": "CKV_AWS_382 Ensure no security groups allow egress from 0.0.0.0:0 to port -1 (resource aws_security_group_rule.all_worker_mgmt_egress)",
+   "issue": "Unrestricted egress to all destinations on all ports and protocols",
+   "remediation": "Restrict egress to only the destinations, ports, and protocols that worker nodes legitimately require. At a minimum, scope 'cidr_blocks' to the VPC CIDR and known external endpoints (e.g., ECR, S3, the EKS API endpoint). Use specific protocol and port combinations instead of protocol '-1'. For example, allow TCP 443 to AWS service CIDRs or use VPC endpoints to eliminate the need for broad internet egress entirely. Consider using 'prefix_list_ids' to reference AWS-managed prefix lists for services like S3 and DynamoDB."
+  },
+  {
+   "finding": 3,
+   "known": "CKV_AWS_23 Ensure every security group and rule has a description (resource aws_security_group.all_worker_mgmt)",
+   "issue": "No description set on the security group",
+   "remediation": "Add a 'description' attribute to the 'aws_security_group' resource block, for example: 'description = \"Security group for EKS worker node management traffic\"'. This is also required by some compliance frameworks and security scanning tools."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correctly says to restrict egress by scoping cidr_blocks and replacing protocol '-1' with specific protocols and ports (e.g. TCP 443). It also mentions VPC endpoints and prefix_list_ids. This removes the 0.0.0.0/0 on all ports and so fixes the check."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "Adds the 'description' attribute to the aws_security_group resource with an example value, which is exactly the fix for CKV_AWS_23."
+  }
+ ]
+}

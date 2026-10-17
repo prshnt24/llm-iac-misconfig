@@ -1,0 +1,89 @@
+{
+ "file": "lambda.tf",
+ "findings": [
+  {
+   "resource": "aws_lambda_function.analysis_lambda",
+   "issue": "Plaintext secrets in Lambda environment variables",
+   "risk": "AWS access key ID and secret access key are stored in plaintext in the Lambda environment variables. These credentials are visible in the AWS Console, CloudTrail logs, and to anyone with IAM read access to the Lambda configuration, leading to potential credential theft and full AWS account compromise.",
+   "remediation": "Remove hardcoded credentials from the environment variables block entirely. Instead, assign an IAM role to the Lambda function with the required permissions (least-privilege), or store secrets in AWS Secrets Manager / SSM Parameter Store (SecureString) and retrieve them at runtime. If environment variables must be used, enable KMS encryption via the kms_key_arn attribute on the aws_lambda_function resource."
+  },
+  {
+   "resource": "aws_lambda_function.analysis_lambda",
+   "issue": "Deprecated and end-of-life Lambda runtime (nodejs12.x)",
+   "risk": "Node.js 12.x reached end-of-life and is no longer supported by AWS Lambda. Using an EOL runtime means the execution environment no longer receives security patches, leaving the function vulnerable to known CVEs in the runtime and its dependencies.",
+   "remediation": "Update the runtime attribute to a currently supported version, e.g. runtime = \"nodejs20.x\" (or at minimum nodejs18.x), and validate that the function code is compatible with the newer runtime."
+  },
+  {
+   "resource": "aws_lambda_function.analysis_lambda",
+   "issue": "Lambda environment variables not encrypted with a customer-managed KMS key",
+   "risk": "Without a customer-managed KMS key, environment variables are encrypted at rest using the default AWS-managed key. This provides no customer control over key rotation, access policies, or audit trails for decryption events, reducing the ability to detect or revoke unauthorised access to sensitive configuration data.",
+   "remediation": "Add the kms_key_arn attribute to the aws_lambda_function resource pointing to a customer-managed KMS key (aws_kms_key), e.g. kms_key_arn = aws_kms_key.lambda_env_key.arn, and ensure the key policy grants Lambda the minimum required kms:Decrypt permission."
+  },
+  {
+   "resource": "aws_lambda_function.analysis_lambda",
+   "issue": "Lambda function not configured inside a VPC",
+   "risk": "Without a vpc_config block the Lambda function runs in the default AWS-managed network and can make outbound calls to the public internet. This increases the attack surface and prevents the use of VPC-level network controls (security groups, NACLs, VPC Flow Logs) to restrict or monitor traffic.",
+   "remediation": "Add a vpc_config block specifying subnet_ids (private subnets) and security_group_ids with least-privilege egress rules. Ensure a VPC endpoint or NAT Gateway is available if the function needs to reach AWS services."
+  },
+  {
+   "resource": "aws_lambda_function.analysis_lambda",
+   "issue": "Code signing not enforced on the Lambda function",
+   "risk": "Without a code_signing_config_arn the Lambda service will execute any deployment package uploaded to the function, including potentially tampered or malicious ZIP artifacts. This removes an important supply-chain integrity control.",
+   "remediation": "Create an aws_lambda_code_signing_config resource referencing a trusted aws_signer_signing_profile, then set code_signing_config_arn = aws_lambda_code_signing_config.example.arn on the aws_lambda_function resource."
+  },
+  {
+   "resource": "aws_lambda_function.analysis_lambda",
+   "issue": "Reserved concurrent executions not set (no resource-based throttling)",
+   "risk": "Without reserved_concurrent_executions the function can consume the entire regional concurrency limit. A compromised or malfunctioning function could cause a denial-of-service against other Lambda functions in the account, or be exploited to amplify costs.",
+   "remediation": "Set reserved_concurrent_executions to an appropriate positive integer that reflects the expected maximum concurrency for this function, e.g. reserved_concurrent_executions = 10."
+  },
+  {
+   "resource": "aws_iam_role.iam_for_lambda",
+   "issue": "No permissions boundary on the Lambda execution role",
+   "risk": "Without a permissions_boundary the role can be granted any policy up to the maximum allowed by the account, making privilege escalation easier if an attacker can attach additional policies to the role or to the Lambda function.",
+   "remediation": "Define an aws_iam_policy that acts as a permissions boundary limiting the maximum effective permissions, then set permissions_boundary = aws_iam_policy.lambda_boundary.arn on the aws_iam_role resource."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c96"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c95"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c93"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c92"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c94"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c90"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  }
+ ]
+}

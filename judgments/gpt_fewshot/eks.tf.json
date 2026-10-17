@@ -1,0 +1,63 @@
+{
+ "file": "eks.tf",
+ "findings": [
+  {
+   "resource": "aws_subnet.eks_subnet1",
+   "issue": "Public IPs automatically assigned on launch",
+   "risk": "Resources launched into this subnet, including EKS worker nodes if used, receive public IP addresses and may be directly exposed to the internet, increasing attack surface and risk of unauthorized access.",
+   "remediation": "Change the subnet attribute map_public_ip_on_launch = false and use private subnets for EKS nodes and cluster networking."
+  },
+  {
+   "resource": "aws_subnet.eks_subnet2",
+   "issue": "Public IPs automatically assigned on launch",
+   "risk": "Resources launched into this subnet, including EKS worker nodes if used, receive public IP addresses and may be directly exposed to the internet, increasing attack surface and risk of unauthorized access.",
+   "remediation": "Change the subnet attribute map_public_ip_on_launch = false and use private subnets for EKS nodes and cluster networking."
+  },
+  {
+   "resource": "aws_eks_cluster.eks_cluster",
+   "issue": "EKS public API endpoint not explicitly disabled",
+   "risk": "Without setting endpoint_public_access = false, the Kubernetes API endpoint remains publicly accessible by default, allowing internet-reachable access attempts against the control plane.",
+   "remediation": "In the vpc_config block, add endpoint_public_access = false to restrict API server access to the private endpoint only."
+  },
+  {
+   "resource": "output.endpoint",
+   "issue": "Sensitive infrastructure endpoint exposed via Terraform output",
+   "risk": "The EKS cluster API endpoint is exposed in Terraform output and may be disclosed in logs, state consumers, or CI/CD output, aiding reconnaissance.",
+   "remediation": "Remove the output block if not needed, or mark it sensitive by adding sensitive = true to output \"endpoint\"."
+  },
+  {
+   "resource": "output.kubeconfig-certificate-authority-data",
+   "issue": "Cluster certificate authority data exposed via Terraform output",
+   "risk": "Exposing certificate authority data in Terraform output can leak internal cluster connection details through logs, state consumers, or CI/CD systems, assisting reconnaissance and misuse.",
+   "remediation": "Remove the output block if not needed, or mark it sensitive by adding sensitive = true to output \"kubeconfig-certificate-authority-data\"."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c56"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c57"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c54"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  }
+ ]
+}

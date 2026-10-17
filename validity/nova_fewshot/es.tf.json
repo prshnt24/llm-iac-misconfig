@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  },
+  {
+   "finding": 2,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Outdated Elasticsearch version",
+   "risk": "Using an outdated version of Elasticsearch may expose the domain to known vulnerabilities",
+   "remediation": "Update elasticsearch_version to a supported and secure version"
+  },
+  "2": {
+   "resource": "aws_elasticsearch_domain_policy.monitoring-framework-policy",
+   "issue": "Overly permissive access policy",
+   "risk": "The policy allows all actions on the Elasticsearch domain from any principal, which could lead to unauthorized access and data breaches",
+   "remediation": "Update the access_policies to restrict actions and principals to only those necessary"
+  }
+ }
+}

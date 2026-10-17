@@ -1,0 +1,37 @@
+{
+ "file": "gh02.tf",
+ "findings": [
+  {
+   "resource": "aws_subnet.public",
+   "issue": "Public Subnet without proper security group",
+   "risk": "Instances launched in this subnet are exposed to the internet without proper security group rules, which can lead to unauthorized access.",
+   "remediation": "Associate a security group with appropriate ingress and egress rules to the `aws_subnet.public` resource to restrict access."
+  },
+  {
+   "resource": "aws_subnet.private_prod",
+   "issue": "Private Subnet without proper NACLs",
+   "risk": "Instances in the private subnet may still be exposed if Network ACLs (NACLs) are not properly configured, leading to potential unauthorized access.",
+   "remediation": "Associate Network ACLs with restrictive rules to the `aws_subnet.private_prod` resource to enhance security."
+  },
+  {
+   "resource": "aws_subnet.private_working",
+   "issue": "Private Subnet without proper NACLs",
+   "risk": "Instances in the private subnet may still be exposed if Network ACLs (NACLs) are not properly configured, leading to potential unauthorized access.",
+   "remediation": "Associate Network ACLs with restrictive rules to the `aws_subnet.private_working` resource to enhance security."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  }
+ ]
+}

@@ -1,0 +1,46 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "VALID"
+  },
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 4,
+   "label": "INVALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_subnet.public_project102_subnet",
+   "issue": "Auto-assign Public IP Addresses Enabled",
+   "risk": "When map_public_ip_on_launch is true (or controlled by a variable that may default to true), every EC2 instance launched in these subnets automatically receives a public IP address, directly exposing instances to the internet and increasing the attack surface even when a public IP is not required.",
+   "remediation": "Set map_public_ip_on_launch = false in the aws_subnet resource (or ensure the variable var.map_public_ip_on_launch defaults to false). Public IPs should be assigned explicitly only to resources that require them, such as NAT gateways or bastion hosts."
+  },
+  "1": {
+   "resource": "aws_default_route_table.internal_project102_default",
+   "issue": "Default Route Table Routes All Traffic to Internet Gateway",
+   "risk": "Modifying the default route table and adding a 0.0.0.0/0 route to an internet gateway means any subnet not explicitly associated with a custom route table will have unrestricted outbound internet access. This can inadvertently expose private resources (databases, internal services) to the internet if they are placed in subnets that fall back to the default route table.",
+   "remediation": "Do not modify the default route table. Instead, create a dedicated aws_route_table resource for public subnets with the internet gateway route, and create a separate private route table (with a NAT gateway route if outbound internet is needed) for private subnets. Leave the default route table with no internet routes as a safe fallback: remove the route block from aws_default_route_table and use explicit aws_route_table and aws_route_table_association resources."
+  },
+  "3": {
+   "resource": "aws_vpc.project102",
+   "issue": "DNS Hostnames and DNS Support Not Explicitly Configured",
+   "risk": "If enable_dns_support or enable_dns_hostnames are left at defaults or not explicitly managed in code, DNS resolution behaviour is implicit and may be changed unintentionally. More critically, without explicit control, internal DNS-based service discovery may not function correctly, potentially causing services to fall back to public DNS resolution paths, leaking internal topology information.",
+   "remediation": "Explicitly set enable_dns_support = true and enable_dns_hostnames = true (or false if DNS hostnames are not required) within the aws_vpc resource block so the configuration is intentional, auditable, and not subject to provider default drift."
+  },
+  "4": {
+   "resource": "aws_default_route_table.internal_project102_default",
+   "issue": "No Restriction on IPv6 Traffic in Default Route Table",
+   "risk": "If the VPC is assigned an IPv6 CIDR block (now or in the future), the absence of an explicit ::/0 block or deny in the route table means IPv6 routing behaviour is undefined and could inadvertently allow unrestricted IPv6 internet access depending on subnet and gateway configuration.",
+   "remediation": "If IPv6 is not required, ensure no IPv6 CIDR is assigned to the VPC. If IPv6 is required, explicitly define the ::/0 route with an egress-only internet gateway for private subnets and restrict the default route table accordingly. Add an explicit lifecycle block with ignore_changes or use a dedicated route table rather than the default."
+  }
+ }
+}

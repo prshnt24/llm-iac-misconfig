@@ -1,0 +1,69 @@
+{
+ "file": "reg08.tf",
+ "findings": [
+  {
+   "resource": "aws_apigatewayv2_stage.this",
+   "issue": "Stage variables may expose sensitive data in plaintext",
+   "risk": "API Gateway stage variables are not a secure secret store and can expose credentials, tokens, or other sensitive configuration to operators or logs if secrets are placed in them.",
+   "remediation": "Do not place secrets in `stage_variables = var.stage_variables`. Remove sensitive keys from the `stage_variables` attribute and use AWS Secrets Manager or SSM Parameter Store for secret retrieval instead."
+  },
+  {
+   "resource": "aws_cloudwatch_log_group.this",
+   "issue": "Access log group encryption with KMS is optional and may be disabled",
+   "risk": "If `kms_key_id` is not set, API access logs may be stored unencrypted with a customer-managed key, reducing control over log confidentiality and key access/auditability.",
+   "remediation": "Set `kms_key_id` in the `aws_cloudwatch_log_group.this` resource, for example via `kms_key_id = each.value.log_group_kms_key_id`, and ensure the supplied value is a customer-managed KMS key ARN."
+  },
+  {
+   "resource": "aws_cloudwatch_log_group.this",
+   "issue": "Log retention is configurable and may be left unlimited",
+   "risk": "If `retention_in_days` is null or not set to an approved retention period, sensitive API access logs may be retained indefinitely, increasing exposure and compliance risk.",
+   "remediation": "Set `retention_in_days` in `aws_cloudwatch_log_group.this` to a defined retention period, for example `retention_in_days = 30` or another policy-approved value."
+  },
+  {
+   "resource": "aws_apigatewayv2_stage.this",
+   "issue": "WebSocket data trace logging can expose request and response payloads",
+   "risk": "If `default_route_settings.data_trace_enabled` or `route_settings.data_trace_enabled` is enabled, sensitive data in API payloads may be written to CloudWatch Logs.",
+   "remediation": "Set `data_trace_enabled = false` in the `default_route_settings` and `route_settings` blocks of `aws_apigatewayv2_stage.this` for WebSocket APIs unless explicitly required and scrubbed."
+  },
+  {
+   "resource": "aws_apigatewayv2_route.this",
+   "issue": "Route authorization is fully variable-driven and may allow unauthenticated routes",
+   "risk": "If `authorization_type` is set to `NONE` or an authorizer is omitted for sensitive endpoints, routes may be publicly accessible without authentication or authorization.",
+   "remediation": "For protected routes, set `authorization_type` to `JWT`, `CUSTOM`, or `AWS_IAM` in `aws_apigatewayv2_route.this` and configure `authorizer_id` or `authorizer_key` appropriately."
+  },
+  {
+   "resource": "aws_apigatewayv2_integration.this",
+   "issue": "Backend TLS server name verification is optional",
+   "risk": "If `tls_config.server_name_to_verify` is not set for HTTPS private integrations, backend certificate validation may be weaker or misconfigured, increasing man-in-the-middle risk.",
+   "remediation": "Add a `tls_config` block in `aws_apigatewayv2_integration.this` with `server_name_to_verify` set to the expected backend hostname, e.g. `tls_config { server_name_to_verify = \"backend.example.internal\" }`."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c124"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  }
+ ]
+}

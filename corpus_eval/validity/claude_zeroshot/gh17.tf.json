@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_security_group_rule.all_worker_mgmt_ingress",
+   "issue": "Unrestricted ingress on all ports and protocols",
+   "risk": "Setting protocol to '-1' with from_port and to_port both set to 0 allows all traffic on every port and every protocol (TCP, UDP, ICMP, etc.) from the specified CIDR ranges. If any host within those broad private ranges (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16) is compromised, an attacker has unrestricted lateral movement access to every port on every worker node, dramatically increasing the blast radius of an internal breach.",
+   "remediation": "Restrict ingress to only the specific ports and protocols required. For EKS worker management this is typically the Kubernetes API port (443) and optionally the kubelet port (10250). Replace the single catch-all rule with targeted rules, for example: set 'protocol = \"tcp\"', 'from_port = 443', 'to_port = 443' for API traffic, and a separate rule for 'from_port = 10250', 'to_port = 10250' if kubelet access is needed. Also tighten the CIDR blocks to the smallest possible ranges (e.g., only the VPC CIDR or the specific EKS control-plane subnet CIDRs) rather than all three RFC-1918 supernets."
+  },
+  "1": {
+   "resource": "aws_security_group_rule.all_worker_mgmt_ingress",
+   "issue": "Overly broad ingress CIDR blocks covering all RFC-1918 private address space",
+   "risk": "Allowing inbound traffic from 10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16 simultaneously covers the entire private IP address space (~17.9 million addresses). Any workload, peered VPC, VPN-connected on-premises network, or compromised internal host anywhere in that space can reach the worker nodes. This violates the principle of least privilege and greatly expands the attack surface for lateral movement.",
+   "remediation": "Replace the three broad RFC-1918 CIDR blocks with only the specific CIDR(s) that legitimately need access, such as the VPC's own CIDR (e.g., 'cidr_blocks = [module.vpc.vpc_cidr_block]') or the precise EKS control-plane subnet CIDRs. Remove any ranges that are not directly routable within the environment."
+  }
+ }
+}

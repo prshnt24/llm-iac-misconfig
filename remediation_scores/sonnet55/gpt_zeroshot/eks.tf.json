@@ -1,0 +1,39 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_130 Ensure VPC subnets do not assign public IP by default (resource aws_subnet.eks_subnet1)",
+   "issue": "Public subnet for EKS due to automatic public IP assignment",
+   "remediation": "Set the subnet attribute `map_public_ip_on_launch = false` and use private subnets for EKS nodes and cluster networking."
+  },
+  {
+   "finding": 1,
+   "known": "CKV_AWS_130 Ensure VPC subnets do not assign public IP by default (resource aws_subnet.eks_subnet2)",
+   "issue": "Public subnet for EKS due to automatic public IP assignment",
+   "remediation": "Set the subnet attribute `map_public_ip_on_launch = false` and use private subnets for EKS nodes and cluster networking."
+  },
+  {
+   "finding": 2,
+   "known": "CKV_AWS_37 Ensure Amazon EKS control plane logging is enabled for all log types (resource aws_eks_cluster.eks_cluster)",
+   "issue": "EKS control plane logging not enabled",
+   "remediation": "Add an `enabled_cluster_log_types` attribute to the `aws_eks_cluster` resource and enable appropriate logs such as `[\"api\", \"audit\", \"authenticator\", \"controllerManager\", \"scheduler\"]`."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correctly sets map_public_ip_on_launch = false on the subnet, which satisfies CKV_AWS_130."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "Correctly sets map_public_ip_on_launch = false on eks_subnet2, which satisfies CKV_AWS_130."
+  },
+  {
+   "item": 2,
+   "score": 2,
+   "reason": "Adds enabled_cluster_log_types to aws_eks_cluster with all five log types, which satisfies CKV_AWS_37."
+  }
+ ]
+}

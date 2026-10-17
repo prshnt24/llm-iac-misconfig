@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_elb.weblb",
+   "issue": "Insecure HTTP health check",
+   "risk": "Health checks over HTTP can be intercepted or tampered with, potentially leading to false health statuses.",
+   "remediation": "Change the health_check target to use HTTPS: `target = \"HTTPS:8000/\"`. Ensure that the instances are configured to handle HTTPS requests."
+  },
+  "2": {
+   "resource": "aws_elb.weblb",
+   "issue": "Excessive idle timeout",
+   "risk": "A very high idle timeout value can lead to prolonged resource consumption and potential denial of service if connections are held open unnecessarily.",
+   "remediation": "Reduce the idle_timeout to a more reasonable value, such as 60 seconds: `idle_timeout = 60`."
+  }
+ }
+}

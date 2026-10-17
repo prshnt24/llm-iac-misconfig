@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 1,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "1": {
+   "resource": "aws_instance.ec2",
+   "issue": "EC2 instance placed in a public subnet",
+   "risk": "Hosting the instance in a public subnet makes it internet-routable, increasing exposure to unauthorized access and remote attacks.",
+   "remediation": "Change `subnet_id = var.public_subnet_id` to use a private subnet variable or ID, such as a private subnet resource/output."
+  }
+ }
+}

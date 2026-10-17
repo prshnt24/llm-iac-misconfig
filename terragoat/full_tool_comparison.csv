@@ -1,0 +1,224 @@
+﻿status,file,path,resource,canonical_check_id,checkov_ids,trivy_ids,checkov_names,trivy_names,checkov_occurrences,trivy_occurrences
+CHECKOV ONLY,db-app.tf,/terraform/aws/db-app.tf,aws_db_instance.default,CKV2_AWS_60,CKV2_AWS_60,,Ensure RDS instance with copy tags to snapshots is enabled,,1,0
+CHECKOV ONLY,db-app.tf,/terraform/aws/db-app.tf,aws_db_instance.default,CKV2_AWS_69,CKV2_AWS_69,,Ensure AWS RDS database instance configured with encryption in transit,,1,0
+CHECKOV ONLY,db-app.tf,/terraform/aws/db-app.tf,aws_db_instance.default,CKV_AWS_118,CKV_AWS_118,,Ensure that enhanced monitoring is enabled for Amazon RDS instances,,1,0
+CHECKOV ONLY,db-app.tf,/terraform/aws/db-app.tf,aws_db_instance.default,CKV_AWS_129,CKV_AWS_129,,Ensure that respective logs of Amazon Relational Database Service (Amazon RDS) are enabled,,1,0
+CHECKOV ONLY,db-app.tf,/terraform/aws/db-app.tf,aws_db_instance.default,CKV_AWS_133,CKV_AWS_133,,Ensure that RDS instances has backup policy,,1,0
+CHECKOV ONLY,db-app.tf,/terraform/aws/db-app.tf,aws_db_instance.default,CKV_AWS_157,CKV_AWS_157,,Ensure that RDS instances have Multi-AZ enabled,,1,0
+CONSENSUS,db-app.tf,/terraform/aws/db-app.tf,aws_db_instance.default,CKV_AWS_16,CKV_AWS_16,AWS-0080,Ensure all data stored in the RDS is securely encrypted at rest,RDS encryption has not been enabled at a DB Instance level.,1,1
+CONSENSUS,db-app.tf,/terraform/aws/db-app.tf,aws_db_instance.default,CKV_AWS_161,CKV_AWS_161,AWS-0176,Ensure RDS database has IAM authentication enabled,RDS IAM Database Authentication Disabled,1,1
+CONSENSUS,db-app.tf,/terraform/aws/db-app.tf,aws_db_instance.default,CKV_AWS_17,CKV_AWS_17,AWS-0180,Ensure all data stored in RDS is not publicly accessible,RDS Publicly Accessible,1,1
+CHECKOV ONLY,db-app.tf,/terraform/aws/db-app.tf,aws_db_instance.default,CKV_AWS_226,CKV_AWS_226,,Ensure DB instance gets all minor upgrades automatically,,1,0
+CONSENSUS,db-app.tf,/terraform/aws/db-app.tf,aws_db_instance.default,CKV_AWS_293,CKV_AWS_293,AWS-0177,Ensure that AWS database instances have deletion protection enabled,RDS Deletion Protection Disabled,1,1
+TRIVY ONLY,db-app.tf,/terraform/aws/db-app.tf,aws_db_instance.default,AWS-0077,,AWS-0077,,RDS Cluster and RDS instance should have backup retention longer than default 1 day,0,1
+TRIVY ONLY,db-app.tf,/terraform/aws/db-app.tf,aws_db_instance.default,AWS-0133,,AWS-0133,,Enable Performance Insights to detect potential problems,0,1
+CHECKOV ONLY,db-app.tf,/terraform/aws/db-app.tf,aws_iam_role_policy.ec2policy,CKV_AWS_287,CKV_AWS_287,,Ensure IAM policies does not allow credentials exposure,,1,0
+CHECKOV ONLY,db-app.tf,/terraform/aws/db-app.tf,aws_iam_role_policy.ec2policy,CKV_AWS_288,CKV_AWS_288,,Ensure IAM policies does not allow data exfiltration,,1,0
+CHECKOV ONLY,db-app.tf,/terraform/aws/db-app.tf,aws_iam_role_policy.ec2policy,CKV_AWS_289,CKV_AWS_289,,Ensure IAM policies does not allow permissions management / resource exposure without constraints,,1,0
+CHECKOV ONLY,db-app.tf,/terraform/aws/db-app.tf,aws_iam_role_policy.ec2policy,CKV_AWS_290,CKV_AWS_290,,Ensure IAM policies does not allow write access without constraints,,1,0
+CONSENSUS,db-app.tf,/terraform/aws/db-app.tf,aws_iam_role_policy.ec2policy,CKV_AWS_355,CKV_AWS_355,AWS-0345,"Ensure no IAM policies documents allow ""*"" as a statement's resource for restrictable actions",Disallow unrestricted S3 IAM Policies,1,1
+CHECKOV ONLY,db-app.tf,/terraform/aws/db-app.tf,aws_instance.db_app,CKV_AWS_126,CKV_AWS_126,,Ensure that detailed monitoring is enabled for EC2 instances,,1,0
+CHECKOV ONLY,db-app.tf,/terraform/aws/db-app.tf,aws_instance.db_app,CKV_AWS_135,CKV_AWS_135,,Ensure that EC2 is EBS optimized,,1,0
+CONSENSUS,db-app.tf,/terraform/aws/db-app.tf,aws_instance.db_app,CKV_AWS_79,CKV_AWS_79,AWS-0028,Ensure Instance Metadata Service Version 1 is not enabled,aws_instance should activate session tokens for Instance Metadata Service.,1,1
+CONSENSUS,db-app.tf,/terraform/aws/db-app.tf,aws_instance.db_app,CKV_AWS_8,CKV_AWS_8,AWS-0131,Ensure all data stored in the Launch configuration or instance Elastic Blocks Store is securely encrypted,Instance with unencrypted block device.,1,1
+CONSENSUS,db-app.tf,/terraform/aws/db-app.tf,aws_security_group.default,CKV_AWS_23,CKV_AWS_23,AWS-0099,Ensure every security group and rule has a description,Missing description for security group.,1,1
+CONSENSUS,db-app.tf,/terraform/aws/db-app.tf,aws_security_group_rule.egress,CKV_AWS_23,CKV_AWS_23,AWS-0124,Ensure every security group and rule has a description,Missing description for security group rule.,1,1
+CONSENSUS,db-app.tf,/terraform/aws/db-app.tf,aws_security_group_rule.egress,CKV_AWS_382,CKV_AWS_382,AWS-0104,Ensure no security groups allow egress from 0.0.0.0:0 to port -1,A security group rule should not allow unrestricted egress to any IP address.,1,1
+CONSENSUS,db-app.tf,/terraform/aws/db-app.tf,aws_security_group_rule.ingress,CKV_AWS_23,CKV_AWS_23,AWS-0124,Ensure every security group and rule has a description,Missing description for security group rule.,1,1
+CHECKOV ONLY,ec2.tf,/terraform/aws/ec2.tf,aws_ebs_volume.web_host_storage,CKV2_AWS_2,CKV2_AWS_2,,Ensure that only encrypted EBS volumes are attached to EC2 instances,,1,0
+CONSENSUS,ec2.tf,/terraform/aws/ec2.tf,aws_ebs_volume.web_host_storage,CKV_AWS_189,CKV_AWS_189,AWS-0027,Ensure EBS Volume is encrypted by KMS using a customer managed Key (CMK),EBS volume encryption should use Customer Managed Keys,1,1
+CONSENSUS,ec2.tf,/terraform/aws/ec2.tf,aws_ebs_volume.web_host_storage,CKV_AWS_3,CKV_AWS_3,AWS-0026,Ensure all data stored in the EBS is securely encrypted,EBS volumes must be encrypted,1,1
+CHECKOV ONLY,ec2.tf,/terraform/aws/ec2.tf,aws_instance.web_host,CKV2_AWS_41,CKV2_AWS_41,,Ensure an IAM role is attached to EC2 instance,,1,0
+CHECKOV ONLY,ec2.tf,/terraform/aws/ec2.tf,aws_instance.web_host,CKV_AWS_126,CKV_AWS_126,,Ensure that detailed monitoring is enabled for EC2 instances,,1,0
+CHECKOV ONLY,ec2.tf,/terraform/aws/ec2.tf,aws_instance.web_host,CKV_AWS_135,CKV_AWS_135,,Ensure that EC2 is EBS optimized,,1,0
+CONSENSUS,ec2.tf,/terraform/aws/ec2.tf,aws_instance.web_host,CKV_AWS_46,CKV_AWS_46,AWS-0029,Ensure no hard-coded secrets exist in EC2 user data,User data for EC2 instances must not contain sensitive AWS keys,1,1
+CONSENSUS,ec2.tf,/terraform/aws/ec2.tf,aws_instance.web_host,CKV_AWS_79,CKV_AWS_79,AWS-0028,Ensure Instance Metadata Service Version 1 is not enabled,aws_instance should activate session tokens for Instance Metadata Service.,1,1
+CONSENSUS,ec2.tf,/terraform/aws/ec2.tf,aws_instance.web_host,CKV_AWS_8,CKV_AWS_8,AWS-0131,Ensure all data stored in the Launch configuration or instance Elastic Blocks Store is securely encrypted,Instance with unencrypted block device.,1,1
+CONSENSUS,ec2.tf,/terraform/aws/ec2.tf,aws_s3_bucket.flowbucket,CKV2_AWS_6,CKV2_AWS_6,AWS-0086;AWS-0087;AWS-0091;AWS-0093;AWS-0094,Ensure that S3 bucket has a Public Access block,S3 Access Block should Ignore Public ACL; S3 Access block should block public ACL; S3 Access block should block public policy; S3 Access block should restrict public bucket to limit access; S3 buckets should each define an aws_s3_bucket_public_access_block,1,5
+CHECKOV ONLY,ec2.tf,/terraform/aws/ec2.tf,aws_s3_bucket.flowbucket,CKV2_AWS_61,CKV2_AWS_61,,Ensure that an S3 bucket has a lifecycle configuration,,1,0
+CHECKOV ONLY,ec2.tf,/terraform/aws/ec2.tf,aws_s3_bucket.flowbucket,CKV2_AWS_62,CKV2_AWS_62,,Ensure S3 buckets should have event notifications enabled,,1,0
+CHECKOV ONLY,ec2.tf,/terraform/aws/ec2.tf,aws_s3_bucket.flowbucket,CKV_AWS_144,CKV_AWS_144,,Ensure that S3 bucket has cross-region replication enabled,,1,0
+CONSENSUS,ec2.tf,/terraform/aws/ec2.tf,aws_s3_bucket.flowbucket,CKV_AWS_145,CKV_AWS_145,AWS-0132,Ensure that S3 buckets are encrypted with KMS by default,S3 encryption should use Customer Managed Keys,1,1
+CONSENSUS,ec2.tf,/terraform/aws/ec2.tf,aws_s3_bucket.flowbucket,CKV_AWS_18,CKV_AWS_18,AWS-0089,Ensure the S3 bucket has access logging enabled,S3 Bucket Logging,1,1
+CONSENSUS,ec2.tf,/terraform/aws/ec2.tf,aws_s3_bucket.flowbucket,CKV_AWS_21,CKV_AWS_21,AWS-0090,Ensure all data stored in the S3 bucket have versioning enabled,S3 Data should be versioned,1,1
+CONSENSUS,ec2.tf,/terraform/aws/ec2.tf,aws_security_group.web-node,CKV_AWS_23,CKV_AWS_23,AWS-0124,Ensure every security group and rule has a description,Missing description for security group rule.,1,3
+CONSENSUS,ec2.tf,/terraform/aws/ec2.tf,aws_security_group.web-node,CKV_AWS_24,CKV_AWS_24,AWS-0107,Ensure no security groups allow ingress from 0.0.0.0:0 to port 22,Security groups should not allow unrestricted ingress to SSH or RDP from any IP address.,1,1
+CHECKOV ONLY,ec2.tf,/terraform/aws/ec2.tf,aws_security_group.web-node,CKV_AWS_260,CKV_AWS_260,,Ensure no security groups allow ingress from 0.0.0.0:0 to port 80,,1,0
+CONSENSUS,ec2.tf,/terraform/aws/ec2.tf,aws_security_group.web-node,CKV_AWS_382,CKV_AWS_382,AWS-0104,Ensure no security groups allow egress from 0.0.0.0:0 to port -1,A security group rule should not allow unrestricted egress to any IP address.,1,1
+CONSENSUS,ec2.tf,/terraform/aws/ec2.tf,aws_subnet.web_subnet,CKV_AWS_130,CKV_AWS_130,AWS-0164,Ensure VPC subnets do not assign public IP by default,Instances in a subnet should not receive a public IP address by default.,1,1
+CONSENSUS,ec2.tf,/terraform/aws/ec2.tf,aws_subnet.web_subnet2,CKV_AWS_130,CKV_AWS_130,AWS-0164,Ensure VPC subnets do not assign public IP by default,Instances in a subnet should not receive a public IP address by default.,1,1
+CHECKOV ONLY,ec2.tf,/terraform/aws/ec2.tf,aws_vpc.web_vpc,CKV2_AWS_12,CKV2_AWS_12,,Ensure the default security group of every VPC restricts all traffic,,1,0
+CONSENSUS,ecr.tf,/terraform/aws/ecr.tf,aws_ecr_repository.repository,CKV_AWS_136,CKV_AWS_136,AWS-0033,Ensure that ECR repositories are encrypted using KMS,ECR Repository should use customer managed keys to allow more control,1,1
+CONSENSUS,ecr.tf,/terraform/aws/ecr.tf,aws_ecr_repository.repository,CKV_AWS_163,CKV_AWS_163,AWS-0030,Ensure ECR image scanning on push is enabled,ECR repository has image scans disabled.,1,1
+CONSENSUS,ecr.tf,/terraform/aws/ecr.tf,aws_ecr_repository.repository,CKV_AWS_51,CKV_AWS_51,AWS-0031,Ensure ECR Image Tags are immutable,ECR images tags shouldn't be mutable.,1,1
+CONSENSUS,eks.tf,/terraform/aws/eks.tf,aws_eks_cluster.eks_cluster,CKV_AWS_37,CKV_AWS_37,AWS-0038,Ensure Amazon EKS control plane logging is enabled for all log types,EKS Clusters should have cluster control plane logging turned on,1,5
+CONSENSUS,eks.tf,/terraform/aws/eks.tf,aws_eks_cluster.eks_cluster,CKV_AWS_38,CKV_AWS_38,AWS-0041,Ensure Amazon EKS public endpoint not accessible to 0.0.0.0/0,EKS cluster should not have open CIDR range for public access,1,1
+CONSENSUS,eks.tf,/terraform/aws/eks.tf,aws_eks_cluster.eks_cluster,CKV_AWS_39,CKV_AWS_39,AWS-0040,Ensure Amazon EKS public endpoint disabled,EKS Clusters should have the public access disabled,1,1
+CONSENSUS,eks.tf,/terraform/aws/eks.tf,aws_eks_cluster.eks_cluster,CKV_AWS_58,CKV_AWS_58,AWS-0039,Ensure EKS Cluster has Secrets Encryption Enabled,EKS should have the encryption of secrets enabled,1,1
+CONSENSUS,eks.tf,/terraform/aws/eks.tf,aws_subnet.eks_subnet1,CKV_AWS_130,CKV_AWS_130,AWS-0164,Ensure VPC subnets do not assign public IP by default,Instances in a subnet should not receive a public IP address by default.,1,1
+CONSENSUS,eks.tf,/terraform/aws/eks.tf,aws_subnet.eks_subnet2,CKV_AWS_130,CKV_AWS_130,AWS-0164,Ensure VPC subnets do not assign public IP by default,Instances in a subnet should not receive a public IP address by default.,1,1
+CONSENSUS,eks.tf,/terraform/aws/eks.tf,aws_vpc.eks_vpc,CKV2_AWS_11,CKV2_AWS_11,AWS-0178,Ensure VPC flow logging is enabled in all VPCs,"VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet ""Rejects"" for VPCs.",1,1
+CHECKOV ONLY,eks.tf,/terraform/aws/eks.tf,aws_vpc.eks_vpc,CKV2_AWS_12,CKV2_AWS_12,,Ensure the default security group of every VPC restricts all traffic,,1,0
+CHECKOV ONLY,elb.tf,/terraform/aws/elb.tf,aws_elb.weblb,CKV_AWS_127,CKV_AWS_127,,Ensure that Elastic Load Balancer(s) uses SSL certificates provided by AWS Certificate Manager,,1,0
+CHECKOV ONLY,elb.tf,/terraform/aws/elb.tf,aws_elb.weblb,CKV_AWS_376,CKV_AWS_376,,Ensure AWS Elastic Load Balancer listener uses TLS/SSL,,1,0
+CHECKOV ONLY,elb.tf,/terraform/aws/elb.tf,aws_elb.weblb,CKV_AWS_92,CKV_AWS_92,,Ensure the ELB has access logging enabled,,1,0
+TRIVY ONLY,elb.tf,/terraform/aws/elb.tf,aws_elb.weblb,AWS-0053,,AWS-0053,,Load balancer is exposed to the internet.,0,1
+CHECKOV ONLY,es.tf,/terraform/aws/es.tf,aws_elasticsearch_domain.monitoring-framework,CKV2_AWS_52,CKV2_AWS_52,,Ensure AWS ElasticSearch/OpenSearch Fine-grained access control is enabled,,1,0
+CHECKOV ONLY,es.tf,/terraform/aws/es.tf,aws_elasticsearch_domain.monitoring-framework,CKV2_AWS_59,CKV2_AWS_59,,Ensure ElasticSearch/OpenSearch has dedicated master node enabled,,1,0
+CHECKOV ONLY,es.tf,/terraform/aws/es.tf,aws_elasticsearch_domain.monitoring-framework,CKV_AWS_137,CKV_AWS_137,,Ensure that Elasticsearch is configured inside a VPC,,1,0
+CONSENSUS,es.tf,/terraform/aws/es.tf,aws_elasticsearch_domain.monitoring-framework,CKV_AWS_228,CKV_AWS_228,AWS-0126,Verify Elasticsearch domain is using an up to date TLS policy,Elasticsearch domain endpoint is using outdated TLS policy.,1,1
+CHECKOV ONLY,es.tf,/terraform/aws/es.tf,aws_elasticsearch_domain.monitoring-framework,CKV_AWS_247,CKV_AWS_247,,Ensure all data stored in the Elasticsearch is encrypted with a CMK,,1,0
+CHECKOV ONLY,es.tf,/terraform/aws/es.tf,aws_elasticsearch_domain.monitoring-framework,CKV_AWS_248,CKV_AWS_248,,Ensure that Elasticsearch is not using the default Security Group,,1,0
+CHECKOV ONLY,es.tf,/terraform/aws/es.tf,aws_elasticsearch_domain.monitoring-framework,CKV_AWS_317,CKV_AWS_317,,Ensure Elasticsearch Domain Audit Logging is enabled,,1,0
+CHECKOV ONLY,es.tf,/terraform/aws/es.tf,aws_elasticsearch_domain.monitoring-framework,CKV_AWS_318,CKV_AWS_318,,Ensure Elasticsearch domains are configured with at least three dedicated master nodes for HA,,1,0
+CONSENSUS,es.tf,/terraform/aws/es.tf,aws_elasticsearch_domain.monitoring-framework,CKV_AWS_5,CKV_AWS_5,AWS-0048,Ensure all data stored in the Elasticsearch is securely encrypted at rest,Elasticsearch domain isn't encrypted at rest.,1,1
+CONSENSUS,es.tf,/terraform/aws/es.tf,aws_elasticsearch_domain.monitoring-framework,CKV_AWS_84,CKV_AWS_84,AWS-0042,Ensure Elasticsearch Domain Logging is enabled,Domain logging should be enabled for Elastic Search domains,1,1
+TRIVY ONLY,es.tf,/terraform/aws/es.tf,aws_elasticsearch_domain.monitoring-framework,AWS-0043,,AWS-0043,,Elasticsearch domain uses plaintext traffic for node to node communication.,0,1
+TRIVY ONLY,es.tf,/terraform/aws/es.tf,aws_elasticsearch_domain.monitoring-framework,AWS-0046,,AWS-0046,,Elasticsearch doesn't enforce HTTPS traffic.,0,1
+CHECKOV ONLY,es.tf,/terraform/aws/es.tf,aws_iam_policy_document.policy,CKV_AWS_109,CKV_AWS_109,,Ensure IAM policies does not allow permissions management / resource exposure without constraints,,1,0
+CHECKOV ONLY,es.tf,/terraform/aws/es.tf,aws_iam_policy_document.policy,CKV_AWS_111,CKV_AWS_111,,Ensure IAM policies does not allow write access without constraints,,1,0
+CHECKOV ONLY,es.tf,/terraform/aws/es.tf,aws_iam_policy_document.policy,CKV_AWS_283,CKV_AWS_283,,Ensure no IAM policies documents allow ALL or any AWS principal permissions to the resource,,1,0
+CHECKOV ONLY,es.tf,/terraform/aws/es.tf,aws_iam_policy_document.policy,CKV_AWS_356,CKV_AWS_356,,"Ensure no IAM policies documents allow ""*"" as a statement's resource for restrictable actions",,1,0
+CHECKOV ONLY,iam.tf,/terraform/aws/iam.tf,aws_iam_user.user,CKV_AWS_273,CKV_AWS_273,,Ensure access is controlled through SSO and not AWS IAM defined users,,1,0
+TRIVY ONLY,iam.tf,/terraform/aws/iam.tf,aws_iam_user.user,AWS-0143,,AWS-0143,,IAM policies should not be granted directly to users.,0,1
+CHECKOV ONLY,iam.tf,/terraform/aws/iam.tf,aws_iam_user_policy.userpolicy,CKV_AWS_286,CKV_AWS_286,,Ensure IAM policies does not allow privilege escalation,,1,0
+CHECKOV ONLY,iam.tf,/terraform/aws/iam.tf,aws_iam_user_policy.userpolicy,CKV_AWS_287,CKV_AWS_287,,Ensure IAM policies does not allow credentials exposure,,1,0
+CHECKOV ONLY,iam.tf,/terraform/aws/iam.tf,aws_iam_user_policy.userpolicy,CKV_AWS_288,CKV_AWS_288,,Ensure IAM policies does not allow data exfiltration,,1,0
+CHECKOV ONLY,iam.tf,/terraform/aws/iam.tf,aws_iam_user_policy.userpolicy,CKV_AWS_289,CKV_AWS_289,,Ensure IAM policies does not allow permissions management / resource exposure without constraints,,1,0
+CHECKOV ONLY,iam.tf,/terraform/aws/iam.tf,aws_iam_user_policy.userpolicy,CKV_AWS_290,CKV_AWS_290,,Ensure IAM policies does not allow write access without constraints,,1,0
+CHECKOV ONLY,iam.tf,/terraform/aws/iam.tf,aws_iam_user_policy.userpolicy,CKV_AWS_355,CKV_AWS_355,,"Ensure no IAM policies documents allow ""*"" as a statement's resource for restrictable actions",,1,0
+CHECKOV ONLY,kms.tf,/terraform/aws/kms.tf,aws_kms_key.logs_key,CKV2_AWS_64,CKV2_AWS_64,,Ensure KMS key Policy is defined,,1,0
+CONSENSUS,kms.tf,/terraform/aws/kms.tf,aws_kms_key.logs_key,CKV_AWS_7,CKV_AWS_7,AWS-0065,Ensure rotation for customer created CMKs is enabled,A KMS key is not configured to auto-rotate.,1,1
+CHECKOV ONLY,lambda.tf,/terraform/aws/lambda.tf,aws_lambda_function.analysis_lambda,CKV_AWS_115,CKV_AWS_115,,Ensure that AWS Lambda function is configured for function-level concurrent execution limit,,1,0
+CHECKOV ONLY,lambda.tf,/terraform/aws/lambda.tf,aws_lambda_function.analysis_lambda,CKV_AWS_116,CKV_AWS_116,,Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ),,1,0
+CHECKOV ONLY,lambda.tf,/terraform/aws/lambda.tf,aws_lambda_function.analysis_lambda,CKV_AWS_117,CKV_AWS_117,,Ensure that AWS Lambda function is configured inside a VPC,,1,0
+CHECKOV ONLY,lambda.tf,/terraform/aws/lambda.tf,aws_lambda_function.analysis_lambda,CKV_AWS_173,CKV_AWS_173,,Check encryption settings for Lambda environmental variable,,1,0
+CHECKOV ONLY,lambda.tf,/terraform/aws/lambda.tf,aws_lambda_function.analysis_lambda,CKV_AWS_272,CKV_AWS_272,,Ensure AWS Lambda function is configured to validate code-signing,,1,0
+CHECKOV ONLY,lambda.tf,/terraform/aws/lambda.tf,aws_lambda_function.analysis_lambda,CKV_AWS_363,CKV_AWS_363,,Ensure Lambda Runtime is not deprecated,,1,0
+CHECKOV ONLY,lambda.tf,/terraform/aws/lambda.tf,aws_lambda_function.analysis_lambda,CKV_AWS_45,CKV_AWS_45,,Ensure no hard-coded secrets exist in lambda environment,,1,0
+CONSENSUS,lambda.tf,/terraform/aws/lambda.tf,aws_lambda_function.analysis_lambda,CKV_AWS_50,CKV_AWS_50,AWS-0066,X-Ray tracing is enabled for Lambda,Lambda functions should have X-Ray tracing enabled,1,1
+CHECKOV ONLY,neptune.tf,/terraform/aws/neptune.tf,aws_neptune_cluster.default,CKV2_AWS_58,CKV2_AWS_58,,Ensure AWS Neptune cluster deletion protection is enabled,,1,0
+CONSENSUS,neptune.tf,/terraform/aws/neptune.tf,aws_neptune_cluster.default,CKV_AWS_101,CKV_AWS_101,AWS-0075,Ensure Neptune logging is enabled,Neptune logs export should be enabled,1,1
+CONSENSUS,neptune.tf,/terraform/aws/neptune.tf,aws_neptune_cluster.default,CKV_AWS_347,CKV_AWS_347,AWS-0128,Ensure Neptune is encrypted by KMS using a customer managed Key (CMK),Neptune encryption should use Customer Managed Keys,1,1
+CHECKOV ONLY,neptune.tf,/terraform/aws/neptune.tf,aws_neptune_cluster.default,CKV_AWS_359,CKV_AWS_359,,Neptune DB clusters should have IAM database authentication enabled,,1,0
+CHECKOV ONLY,neptune.tf,/terraform/aws/neptune.tf,aws_neptune_cluster.default,CKV_AWS_361,CKV_AWS_361,,Ensure that Neptune DB cluster has automated backups enabled with adequate retention,,1,0
+CHECKOV ONLY,neptune.tf,/terraform/aws/neptune.tf,aws_neptune_cluster.default,CKV_AWS_362,CKV_AWS_362,,Neptune DB clusters should be configured to copy tags to snapshots,,1,0
+CONSENSUS,neptune.tf,/terraform/aws/neptune.tf,aws_neptune_cluster.default,CKV_AWS_44,CKV_AWS_44,AWS-0076,Ensure Neptune storage is securely encrypted,Neptune storage must be encrypted at rest,1,1
+CHECKOV ONLY,neptune.tf,/terraform/aws/neptune.tf,aws_neptune_cluster_snapshot.default,CKV_AWS_279,CKV_AWS_279,,Ensure Neptune snapshot is securely encrypted,,1,0
+CHECKOV ONLY,neptune.tf,/terraform/aws/neptune.tf,aws_neptune_cluster_snapshot.default,CKV_AWS_280,CKV_AWS_280,,Ensure Neptune snapshot is encrypted by KMS using a customer managed Key (CMK),,1,0
+CHECKOV ONLY,providers.tf,/terraform/aws/providers.tf,aws.plain_text_access_keys_provider,CKV_AWS_41,CKV_AWS_41,,Ensure no hard coded AWS access key and secret key exists in provider,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app1-rds-cluster,CKV2_AWS_8,CKV2_AWS_8,,Ensure that RDS clusters has backup plan of AWS Backup,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app1-rds-cluster,CKV_AWS_133,CKV_AWS_133,,Ensure that RDS instances has backup policy,,1,0
+CONSENSUS,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app1-rds-cluster,CKV_AWS_139,CKV_AWS_139,AWS-0343,Ensure that RDS clusters have deletion protection enabled,RDS Cluster Deletion Protection Disabled,1,1
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app1-rds-cluster,CKV_AWS_162,CKV_AWS_162,,Ensure RDS cluster has IAM authentication enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app1-rds-cluster,CKV_AWS_313,CKV_AWS_313,,Ensure RDS cluster configured to copy tags to snapshots,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app1-rds-cluster,CKV_AWS_324,CKV_AWS_324,,Ensure that RDS Cluster log capture is enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app1-rds-cluster,CKV_AWS_325,CKV_AWS_325,,Ensure that RDS Cluster audit logging is enabled for MySQL engine,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app1-rds-cluster,CKV_AWS_326,CKV_AWS_326,,Ensure that RDS Aurora Clusters have backtracking enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app1-rds-cluster,CKV_AWS_327,CKV_AWS_327,,Ensure RDS Clusters are encrypted using KMS CMKs,,1,0
+CONSENSUS,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app1-rds-cluster,CKV_AWS_96,CKV_AWS_96,AWS-0079,Ensure all data stored in Aurora is securely encrypted at rest,There is no encryption specified or encryption is disabled on the RDS Cluster.,1,1
+TRIVY ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app1-rds-cluster,AWS-0077,,AWS-0077,,RDS Cluster and RDS instance should have backup retention longer than default 1 day,0,1
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app2-rds-cluster,CKV2_AWS_8,CKV2_AWS_8,,Ensure that RDS clusters has backup plan of AWS Backup,,1,0
+CONSENSUS,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app2-rds-cluster,CKV_AWS_139,CKV_AWS_139,AWS-0343,Ensure that RDS clusters have deletion protection enabled,RDS Cluster Deletion Protection Disabled,1,1
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app2-rds-cluster,CKV_AWS_162,CKV_AWS_162,,Ensure RDS cluster has IAM authentication enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app2-rds-cluster,CKV_AWS_313,CKV_AWS_313,,Ensure RDS cluster configured to copy tags to snapshots,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app2-rds-cluster,CKV_AWS_324,CKV_AWS_324,,Ensure that RDS Cluster log capture is enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app2-rds-cluster,CKV_AWS_325,CKV_AWS_325,,Ensure that RDS Cluster audit logging is enabled for MySQL engine,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app2-rds-cluster,CKV_AWS_326,CKV_AWS_326,,Ensure that RDS Aurora Clusters have backtracking enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app2-rds-cluster,CKV_AWS_327,CKV_AWS_327,,Ensure RDS Clusters are encrypted using KMS CMKs,,1,0
+CONSENSUS,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app2-rds-cluster,CKV_AWS_96,CKV_AWS_96,AWS-0079,Ensure all data stored in Aurora is securely encrypted at rest,There is no encryption specified or encryption is disabled on the RDS Cluster.,1,1
+TRIVY ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app2-rds-cluster,AWS-0077,,AWS-0077,,RDS Cluster and RDS instance should have backup retention longer than default 1 day,0,1
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app3-rds-cluster,CKV2_AWS_8,CKV2_AWS_8,,Ensure that RDS clusters has backup plan of AWS Backup,,1,0
+CONSENSUS,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app3-rds-cluster,CKV_AWS_139,CKV_AWS_139,AWS-0343,Ensure that RDS clusters have deletion protection enabled,RDS Cluster Deletion Protection Disabled,1,1
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app3-rds-cluster,CKV_AWS_162,CKV_AWS_162,,Ensure RDS cluster has IAM authentication enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app3-rds-cluster,CKV_AWS_313,CKV_AWS_313,,Ensure RDS cluster configured to copy tags to snapshots,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app3-rds-cluster,CKV_AWS_324,CKV_AWS_324,,Ensure that RDS Cluster log capture is enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app3-rds-cluster,CKV_AWS_325,CKV_AWS_325,,Ensure that RDS Cluster audit logging is enabled for MySQL engine,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app3-rds-cluster,CKV_AWS_326,CKV_AWS_326,,Ensure that RDS Aurora Clusters have backtracking enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app3-rds-cluster,CKV_AWS_327,CKV_AWS_327,,Ensure RDS Clusters are encrypted using KMS CMKs,,1,0
+CONSENSUS,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app3-rds-cluster,CKV_AWS_96,CKV_AWS_96,AWS-0079,Ensure all data stored in Aurora is securely encrypted at rest,There is no encryption specified or encryption is disabled on the RDS Cluster.,1,1
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app4-rds-cluster,CKV2_AWS_8,CKV2_AWS_8,,Ensure that RDS clusters has backup plan of AWS Backup,,1,0
+CONSENSUS,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app4-rds-cluster,CKV_AWS_139,CKV_AWS_139,AWS-0343,Ensure that RDS clusters have deletion protection enabled,RDS Cluster Deletion Protection Disabled,1,1
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app4-rds-cluster,CKV_AWS_162,CKV_AWS_162,,Ensure RDS cluster has IAM authentication enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app4-rds-cluster,CKV_AWS_313,CKV_AWS_313,,Ensure RDS cluster configured to copy tags to snapshots,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app4-rds-cluster,CKV_AWS_324,CKV_AWS_324,,Ensure that RDS Cluster log capture is enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app4-rds-cluster,CKV_AWS_325,CKV_AWS_325,,Ensure that RDS Cluster audit logging is enabled for MySQL engine,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app4-rds-cluster,CKV_AWS_326,CKV_AWS_326,,Ensure that RDS Aurora Clusters have backtracking enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app4-rds-cluster,CKV_AWS_327,CKV_AWS_327,,Ensure RDS Clusters are encrypted using KMS CMKs,,1,0
+CONSENSUS,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app4-rds-cluster,CKV_AWS_96,CKV_AWS_96,AWS-0079,Ensure all data stored in Aurora is securely encrypted at rest,There is no encryption specified or encryption is disabled on the RDS Cluster.,1,1
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app5-rds-cluster,CKV2_AWS_8,CKV2_AWS_8,,Ensure that RDS clusters has backup plan of AWS Backup,,1,0
+CONSENSUS,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app5-rds-cluster,CKV_AWS_139,CKV_AWS_139,AWS-0343,Ensure that RDS clusters have deletion protection enabled,RDS Cluster Deletion Protection Disabled,1,1
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app5-rds-cluster,CKV_AWS_162,CKV_AWS_162,,Ensure RDS cluster has IAM authentication enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app5-rds-cluster,CKV_AWS_313,CKV_AWS_313,,Ensure RDS cluster configured to copy tags to snapshots,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app5-rds-cluster,CKV_AWS_324,CKV_AWS_324,,Ensure that RDS Cluster log capture is enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app5-rds-cluster,CKV_AWS_325,CKV_AWS_325,,Ensure that RDS Cluster audit logging is enabled for MySQL engine,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app5-rds-cluster,CKV_AWS_326,CKV_AWS_326,,Ensure that RDS Aurora Clusters have backtracking enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app5-rds-cluster,CKV_AWS_327,CKV_AWS_327,,Ensure RDS Clusters are encrypted using KMS CMKs,,1,0
+CONSENSUS,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app5-rds-cluster,CKV_AWS_96,CKV_AWS_96,AWS-0079,Ensure all data stored in Aurora is securely encrypted at rest,There is no encryption specified or encryption is disabled on the RDS Cluster.,1,1
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app6-rds-cluster,CKV2_AWS_8,CKV2_AWS_8,,Ensure that RDS clusters has backup plan of AWS Backup,,1,0
+CONSENSUS,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app6-rds-cluster,CKV_AWS_139,CKV_AWS_139,AWS-0343,Ensure that RDS clusters have deletion protection enabled,RDS Cluster Deletion Protection Disabled,1,1
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app6-rds-cluster,CKV_AWS_162,CKV_AWS_162,,Ensure RDS cluster has IAM authentication enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app6-rds-cluster,CKV_AWS_313,CKV_AWS_313,,Ensure RDS cluster configured to copy tags to snapshots,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app6-rds-cluster,CKV_AWS_324,CKV_AWS_324,,Ensure that RDS Cluster log capture is enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app6-rds-cluster,CKV_AWS_325,CKV_AWS_325,,Ensure that RDS Cluster audit logging is enabled for MySQL engine,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app6-rds-cluster,CKV_AWS_326,CKV_AWS_326,,Ensure that RDS Aurora Clusters have backtracking enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app6-rds-cluster,CKV_AWS_327,CKV_AWS_327,,Ensure RDS Clusters are encrypted using KMS CMKs,,1,0
+CONSENSUS,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app6-rds-cluster,CKV_AWS_96,CKV_AWS_96,AWS-0079,Ensure all data stored in Aurora is securely encrypted at rest,There is no encryption specified or encryption is disabled on the RDS Cluster.,1,1
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app7-rds-cluster,CKV2_AWS_8,CKV2_AWS_8,,Ensure that RDS clusters has backup plan of AWS Backup,,1,0
+CONSENSUS,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app7-rds-cluster,CKV_AWS_139,CKV_AWS_139,AWS-0343,Ensure that RDS clusters have deletion protection enabled,RDS Cluster Deletion Protection Disabled,1,1
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app7-rds-cluster,CKV_AWS_162,CKV_AWS_162,,Ensure RDS cluster has IAM authentication enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app7-rds-cluster,CKV_AWS_313,CKV_AWS_313,,Ensure RDS cluster configured to copy tags to snapshots,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app7-rds-cluster,CKV_AWS_324,CKV_AWS_324,,Ensure that RDS Cluster log capture is enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app7-rds-cluster,CKV_AWS_325,CKV_AWS_325,,Ensure that RDS Cluster audit logging is enabled for MySQL engine,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app7-rds-cluster,CKV_AWS_326,CKV_AWS_326,,Ensure that RDS Aurora Clusters have backtracking enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app7-rds-cluster,CKV_AWS_327,CKV_AWS_327,,Ensure RDS Clusters are encrypted using KMS CMKs,,1,0
+CONSENSUS,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app7-rds-cluster,CKV_AWS_96,CKV_AWS_96,AWS-0079,Ensure all data stored in Aurora is securely encrypted at rest,There is no encryption specified or encryption is disabled on the RDS Cluster.,1,1
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app8-rds-cluster,CKV2_AWS_8,CKV2_AWS_8,,Ensure that RDS clusters has backup plan of AWS Backup,,1,0
+CONSENSUS,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app8-rds-cluster,CKV_AWS_139,CKV_AWS_139,AWS-0343,Ensure that RDS clusters have deletion protection enabled,RDS Cluster Deletion Protection Disabled,1,1
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app8-rds-cluster,CKV_AWS_162,CKV_AWS_162,,Ensure RDS cluster has IAM authentication enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app8-rds-cluster,CKV_AWS_313,CKV_AWS_313,,Ensure RDS cluster configured to copy tags to snapshots,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app8-rds-cluster,CKV_AWS_324,CKV_AWS_324,,Ensure that RDS Cluster log capture is enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app8-rds-cluster,CKV_AWS_325,CKV_AWS_325,,Ensure that RDS Cluster audit logging is enabled for MySQL engine,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app8-rds-cluster,CKV_AWS_326,CKV_AWS_326,,Ensure that RDS Aurora Clusters have backtracking enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app8-rds-cluster,CKV_AWS_327,CKV_AWS_327,,Ensure RDS Clusters are encrypted using KMS CMKs,,1,0
+CONSENSUS,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app8-rds-cluster,CKV_AWS_96,CKV_AWS_96,AWS-0079,Ensure all data stored in Aurora is securely encrypted at rest,There is no encryption specified or encryption is disabled on the RDS Cluster.,1,1
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app9-rds-cluster,CKV2_AWS_8,CKV2_AWS_8,,Ensure that RDS clusters has backup plan of AWS Backup,,1,0
+CONSENSUS,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app9-rds-cluster,CKV_AWS_139,CKV_AWS_139,AWS-0343,Ensure that RDS clusters have deletion protection enabled,RDS Cluster Deletion Protection Disabled,1,1
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app9-rds-cluster,CKV_AWS_162,CKV_AWS_162,,Ensure RDS cluster has IAM authentication enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app9-rds-cluster,CKV_AWS_313,CKV_AWS_313,,Ensure RDS cluster configured to copy tags to snapshots,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app9-rds-cluster,CKV_AWS_324,CKV_AWS_324,,Ensure that RDS Cluster log capture is enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app9-rds-cluster,CKV_AWS_325,CKV_AWS_325,,Ensure that RDS Cluster audit logging is enabled for MySQL engine,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app9-rds-cluster,CKV_AWS_326,CKV_AWS_326,,Ensure that RDS Aurora Clusters have backtracking enabled,,1,0
+CHECKOV ONLY,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app9-rds-cluster,CKV_AWS_327,CKV_AWS_327,,Ensure RDS Clusters are encrypted using KMS CMKs,,1,0
+CONSENSUS,rds.tf,/terraform/aws/rds.tf,aws_rds_cluster.app9-rds-cluster,CKV_AWS_96,CKV_AWS_96,AWS-0079,Ensure all data stored in Aurora is securely encrypted at rest,There is no encryption specified or encryption is disabled on the RDS Cluster.,1,1
+CONSENSUS,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.data,CKV2_AWS_6,CKV2_AWS_6,AWS-0086;AWS-0087;AWS-0091;AWS-0093;AWS-0094,Ensure that S3 bucket has a Public Access block,S3 Access Block should Ignore Public ACL; S3 Access block should block public ACL; S3 Access block should block public policy; S3 Access block should restrict public bucket to limit access; S3 buckets should each define an aws_s3_bucket_public_access_block,1,5
+CHECKOV ONLY,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.data,CKV2_AWS_61,CKV2_AWS_61,,Ensure that an S3 bucket has a lifecycle configuration,,1,0
+CHECKOV ONLY,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.data,CKV2_AWS_62,CKV2_AWS_62,,Ensure S3 buckets should have event notifications enabled,,1,0
+CHECKOV ONLY,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.data,CKV_AWS_144,CKV_AWS_144,,Ensure that S3 bucket has cross-region replication enabled,,1,0
+CONSENSUS,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.data,CKV_AWS_145,CKV_AWS_145,AWS-0132,Ensure that S3 buckets are encrypted with KMS by default,S3 encryption should use Customer Managed Keys,1,1
+CONSENSUS,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.data,CKV_AWS_18,CKV_AWS_18,AWS-0089,Ensure the S3 bucket has access logging enabled,S3 Bucket Logging,1,1
+CONSENSUS,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.data,CKV_AWS_21,CKV_AWS_21,AWS-0090,Ensure all data stored in the S3 bucket have versioning enabled,S3 Data should be versioned,1,1
+CONSENSUS,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.data_science,CKV2_AWS_6,CKV2_AWS_6,AWS-0086;AWS-0087;AWS-0091;AWS-0093;AWS-0094,Ensure that S3 bucket has a Public Access block,S3 Access Block should Ignore Public ACL; S3 Access block should block public ACL; S3 Access block should block public policy; S3 Access block should restrict public bucket to limit access; S3 buckets should each define an aws_s3_bucket_public_access_block,1,5
+CHECKOV ONLY,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.data_science,CKV2_AWS_61,CKV2_AWS_61,,Ensure that an S3 bucket has a lifecycle configuration,,1,0
+CHECKOV ONLY,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.data_science,CKV2_AWS_62,CKV2_AWS_62,,Ensure S3 buckets should have event notifications enabled,,1,0
+CHECKOV ONLY,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.data_science,CKV_AWS_144,CKV_AWS_144,,Ensure that S3 bucket has cross-region replication enabled,,1,0
+CONSENSUS,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.data_science,CKV_AWS_145,CKV_AWS_145,AWS-0132,Ensure that S3 buckets are encrypted with KMS by default,S3 encryption should use Customer Managed Keys,1,1
+CONSENSUS,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.financials,CKV2_AWS_6,CKV2_AWS_6,AWS-0086;AWS-0087;AWS-0091;AWS-0093;AWS-0094,Ensure that S3 bucket has a Public Access block,S3 Access Block should Ignore Public ACL; S3 Access block should block public ACL; S3 Access block should block public policy; S3 Access block should restrict public bucket to limit access; S3 buckets should each define an aws_s3_bucket_public_access_block,1,5
+CHECKOV ONLY,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.financials,CKV2_AWS_61,CKV2_AWS_61,,Ensure that an S3 bucket has a lifecycle configuration,,1,0
+CHECKOV ONLY,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.financials,CKV2_AWS_62,CKV2_AWS_62,,Ensure S3 buckets should have event notifications enabled,,1,0
+CHECKOV ONLY,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.financials,CKV_AWS_144,CKV_AWS_144,,Ensure that S3 bucket has cross-region replication enabled,,1,0
+CONSENSUS,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.financials,CKV_AWS_145,CKV_AWS_145,AWS-0132,Ensure that S3 buckets are encrypted with KMS by default,S3 encryption should use Customer Managed Keys,1,1
+CONSENSUS,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.financials,CKV_AWS_18,CKV_AWS_18,AWS-0089,Ensure the S3 bucket has access logging enabled,S3 Bucket Logging,1,1
+CONSENSUS,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.financials,CKV_AWS_21,CKV_AWS_21,AWS-0090,Ensure all data stored in the S3 bucket have versioning enabled,S3 Data should be versioned,1,1
+CONSENSUS,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.logs,CKV2_AWS_6,CKV2_AWS_6,AWS-0086;AWS-0087;AWS-0091;AWS-0093;AWS-0094,Ensure that S3 bucket has a Public Access block,S3 Access Block should Ignore Public ACL; S3 Access block should block public ACL; S3 Access block should block public policy; S3 Access block should restrict public bucket to limit access; S3 buckets should each define an aws_s3_bucket_public_access_block,1,5
+CHECKOV ONLY,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.logs,CKV2_AWS_61,CKV2_AWS_61,,Ensure that an S3 bucket has a lifecycle configuration,,1,0
+CHECKOV ONLY,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.logs,CKV2_AWS_62,CKV2_AWS_62,,Ensure S3 buckets should have event notifications enabled,,1,0
+CHECKOV ONLY,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.logs,CKV_AWS_144,CKV_AWS_144,,Ensure that S3 bucket has cross-region replication enabled,,1,0
+CHECKOV ONLY,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.logs,CKV_AWS_18,CKV_AWS_18,,Ensure the S3 bucket has access logging enabled,,1,0
+CONSENSUS,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.operations,CKV2_AWS_6,CKV2_AWS_6,AWS-0086;AWS-0087;AWS-0091;AWS-0093;AWS-0094,Ensure that S3 bucket has a Public Access block,S3 Access Block should Ignore Public ACL; S3 Access block should block public ACL; S3 Access block should block public policy; S3 Access block should restrict public bucket to limit access; S3 buckets should each define an aws_s3_bucket_public_access_block,1,5
+CHECKOV ONLY,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.operations,CKV2_AWS_61,CKV2_AWS_61,,Ensure that an S3 bucket has a lifecycle configuration,,1,0
+CHECKOV ONLY,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.operations,CKV2_AWS_62,CKV2_AWS_62,,Ensure S3 buckets should have event notifications enabled,,1,0
+CHECKOV ONLY,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.operations,CKV_AWS_144,CKV_AWS_144,,Ensure that S3 bucket has cross-region replication enabled,,1,0
+CONSENSUS,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.operations,CKV_AWS_145,CKV_AWS_145,AWS-0132,Ensure that S3 buckets are encrypted with KMS by default,S3 encryption should use Customer Managed Keys,1,1
+CONSENSUS,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket.operations,CKV_AWS_18,CKV_AWS_18,AWS-0089,Ensure the S3 bucket has access logging enabled,S3 Bucket Logging,1,1
+CHECKOV ONLY,s3.tf,/terraform/aws/s3.tf,aws_s3_bucket_object.data_object,CKV_AWS_186,CKV_AWS_186,,Ensure S3 bucket Object is encrypted by KMS using a customer managed Key (CMK),,1,0

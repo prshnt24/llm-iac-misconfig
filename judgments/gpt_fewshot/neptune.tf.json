@@ -1,0 +1,42 @@
+{
+ "file": "neptune.tf",
+ "findings": [
+  {
+   "resource": "aws_neptune_cluster.default",
+   "issue": "Storage encryption disabled",
+   "risk": "Neptune data and automated backups are stored unencrypted at rest, increasing exposure if underlying storage or snapshots are accessed without authorization.",
+   "remediation": "Set the aws_neptune_cluster.default attribute storage_encrypted = true and optionally specify kms_key_arn with a customer-managed KMS key."
+  },
+  {
+   "resource": "aws_neptune_cluster.default",
+   "issue": "Final snapshot disabled on deletion",
+   "risk": "Deleting the cluster can permanently remove data without a final recovery point, increasing the impact of accidental or malicious deletion.",
+   "remediation": "Change the aws_neptune_cluster.default attribute skip_final_snapshot = false and configure final_snapshot_identifier."
+  },
+  {
+   "resource": "aws_neptune_cluster.default",
+   "issue": "IAM database authentication disabled",
+   "risk": "Disabling IAM authentication can force reliance on less centralized authentication controls and reduce the ability to enforce short-lived, identity-based access patterns.",
+   "remediation": "Set the aws_neptune_cluster.default attribute iam_database_authentication_enabled = true if IAM database authentication is required for your access model."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c100",
+    "c104"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c101"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 6,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "6": {
+   "resource": "output.kubeconfig-certificate-authority-data",
+   "issue": "Sensitive cluster certificate authority data exposed as plain output",
+   "risk": "The cluster's certificate authority data is output without being marked as sensitive. This causes the value to be displayed in plaintext in Terraform CLI output, logs, and CI/CD pipeline output, potentially leaking the CA certificate to unauthorized parties.",
+   "remediation": "Add 'sensitive = true' to the output block: output \"kubeconfig-certificate-authority-data\" { value = aws_eks_cluster.eks_cluster.certificate_authority.0.data sensitive = true }"
+  }
+ }
+}

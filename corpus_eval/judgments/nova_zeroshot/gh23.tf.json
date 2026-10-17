@@ -1,0 +1,37 @@
+{
+ "file": "gh23.tf",
+ "findings": [
+  {
+   "resource": "aws_iam_role_policy_attachment.ab_managed_policies",
+   "issue": "Overly permissive managed policy attachments",
+   "risk": "Allows the IAM role to assume excessive permissions which can lead to unauthorized access and potential misuse of resources.",
+   "remediation": "Review and limit the managed policies attached to the IAM role to only those necessary for its function."
+  },
+  {
+   "resource": "aws_iam_policy.ab_tag_policy",
+   "issue": "Overly permissive policy",
+   "risk": "The policy allows tagging and untagging of all resources, which can lead to unauthorized changes to resource metadata.",
+   "remediation": "Limit the resources and actions allowed in the policy to only those required for the role's function."
+  },
+  {
+   "resource": "aws_iam_policy.restore_testing_policy",
+   "issue": "Overly permissive custom policy",
+   "risk": "The policy allows a wide range of actions across multiple services, which can lead to unauthorized access and potential data breaches.",
+   "remediation": "Review and limit the actions and resources allowed in the policy to only those necessary for restore testing operations."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  }
+ ]
+}

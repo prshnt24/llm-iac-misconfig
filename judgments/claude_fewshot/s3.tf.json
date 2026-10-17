@@ -1,0 +1,211 @@
+{
+ "file": "s3.tf",
+ "findings": [
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "S3 bucket is publicly accessible",
+   "risk": "No ACL or public access block is configured, meaning the bucket defaults to public or permissive access, exposing potentially sensitive data to the internet",
+   "remediation": "Add acl = \"private\" to the bucket resource and add an aws_s3_bucket_public_access_block resource with block_public_acls = true, block_public_policy = true, ignore_public_acls = true, and restrict_public_buckets = true"
+  },
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "Missing S3 Block Public Access",
+   "risk": "Without an aws_s3_bucket_public_access_block, ACL or bucket policy changes could inadvertently expose the bucket and its objects to the public internet",
+   "remediation": "Add an aws_s3_bucket_public_access_block resource referencing this bucket with all four attributes (block_public_acls, block_public_policy, ignore_public_acls, restrict_public_buckets) set to true"
+  },
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "Server-side encryption not enabled",
+   "risk": "Data at rest is stored unencrypted, meaning anyone with access to the underlying storage or who obtains the objects can read sensitive data in plaintext",
+   "remediation": "Add a server_side_encryption_configuration block with a rule specifying apply_server_side_encryption_by_default using sse_algorithm = \"aws:kms\" and a dedicated KMS key"
+  },
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "S3 access logging not enabled",
+   "risk": "Without access logging, there is no audit trail of requests made to the bucket, making it impossible to detect unauthorized access or data exfiltration",
+   "remediation": "Add a logging block pointing target_bucket to the aws_s3_bucket.logs bucket and set an appropriate target_prefix"
+  },
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "S3 versioning not enabled",
+   "risk": "Without versioning, objects can be permanently deleted or overwritten with no ability to recover previous versions, increasing the impact of accidental or malicious deletion",
+   "remediation": "Add a versioning block with enabled = true to the bucket resource"
+  },
+  {
+   "resource": "aws_s3_bucket_object.data_object",
+   "issue": "Sensitive file uploaded without server-side encryption",
+   "risk": "The file customer-master.xlsx (likely containing PII or financial data) is stored without object-level encryption, exposing it if the bucket or underlying storage is compromised",
+   "remediation": "Add server_side_encryption = \"aws:kms\" and kms_key_id = \"<kms_key_arn>\" attributes to the aws_s3_bucket_object resource to enforce per-object encryption"
+  },
+  {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "Missing S3 Block Public Access",
+   "risk": "Without an aws_s3_bucket_public_access_block, a misconfigured ACL or bucket policy could expose financial data to the public internet despite the private ACL setting",
+   "remediation": "Add an aws_s3_bucket_public_access_block resource referencing this bucket with block_public_acls, block_public_policy, ignore_public_acls, and restrict_public_buckets all set to true"
+  },
+  {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "Server-side encryption not enabled",
+   "risk": "Financial data stored in this bucket is unencrypted at rest, violating common compliance requirements (PCI-DSS, SOC2) and exposing data if storage media is compromised",
+   "remediation": "Add a server_side_encryption_configuration block with apply_server_side_encryption_by_default using sse_algorithm = \"aws:kms\" and a dedicated KMS key"
+  },
+  {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "S3 access logging not enabled",
+   "risk": "No audit trail exists for access to financial data, preventing detection of unauthorized reads, exfiltration, or compliance reporting",
+   "remediation": "Add a logging block with target_bucket pointing to aws_s3_bucket.logs and an appropriate target_prefix"
+  },
+  {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "S3 versioning not enabled",
+   "risk": "Financial records can be permanently deleted or overwritten without recovery options, increasing risk from ransomware, accidental deletion, or insider threats",
+   "remediation": "Add a versioning block with enabled = true to the bucket resource"
+  },
+  {
+   "resource": "aws_s3_bucket.operations",
+   "issue": "Missing S3 Block Public Access",
+   "risk": "Without an aws_s3_bucket_public_access_block, a future ACL or policy misconfiguration could expose operational data to the public internet",
+   "remediation": "Add an aws_s3_bucket_public_access_block resource referencing this bucket with block_public_acls, block_public_policy, ignore_public_acls, and restrict_public_buckets all set to true"
+  },
+  {
+   "resource": "aws_s3_bucket.operations",
+   "issue": "Server-side encryption not enabled",
+   "risk": "Operational data is stored unencrypted at rest, exposing it to unauthorized access if the underlying storage is compromised",
+   "remediation": "Add a server_side_encryption_configuration block with apply_server_side_encryption_by_default using sse_algorithm = \"aws:kms\" and a dedicated KMS key"
+  },
+  {
+   "resource": "aws_s3_bucket.operations",
+   "issue": "S3 access logging not enabled",
+   "risk": "Without access logging, unauthorized access to operational data cannot be detected or audited, hindering incident response",
+   "remediation": "Add a logging block with target_bucket pointing to aws_s3_bucket.logs and an appropriate target_prefix"
+  },
+  {
+   "resource": "aws_s3_bucket.data_science",
+   "issue": "Missing S3 Block Public Access",
+   "risk": "Without an aws_s3_bucket_public_access_block, a misconfigured ACL or policy could expose data science datasets to the public internet",
+   "remediation": "Add an aws_s3_bucket_public_access_block resource referencing this bucket with block_public_acls, block_public_policy, ignore_public_acls, and restrict_public_buckets all set to true"
+  },
+  {
+   "resource": "aws_s3_bucket.data_science",
+   "issue": "Server-side encryption not enabled",
+   "risk": "Data science datasets (which may contain PII or proprietary model data) are stored unencrypted at rest, violating data protection best practices",
+   "remediation": "Add a server_side_encryption_configuration block with apply_server_side_encryption_by_default using sse_algorithm = \"aws:kms\" and a dedicated KMS key"
+  },
+  {
+   "resource": "aws_s3_bucket.logs",
+   "issue": "Missing S3 Block Public Access",
+   "risk": "The logging bucket has no aws_s3_bucket_public_access_block. If exposed publicly, access logs could reveal internal resource names, IP addresses, and access patterns useful to an attacker",
+   "remediation": "Add an aws_s3_bucket_public_access_block resource referencing this bucket with block_public_acls, block_public_policy, ignore_public_acls, and restrict_public_buckets all set to true"
+  },
+  {
+   "resource": "aws_s3_bucket.logs",
+   "issue": "S3 access logging not enabled for the logging bucket itself",
+   "risk": "The logging bucket has no access logging configured for itself, creating a blind spot where access to log data is unaudited and tampering with logs could go undetected",
+   "remediation": "Configure the logs bucket to log to a separate dedicated audit bucket, or at minimum enable logging to itself with a distinct prefix to maintain a complete audit trail"
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c192"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c192"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c196"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c197"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c198"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c222"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": [
+    "c204"
+   ]
+  },
+  {
+   "finding": 7,
+   "candidates": [
+    "c208"
+   ]
+  },
+  {
+   "finding": 8,
+   "candidates": [
+    "c209"
+   ]
+  },
+  {
+   "finding": 9,
+   "candidates": [
+    "c210"
+   ]
+  },
+  {
+   "finding": 10,
+   "candidates": [
+    "c216"
+   ]
+  },
+  {
+   "finding": 11,
+   "candidates": [
+    "c220"
+   ]
+  },
+  {
+   "finding": 12,
+   "candidates": [
+    "c221"
+   ]
+  },
+  {
+   "finding": 13,
+   "candidates": [
+    "c199"
+   ]
+  },
+  {
+   "finding": 14,
+   "candidates": [
+    "c203"
+   ]
+  },
+  {
+   "finding": 15,
+   "candidates": [
+    "c211"
+   ]
+  },
+  {
+   "finding": 16,
+   "candidates": [
+    "c215"
+   ]
+  }
+ ]
+}

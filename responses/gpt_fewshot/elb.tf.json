@@ -1,0 +1,8 @@
+{
+  "model": "global.openai.gpt-5.4",
+  "strategy": "fewshot",
+  "file": "elb.tf",
+  "temperature": null,
+  "timestamp": "2026-10-16T21:47:34",
+  "response": "[\n  {\n    \"resource\": \"aws_elb.weblb\",\n    \"issue\": \"Load balancer listener uses unencrypted HTTP\",\n    \"risk\": \"Traffic between clients and the load balancer is transmitted in cleartext, allowing interception or manipulation of sensitive data in transit.\",\n    \"remediation\": \"Change the listener block to use TLS/HTTPS by setting lb_protocol = \\\"https\\\", configuring an SSL certificate with ssl_certificate_id, and preferably using instance_protocol = \\\"https\\\" if backend instances support encryption.\"\n  },\n  {\n    \"resource\": \"aws_elb.weblb\",\n    \"issue\": \"Backend instance communication uses unencrypted HTTP\",\n    \"risk\": \"Traffic between the load balancer and the registered instance is unencrypted, which can expose internal application data to interception within the VPC or connected networks.\",\n    \"remediation\": \"Update the listener and health_check configuration to use HTTPS for backend communication by setting instance_protocol = \\\"https\\\", using an HTTPS-capable instance_port, and changing health_check.target to an HTTPS endpoint such as \\\"HTTPS:443/\\\" or the appropriate secure backend port.\"\n  }\n]"
+}

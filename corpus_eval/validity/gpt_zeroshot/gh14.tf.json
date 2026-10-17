@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_route_table.terra_rt",
+   "issue": "Default route to the Internet from the associated subnet",
+   "risk": "The associated subnet is configured with a 0.0.0.0/0 route to an Internet Gateway, making resources in that subnet potentially internet-reachable when combined with public IP assignment or permissive security groups.",
+   "remediation": "Remove or restrict the route block `cidr_block = \"0.0.0.0/0\"` with `gateway_id = aws_internet_gateway.terra_igw.id` for private workloads. If internet access is not required, delete this route block. If only outbound access is needed, place instances in a private subnet and route through a NAT Gateway instead."
+  },
+  "1": {
+   "resource": "aws_subnet.terra_sub",
+   "issue": "Automatic public IP assignment on instance launch",
+   "risk": "If `map_public_ip_on_launch` is true, instances launched in this subnet automatically receive public IPs, increasing exposure to direct internet access and attack surface.",
+   "remediation": "Set `map_public_ip_on_launch = false` in `aws_subnet.terra_sub` for private workloads. Use a dedicated public subnet only for resources that must be internet-facing."
+  }
+ }
+}

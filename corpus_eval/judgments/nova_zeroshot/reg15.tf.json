@@ -1,0 +1,27 @@
+{
+ "file": "reg15.tf",
+ "findings": [
+  {
+   "resource": "aws_sqs_queue.this",
+   "issue": "Unencrypted Queue",
+   "risk": "Data in the queue is not encrypted at rest, which can lead to unauthorized access if the queue data is intercepted.",
+   "remediation": "Set `sqs_managed_sse_enabled = true` or provide a `kms_master_key_id` to enable encryption."
+  },
+  {
+   "resource": "aws_sqs_queue.dlq",
+   "issue": "Unencrypted Dead Letter Queue",
+   "risk": "Data in the dead letter queue is not encrypted at rest, which can lead to unauthorized access if the queue data is intercepted.",
+   "remediation": "Set `sqs_managed_sse_enabled = true` or provide a `kms_master_key_id` to enable encryption."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  }
+ ]
+}

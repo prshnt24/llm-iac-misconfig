@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 1,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "1": {
+   "resource": "aws_kms_key.logs_key",
+   "issue": "Excessively short KMS key deletion window",
+   "risk": "A deletion_window_in_days of 7 (the minimum) provides very little time to detect and cancel an accidental or malicious key deletion. If the key is deleted, any data encrypted with it becomes permanently unrecoverable.",
+   "remediation": "Increase 'deletion_window_in_days' to a value between 14 and 30 (e.g., 30) to provide a sufficient window to detect and cancel unintended key deletion requests."
+  }
+ }
+}

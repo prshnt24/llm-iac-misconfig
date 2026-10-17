@@ -1,0 +1,36 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "INVALID"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_iam_role.vpc_flow_log_cloudwatch",
+   "issue": "Permissions boundary not enforced",
+   "risk": "The IAM role does not have a permissions boundary, which could lead to overly permissive policies.",
+   "remediation": "Set the `permissions_boundary` attribute to a managed policy that limits the permissions the role can have."
+  },
+  "1": {
+   "resource": "aws_iam_role_policy_attachment.vpc_flow_log_cloudwatch",
+   "issue": "Overly permissive policy attachment",
+   "risk": "The IAM role is attached to a policy without proper review, which could grant unnecessary permissions.",
+   "remediation": "Review and ensure the attached policy `aws_iam_policy.vpc_flow_log_cloudwatch` is minimal and necessary."
+  },
+  "2": {
+   "resource": "aws_cloudwatch_log_group.flow_log",
+   "issue": "Log group without encryption",
+   "risk": "The CloudWatch log group does not use KMS encryption, which could expose sensitive data.",
+   "remediation": "Set the `kms_key_id` attribute to a valid KMS key ARN to encrypt the log group."
+  }
+ }
+}

@@ -1,0 +1,46 @@
+{
+ "labels": [
+  {
+   "finding": 6,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 7,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 8,
+   "label": "INVALID"
+  },
+  {
+   "finding": 9,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "6": {
+   "resource": "aws_cloudwatch_log_group.main_update",
+   "issue": "CloudWatch Log Group KMS key is optional and may be unset",
+   "risk": "If `var.cloudwatch_kms_arn` is empty or null, log data is encrypted only with the default AWS-managed key, removing customer control over key rotation and access revocation for potentially sensitive log output.",
+   "remediation": "Ensure `var.cloudwatch_kms_arn` is always populated with a customer-managed KMS key ARN, or add a validation rule to the variable definition to enforce a non-empty value. The `kms_key_id` attribute in `aws_cloudwatch_log_group.main_update` must reference a valid CMK."
+  },
+  "7": {
+   "resource": "aws_cloudwatch_log_group.main_update",
+   "issue": "Log retention period controlled by a variable with no enforced minimum",
+   "risk": "If `var.cloudwatch_logs_retention_days` is set to 0 (never expire) or a very short value, logs may be retained indefinitely consuming cost, or deleted before they can be used for security investigations and compliance audits.",
+   "remediation": "Add a `validation` block to the `cloudwatch_logs_retention_days` variable enforcing an accepted value from the AWS-allowed set (e.g., 7, 14, 30, 90, 180, 365) and ensure a minimum of 90 days is required by policy."
+  },
+  "8": {
+   "resource": "aws_iam_role_policy.main_update",
+   "issue": "s3HeadObject statement grants s3:ListBucket on all objects in the bucket in addition to the bucket itself",
+   "risk": "The wildcard resource `arn:...:s3:::${var.av_definition_s3_bucket}/*` is unnecessary for `s3:ListBucket`, which only requires the bucket ARN. Including the object ARN is redundant and may indicate overly broad policy authoring practices that could be exploited if the policy is later extended.",
+   "remediation": "In `data.aws_iam_policy_document.main_update`, remove the `arn:...:s3:::${var.av_definition_s3_bucket}/*` entry from the `s3HeadObject` statement's `resources` list, leaving only the bucket ARN `arn:...:s3:::${var.av_definition_s3_bucket}`."
+  },
+  "9": {
+   "resource": "aws_cloudwatch_event_target.main_update",
+   "issue": "CloudWatch Event Target has no dead-letter queue (DLQ) configured",
+   "risk": "If the Lambda invocation fails, the event is silently dropped with no retry or alerting mechanism. This could allow malicious or corrupted definition updates to go undetected, leaving antivirus definitions stale.",
+   "remediation": "Add a `dead_letter_config` block to `aws_cloudwatch_event_target.main_update` referencing an SQS queue ARN so that failed invocation events are captured and can trigger alerts."
+  }
+ }
+}

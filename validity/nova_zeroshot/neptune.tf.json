@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 2,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "2": {
+   "resource": "aws_neptune_cluster.default",
+   "issue": "skip_final_snapshot",
+   "risk": "Setting `skip_final_snapshot` to `true` means that a final snapshot is not created when the DB cluster is deleted, which can lead to data loss.",
+   "remediation": "Set `skip_final_snapshot` to `false` to ensure a final snapshot is created."
+  }
+ }
+}

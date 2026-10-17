@@ -1,0 +1,170 @@
+{
+ "file": "db-app.tf",
+ "findings": [
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "RDS instance publicly accessible",
+   "risk": "Setting publicly_accessible = true exposes the database endpoint directly to the internet, allowing anyone to attempt connections to the MySQL port and increasing the attack surface dramatically.",
+   "remediation": "Set publicly_accessible = false so the RDS instance is only reachable from within the VPC."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Storage encryption disabled",
+   "risk": "storage_encrypted = false means data at rest on the RDS volume is stored in plaintext. If the underlying EBS snapshot or volume is accessed by an unauthorised party, all database contents are exposed.",
+   "remediation": "Set storage_encrypted = true and specify a kms_key_id pointing to a customer-managed KMS key for full control over key rotation and access."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Automated backups disabled",
+   "risk": "backup_retention_period = 0 disables automated snapshots entirely. In the event of data corruption, accidental deletion, or a ransomware attack there is no point-in-time recovery available.",
+   "remediation": "Set backup_retention_period to at least 7 (days) and configure a backup_window during a low-traffic period."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "No final snapshot on deletion",
+   "risk": "skip_final_snapshot = true means that when the RDS instance is destroyed (e.g. via terraform destroy or an accidental apply) no snapshot is taken, resulting in permanent, unrecoverable data loss.",
+   "remediation": "Set skip_final_snapshot = false and provide a final_snapshot_identifier so a snapshot is always created before the instance is deleted."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Multi-AZ disabled",
+   "risk": "multi_az = false means there is no standby replica in a second Availability Zone. A hardware failure, AZ outage, or maintenance event will cause unplanned downtime with no automatic failover.",
+   "remediation": "Set multi_az = true to enable synchronous replication to a standby instance in a second AZ, providing automatic failover."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Enhanced monitoring disabled",
+   "risk": "monitoring_interval = 0 disables Enhanced Monitoring, removing OS-level metrics (CPU, memory, disk I/O) from CloudWatch. Anomalous activity or resource exhaustion attacks may go undetected.",
+   "remediation": "Set monitoring_interval to 60 (or lower, e.g. 10) and provide a monitoring_role_arn pointing to an IAM role with the AmazonRDSEnhancedMonitoringRole managed policy."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Hardcoded admin username",
+   "risk": "Using the well-known username 'admin' makes brute-force and credential-stuffing attacks easier because attackers already know one half of the credential pair.",
+   "remediation": "Change the username attribute to a non-default, non-guessable value stored in a Secrets Manager secret or passed via a sensitive Terraform variable."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Database password managed in Terraform state",
+   "risk": "Even though the password is sourced from a variable, it is stored in plaintext in the Terraform state file. If the state file is stored insecurely or leaked, the database password is compromised.",
+   "remediation": "Generate the password with the random_password resource and store it in AWS Secrets Manager. Reference it via aws_secretsmanager_secret_version and ensure the state backend is encrypted (e.g. S3 with SSE-KMS and restricted bucket policy)."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Deletion protection not enabled",
+   "risk": "Without deletion_protection = true the RDS instance can be destroyed by anyone with sufficient IAM permissions (or via terraform destroy), risking accidental or malicious permanent data loss.",
+   "remediation": "Add deletion_protection = true to the aws_db_instance resource block."
+  },
+  {
+   "resource": "aws_security_group_rule.egress",
+   "issue": "Unrestricted outbound access from RDS security group",
+   "risk": "Allowing all egress traffic (0.0.0.0/0, all ports, all protocols) from the database security group means a compromised RDS instance or associated resource could exfiltrate data or reach external command-and-control infrastructure.",
+   "remediation": "Restrict the egress rule to only the protocols and destinations the database legitimately needs, or remove the egress rule entirely if no outbound connectivity is required."
+  },
+  {
+   "resource": "aws_iam_role_policy.ec2policy",
+   "issue": "Overly broad IAM permissions (wildcard actions and resources)",
+   "risk": "Granting s3:*, ec2:*, and rds:* on Resource: * gives the EC2 instance unrestricted access to all S3 buckets, all EC2 operations, and all RDS instances in the account. A compromised instance can exfiltrate all S3 data, modify infrastructure, or destroy databases.",
+   "remediation": "Replace the wildcard actions with only the specific actions the application requires (e.g. s3:GetObject, s3:PutObject) and replace Resource: * with the specific ARNs of the S3 bucket, EC2 resources, and RDS instance that the application needs to access."
+  },
+  {
+   "resource": "aws_instance.db_app",
+   "issue": "Plaintext database credentials in EC2 user data",
+   "risk": "The user_data script embeds the database endpoint, username, and password in cleartext. User data is retrievable via the EC2 instance metadata service (IMDSv1 without authentication) and is stored in plaintext in the Terraform state file, exposing credentials to anyone who can read either.",
+   "remediation": "Remove credentials from user_data entirely. Store the database password in AWS Secrets Manager and have the application retrieve it at runtime using the SDK. Also enforce IMDSv2 by adding a metadata_options block with http_tokens = \"required\" and http_endpoint = \"enabled\"."
+  },
+  {
+   "resource": "aws_instance.db_app",
+   "issue": "IMDSv2 not enforced on EC2 instance",
+   "risk": "Without enforcing IMDSv2 (token-required mode), the instance is vulnerable to SSRF attacks that can reach the IMDSv1 metadata endpoint without any authentication, potentially exposing IAM credentials, user data, and other sensitive instance metadata.",
+   "remediation": "Add a metadata_options block to the aws_instance resource with http_tokens = \"required\" and http_endpoint = \"enabled\" to enforce IMDSv2 for all metadata requests."
+  },
+  {
+   "resource": "aws_instance.db_app",
+   "issue": "No EBS volume encryption on EC2 instance",
+   "risk": "The root EBS volume of the EC2 instance is not explicitly encrypted. Data written to disk (including application files, logs, and the dbinfo.inc file containing database credentials) is stored in plaintext.",
+   "remediation": "Add a root_block_device block with encrypted = true and kms_key_id set to a customer-managed KMS key ARN, or enable default EBS encryption at the account level."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c8"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c6"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c4"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c5"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c2"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  },
+  {
+   "finding": 7,
+   "candidates": []
+  },
+  {
+   "finding": 8,
+   "candidates": [
+    "c10"
+   ]
+  },
+  {
+   "finding": 9,
+   "candidates": [
+    "c24"
+   ]
+  },
+  {
+   "finding": 10,
+   "candidates": [
+    "c14",
+    "c15",
+    "c16",
+    "c17"
+   ]
+  },
+  {
+   "finding": 11,
+   "candidates": []
+  },
+  {
+   "finding": 12,
+   "candidates": [
+    "c20"
+   ]
+  },
+  {
+   "finding": 13,
+   "candidates": [
+    "c21"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "1": {
+   "resource": "aws_elb.weblb",
+   "issue": "Weak Health Check Configuration",
+   "risk": "Weak health check configuration can lead to false positives or negatives, affecting the availability and reliability of the application.",
+   "remediation": "Increase the healthy_threshold and unhealthy_threshold values to ensure more reliable health checks."
+  },
+  "2": {
+   "resource": "aws_elb.weblb",
+   "issue": "Excessive Idle Timeout",
+   "risk": "A very high idle timeout value can lead to resource wastage and potential security risks due to prolonged connections.",
+   "remediation": "Reduce the idle_timeout value to a more reasonable duration, such as 60 seconds."
+  }
+ }
+}

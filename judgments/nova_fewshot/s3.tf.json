@@ -1,0 +1,127 @@
+{
+ "file": "s3.tf",
+ "findings": [
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "Bucket is public",
+   "risk": "Data in the bucket could be accessed by anyone on the internet",
+   "remediation": "Remove or set the acl attribute to private and add an aws_s3_bucket_public_access_block resource with all four blocking settings set to true"
+  },
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "Bucket is not encrypted",
+   "risk": "Data at rest is not protected with encryption",
+   "remediation": "Add a server_side_encryption_configuration block with a rule to apply server-side encryption by default"
+  },
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "Bucket does not have access logs",
+   "risk": "Unable to track who accessed the S3 bucket and when",
+   "remediation": "Add a logging block to enable access logging"
+  },
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "Bucket does not have versioning",
+   "risk": "Previous versions of objects are not retained, making recovery from accidental deletion or overwrite impossible",
+   "remediation": "Add a versioning block and set enabled to true"
+  },
+  {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "Bucket is not encrypted",
+   "risk": "Data at rest is not protected with encryption",
+   "remediation": "Add a server_side_encryption_configuration block with a rule to apply server-side encryption by default"
+  },
+  {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "Bucket does not have access logs",
+   "risk": "Unable to track who accessed the S3 bucket and when",
+   "remediation": "Add a logging block to enable access logging"
+  },
+  {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "Bucket does not have versioning",
+   "risk": "Previous versions of objects are not retained, making recovery from accidental deletion or overwrite impossible",
+   "remediation": "Add a versioning block and set enabled to true"
+  },
+  {
+   "resource": "aws_s3_bucket.operations",
+   "issue": "Bucket is not encrypted",
+   "risk": "Data at rest is not protected with encryption",
+   "remediation": "Add a server_side_encryption_configuration block with a rule to apply server-side encryption by default"
+  },
+  {
+   "resource": "aws_s3_bucket.operations",
+   "issue": "Bucket does not have access logs",
+   "risk": "Unable to track who accessed the S3 bucket and when",
+   "remediation": "Add a logging block to enable access logging"
+  },
+  {
+   "resource": "aws_s3_bucket.data_science",
+   "issue": "Bucket is not encrypted",
+   "risk": "Data at rest is not protected with encryption",
+   "remediation": "Add a server_side_encryption_configuration block with a rule to apply server-side encryption by default"
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c192"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c196"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c197"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c198"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c208"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c209"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": [
+    "c210"
+   ]
+  },
+  {
+   "finding": 7,
+   "candidates": [
+    "c220"
+   ]
+  },
+  {
+   "finding": 8,
+   "candidates": [
+    "c221"
+   ]
+  },
+  {
+   "finding": 9,
+   "candidates": [
+    "c203"
+   ]
+  }
+ ]
+}

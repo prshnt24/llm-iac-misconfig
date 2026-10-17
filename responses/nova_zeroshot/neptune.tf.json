@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "neptune.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-16T23:05:08",
+  "response": "[\n  {\n    \"resource\": \"aws_neptune_cluster.default\",\n    \"issue\": \"storage_encrypted\",\n    \"risk\": \"Data at rest in the Neptune cluster is not encrypted, which can lead to unauthorized access if the data is intercepted or the storage media is compromised.\",\n    \"remediation\": \"Set `storage_encrypted` to `true` and provide a `kms_key_id` to use a customer-managed CMK for encryption.\"\n  },\n  {\n    \"resource\": \"aws_neptune_cluster.default\",\n    \"issue\": \"iam_database_authentication_enabled\",\n    \"risk\": \"IAM database authentication is disabled, which means users must use database credentials to authenticate, increasing the risk of credential misuse or exposure.\",\n    \"remediation\": \"Set `iam_database_authentication_enabled` to `true` to enable IAM database authentication.\"\n  },\n  {\n    \"resource\": \"aws_neptune_cluster.default\",\n    \"issue\": \"skip_final_snapshot\",\n    \"risk\": \"Setting `skip_final_snapshot` to `true` means that a final snapshot is not created when the DB cluster is deleted, which can lead to data loss.\",\n    \"remediation\": \"Set `skip_final_snapshot` to `false` to ensure a final snapshot is created.\"\n  }\n]"
+}

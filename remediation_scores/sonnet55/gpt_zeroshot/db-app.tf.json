@@ -1,0 +1,50 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_17 Ensure all data stored in RDS is not publicly accessible (resource aws_db_instance.default)",
+   "issue": "RDS instance is publicly accessible",
+   "remediation": "Set the attribute `publicly_accessible = false` in `aws_db_instance.default`."
+  },
+  {
+   "finding": 1,
+   "known": "CKV_AWS_16 Ensure all data stored in the RDS is securely encrypted at rest (resource aws_db_instance.default)",
+   "issue": "RDS storage encryption is disabled",
+   "remediation": "Set `storage_encrypted = true` in `aws_db_instance.default` and preferably add `kms_key_id = <KMS key ARN>` to use a customer-managed KMS key."
+  },
+  {
+   "finding": 6,
+   "known": "CKV_AWS_382 Ensure no security groups allow egress from 0.0.0.0:0 to port -1 (resource aws_security_group_rule.egress)",
+   "issue": "Unrestricted outbound access from database security group",
+   "remediation": "Restrict the `cidr_blocks`, `protocol`, and port range in `aws_security_group_rule.egress` to only required destinations, or remove the rule if outbound access is not needed."
+  },
+  {
+   "finding": 7,
+   "known": "CKV_AWS_355 Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions (resource aws_iam_role_policy.ec2policy)",
+   "issue": "Overly permissive IAM policy with wildcard actions and resources",
+   "remediation": "Replace the inline policy in `aws_iam_role_policy.ec2policy` with least-privilege permissions by narrowing the `Action` list to only required API calls and scoping `Resource` to specific ARNs."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Setting publicly_accessible = false on aws_db_instance.default is the exact fix."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "storage_encrypted = true is the exact fix; the kms_key_id suggestion is a valid optional addition."
+  },
+  {
+   "item": 2,
+   "score": 1,
+   "reason": "Right direction: restrict cidr_blocks, protocol and ports, or remove the rule. It gives no concrete values, such as limiting egress to the VPC CIDR or specific ports."
+  },
+  {
+   "item": 3,
+   "score": 2,
+   "reason": "Narrowing Action to specific API calls and scoping Resource to specific ARNs on ec2policy addresses the wildcard-resource check. The wording is somewhat general but names the right resource and elements."
+  }
+ ]
+}

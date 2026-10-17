@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "gh05.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:15:24",
+  "response": "```json\n[\n  {\n    \"resource\": \"aws_iam_user_policy.sending_emails\",\n    \"issue\": \"IAM policy directly attached to a user\",\n    \"risk\": \"Direct attachment of IAM policies to users can lead to management overhead and potential security risks if the user is compromised.\",\n    \"remediation\": \"Attach the IAM policy to a group instead of directly to the user. Update the resource block to use `aws_iam_group_policy` instead of `aws_iam_user_policy`.\"\n  },\n  {\n    \"resource\": \"module.ses_user\",\n    \"issue\": \"Creation of IAM access key without rotation policy\",\n    \"risk\": \"IAM access keys without a rotation policy can lead to long-lived credentials, increasing the risk of credential compromise.\",\n    \"remediation\": \"Enable access key rotation by setting `create_iam_access_key_rotation_policy` to `true` in the module configuration.\"\n  }\n]\n```"
+}

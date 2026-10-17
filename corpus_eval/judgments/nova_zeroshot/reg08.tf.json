@@ -1,0 +1,61 @@
+{
+ "file": "reg08.tf",
+ "findings": [
+  {
+   "resource": "aws_apigatewayv2_api.this",
+   "issue": "Insecure CORS Configuration",
+   "risk": "Allows cross-origin requests from any domain, potentially leading to security vulnerabilities such as CSRF attacks.",
+   "remediation": "Restrict the 'allow_origins' attribute to specific, trusted domains instead of using wildcards or allowing all origins."
+  },
+  {
+   "resource": "aws_apigatewayv2_authorizer.this",
+   "issue": "Missing Authorizer for Routes",
+   "risk": "Routes may be accessible without proper authorization, leading to unauthorized access to resources.",
+   "remediation": "Ensure that the 'authorizer_id' attribute is set for each route to enforce authorization."
+  },
+  {
+   "resource": "aws_apigatewayv2_route.this",
+   "issue": "Insecure Route Configuration",
+   "risk": "Routes may be configured without proper authorization or API key requirements, allowing unauthorized access.",
+   "remediation": "Set 'authorization_type' to 'JWT' or 'CUSTOM' and ensure 'api_key_required' is set to 'true' where necessary."
+  },
+  {
+   "resource": "aws_apigatewayv2_stage.this",
+   "issue": "Insecure Stage Settings",
+   "risk": "Stage settings may allow excessive data tracing or logging, potentially exposing sensitive information.",
+   "remediation": "Review and restrict 'data_trace_enabled' and 'logging_level' attributes to minimize exposure of sensitive data."
+  },
+  {
+   "resource": "aws_apigatewayv2_vpc_link.this",
+   "issue": "Insecure VPC Link Configuration",
+   "risk": "VPC links may be configured with overly permissive security group rules, allowing unauthorized access to VPC resources.",
+   "remediation": "Review and restrict security group rules associated with VPC links to only allow necessary inbound and outbound traffic."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c124"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c125"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  }
+ ]
+}

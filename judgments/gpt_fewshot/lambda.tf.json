@@ -1,0 +1,31 @@
+{
+ "file": "lambda.tf",
+ "findings": [
+  {
+   "resource": "aws_lambda_function.analysis_lambda",
+   "issue": "Hardcoded AWS access credentials in Lambda environment variables",
+   "risk": "Plaintext access keys in Terraform code and Lambda configuration can be exposed through source control, Terraform state, logs, or console access, enabling unauthorized AWS access.",
+   "remediation": "Remove the `environment.variables.access_key` and `environment.variables.secret_key` entries. Use the Lambda execution role for AWS API access, or store secrets in AWS Secrets Manager or SSM Parameter Store and retrieve them at runtime."
+  },
+  {
+   "resource": "aws_lambda_function.analysis_lambda",
+   "issue": "Outdated Lambda runtime",
+   "risk": "Using `nodejs12.x` leaves the function on an end-of-life runtime that no longer receives security patches, increasing exposure to known vulnerabilities.",
+   "remediation": "Change the `runtime` attribute from `nodejs12.x` to a currently supported runtime such as `nodejs20.x`."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c96"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c95"
+   ]
+  }
+ ]
+}

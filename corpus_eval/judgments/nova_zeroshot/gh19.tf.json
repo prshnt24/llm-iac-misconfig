@@ -1,0 +1,49 @@
+{
+ "file": "gh19.tf",
+ "findings": [
+  {
+   "resource": "aws_vpc.default",
+   "issue": "VPC Flow Logs Disabled",
+   "risk": "Without VPC Flow Logs, there is no visibility into the network traffic flowing through the VPC, making it difficult to detect and respond to security incidents.",
+   "remediation": "Enable VPC Flow Logs by adding the `enable_flow_logs` attribute and configuring the destination for the logs (e.g., CloudWatch or an S3 bucket)."
+  },
+  {
+   "resource": "aws_default_security_group.default",
+   "issue": "Default Security Group Allow All Traffic",
+   "risk": "The default security group allows all inbound and outbound traffic, which can expose resources to unauthorized access.",
+   "remediation": "Configure specific inbound and outbound rules to restrict access to only necessary traffic. For example, add rules to allow only specific IP ranges or ports."
+  },
+  {
+   "resource": "aws_default_route_table.default",
+   "issue": "Default Route Table with No Routes",
+   "risk": "A default route table with no routes can lead to network isolation or unintended routing, affecting resource accessibility.",
+   "remediation": "Add appropriate routes to the default route table to ensure proper network connectivity. For example, add a route to an internet gateway for internet access."
+  },
+  {
+   "resource": "aws_default_network_acl.default",
+   "issue": "Default Network ACL Allow All Traffic",
+   "risk": "The default network ACL allows all inbound and outbound traffic, which can expose the VPC to unauthorized access.",
+   "remediation": "Configure specific inbound and outbound rules to restrict access to only necessary traffic. For example, add rules to allow only specific IP ranges or ports."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c76"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  }
+ ]
+}

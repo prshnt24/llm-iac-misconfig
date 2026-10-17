@@ -1,0 +1,138 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_46 Ensure no hard-coded secrets exist in EC2 user data (resource aws_instance.web_host)",
+   "issue": "Plaintext AWS credentials in EC2 user data",
+   "remediation": "Remove hardcoded credentials from user_data entirely. Assign an IAM instance profile (aws_iam_instance_profile) with least-privilege permissions to the instance and reference it via the iam_instance_profile attribute, allowing the instance to obtain temporary credentials via the metadata service"
+  },
+  {
+   "finding": 2,
+   "known": "CKV_AWS_79 Ensure Instance Metadata Service Version 1 is not enabled (resource aws_instance.web_host)",
+   "issue": "Instance metadata service (IMDSv1) not disabled",
+   "remediation": "Add a metadata_options block to the aws_instance resource with http_tokens = \"required\" and http_endpoint = \"enabled\" to enforce IMDSv2"
+  },
+  {
+   "finding": 3,
+   "known": "CKV_AWS_8 Ensure all data stored in the Launch configuration or instance Elastic Blocks Store is securely encrypted (resource aws_instance.web_host)",
+   "issue": "No EBS root volume encryption",
+   "remediation": "Add a root_block_device block inside the aws_instance resource with encrypted = true and optionally specify a kms_key_id pointing to a customer-managed KMS key"
+  },
+  {
+   "finding": 4,
+   "known": "CKV_AWS_3 Ensure all data stored in the EBS is securely encrypted (resource aws_ebs_volume.web_host_storage)",
+   "issue": "EBS volume encryption disabled",
+   "remediation": "Set encrypted = true in the aws_ebs_volume resource and optionally specify kms_key_id with a customer-managed KMS CMK for additional key control"
+  },
+  {
+   "finding": 6,
+   "known": "CKV_AWS_24 Ensure no security groups allow ingress from 0.0.0.0:0 to port 22 (resource aws_security_group.web-node)",
+   "issue": "SSH port 22 open to the entire internet (0.0.0.0/0)",
+   "remediation": "Restrict the ingress rule for port 22 by replacing cidr_blocks = [\"0.0.0.0/0\"] with a specific trusted CIDR range (e.g., your corporate NAT gateway IP). Prefer using AWS Systems Manager Session Manager and remove the SSH ingress rule entirely"
+  },
+  {
+   "finding": 7,
+   "known": "CKV_AWS_382 Ensure no security groups allow egress from 0.0.0.0:0 to port -1 (resource aws_security_group.web-node)",
+   "issue": "Unrestricted outbound egress (0.0.0.0/0 on all ports)",
+   "remediation": "Replace the catch-all egress rule with specific rules that permit only the required outbound destinations and ports (e.g., port 443 to specific service endpoints). Remove or tightly scope the protocol = \"-1\" / cidr_blocks = [\"0.0.0.0/0\"] egress rule"
+  },
+  {
+   "finding": 8,
+   "known": "CKV_AWS_130 Ensure VPC subnets do not assign public IP by default (resource aws_subnet.web_subnet)",
+   "issue": "Public IP automatically assigned to instances in subnet",
+   "remediation": "Set map_public_ip_on_launch = false. Place instances in a private subnet and use a NAT gateway for outbound internet access. Expose services externally only through a load balancer in a dedicated public subnet"
+  },
+  {
+   "finding": 9,
+   "known": "CKV_AWS_130 Ensure VPC subnets do not assign public IP by default (resource aws_subnet.web_subnet2)",
+   "issue": "Public IP automatically assigned to instances in subnet",
+   "remediation": "Set map_public_ip_on_launch = false. Place instances in a private subnet and use a NAT gateway for outbound internet access. Expose services externally only through a load balancer in a dedicated public subnet"
+  },
+  {
+   "finding": 10,
+   "known": "CKV2_AWS_6 Ensure that S3 bucket has a Public Access block (resource aws_s3_bucket.flowbucket)",
+   "issue": "Missing S3 Block Public Access configuration",
+   "remediation": "Add an aws_s3_bucket_public_access_block resource referencing this bucket with block_public_acls = true, block_public_policy = true, ignore_public_acls = true, and restrict_public_buckets = true"
+  },
+  {
+   "finding": 11,
+   "known": "CKV_AWS_145 Ensure that S3 buckets are encrypted with KMS by default (resource aws_s3_bucket.flowbucket)",
+   "issue": "S3 bucket server-side encryption not enabled",
+   "remediation": "Add an aws_s3_bucket_server_side_encryption_configuration resource for this bucket specifying AES256 or aws:kms encryption via the apply_server_side_encryption_by_default block"
+  },
+  {
+   "finding": 12,
+   "known": "CKV_AWS_21 Ensure all data stored in the S3 bucket have versioning enabled (resource aws_s3_bucket.flowbucket)",
+   "issue": "S3 bucket versioning not enabled",
+   "remediation": "Add an aws_s3_bucket_versioning resource for this bucket with versioning_configuration { status = \"Enabled\" }"
+  },
+  {
+   "finding": 13,
+   "known": "CKV_AWS_18 Ensure the S3 bucket has access logging enabled (resource aws_s3_bucket.flowbucket)",
+   "issue": "S3 bucket access logging not enabled",
+   "remediation": "Add an aws_s3_bucket_logging resource targeting a separate dedicated logging bucket to capture all access requests to the flowbucket"
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correctly removes secrets from user_data and specifies iam_instance_profile on aws_instance with instance profile use."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "Correct fix: add metadata_options with http_tokens = \"required\" to enforce IMDSv2."
+  },
+  {
+   "item": 2,
+   "score": 2,
+   "reason": "Correctly identifies aws_instance root_block_device.encrypted = true, optional kms_key_id is appropriate."
+  },
+  {
+   "item": 3,
+   "score": 2,
+   "reason": "Correctly sets aws_ebs_volume.encrypted = true and optionally kms_key_id."
+  },
+  {
+   "item": 4,
+   "score": 2,
+   "reason": "Correctly targets the port 22 ingress cidr_blocks and suggests removing or restricting it from 0.0.0.0/0."
+  },
+  {
+   "item": 5,
+   "score": 2,
+   "reason": "Correctly targets the egress rule and removing/scoping protocol = \"-1\" with 0.0.0.0/0."
+  },
+  {
+   "item": 6,
+   "score": 2,
+   "reason": "Correctly specifies map_public_ip_on_launch = false on aws_subnet.web_subnet."
+  },
+  {
+   "item": 7,
+   "score": 2,
+   "reason": "Correctly specifies map_public_ip_on_launch = false on aws_subnet.web_subnet2."
+  },
+  {
+   "item": 8,
+   "score": 2,
+   "reason": "Correctly adds aws_s3_bucket_public_access_block with all four block settings enabled."
+  },
+  {
+   "item": 9,
+   "score": 1,
+   "reason": "Right resource and encryption config, but check specifically requires KMS by default; saying AES256 or aws:kms is too broad."
+  },
+  {
+   "item": 10,
+   "score": 2,
+   "reason": "Correctly adds aws_s3_bucket_versioning with status = \"Enabled\"."
+  },
+  {
+   "item": 11,
+   "score": 2,
+   "reason": "Correctly adds bucket logging via aws_s3_bucket_logging to a separate log bucket."
+  }
+ ]
+}

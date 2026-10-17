@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 1,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "1": {
+   "resource": "aws_elb.weblb",
+   "issue": "Backend instance communication uses unencrypted HTTP",
+   "risk": "Traffic between the load balancer and the registered instance is unencrypted, which can expose internal application data to interception within the VPC or connected networks.",
+   "remediation": "Update the listener and health_check configuration to use HTTPS for backend communication by setting instance_protocol = \"https\", using an HTTPS-capable instance_port, and changing health_check.target to an HTTPS endpoint such as \"HTTPS:443/\" or the appropriate secure backend port."
+  }
+ }
+}

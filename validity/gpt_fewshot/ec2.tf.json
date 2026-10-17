@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 2,
+   "label": "VALID"
+  },
+  {
+   "finding": 10,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "2": {
+   "resource": "aws_ebs_snapshot.example_snapshot",
+   "issue": "Snapshot created from unencrypted volume",
+   "risk": "The snapshot inherits the lack of encryption from the source volume, exposing backed-up data at rest.",
+   "remediation": "Encrypt the source volume by setting aws_ebs_volume.web_host_storage.encrypted = true; recreate the snapshot from the encrypted volume. Optionally manage snapshot copy encryption with a customer-managed KMS key."
+  },
+  "10": {
+   "resource": "aws_s3_bucket.flowbucket",
+   "issue": "force_destroy enabled on log bucket",
+   "risk": "The bucket and all contained logs can be deleted even when not empty, enabling loss of audit evidence.",
+   "remediation": "Set force_destroy = false in aws_s3_bucket.flowbucket to prevent accidental or unauthorized deletion of populated log storage."
+  }
+ }
+}

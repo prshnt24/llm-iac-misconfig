@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_security_group_rule.all_worker_mgmt_ingress",
+   "issue": "Overly permissive ingress rule allows all protocols and all ports from broad private CIDR ranges",
+   "risk": "Any host within 10.0.0.0/8, 172.16.0.0/12, or 192.168.0.0/16 can initiate unrestricted connections to the worker management security group, increasing the attack surface and enabling lateral movement if any internal network segment is compromised.",
+   "remediation": "Restrict ingress to only required management sources and ports. In aws_security_group_rule.all_worker_mgmt_ingress, replace protocol = \"-1\", from_port = 0, and to_port = 0 with the specific protocol and port(s) needed, and narrow cidr_blocks to trusted administrator or control-plane ranges only. Prefer referencing the specific source security group via source_security_group_id instead of broad cidr_blocks where possible."
+  }
+ }
+}

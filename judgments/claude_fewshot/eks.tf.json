@@ -1,0 +1,89 @@
+{
+ "file": "eks.tf",
+ "findings": [
+  {
+   "resource": "aws_eks_cluster.eks_cluster",
+   "issue": "EKS cluster API server endpoint public access not explicitly disabled",
+   "risk": "Without endpoint_public_access = false, the Kubernetes API server is reachable from the public internet, increasing the attack surface for credential brute-forcing or exploitation of API vulnerabilities",
+   "remediation": "Add endpoint_public_access = false inside the vpc_config block. If public access is required, restrict it with public_access_cidrs to known IP ranges instead of the default 0.0.0.0/0"
+  },
+  {
+   "resource": "aws_eks_cluster.eks_cluster",
+   "issue": "EKS control plane logging not enabled",
+   "risk": "Without enabled_cluster_log_types, API, audit, authenticator, controllerManager, and scheduler logs are not sent to CloudWatch Logs, making it impossible to detect unauthorized access, privilege escalation, or other malicious activity in the cluster",
+   "remediation": "Add enabled_cluster_log_types = [\"api\", \"audit\", \"authenticator\", \"controllerManager\", \"scheduler\"] to the aws_eks_cluster resource"
+  },
+  {
+   "resource": "aws_eks_cluster.eks_cluster",
+   "issue": "EKS secrets not encrypted with a customer-managed KMS key",
+   "risk": "Kubernetes Secrets stored in etcd are not encrypted at the application layer with a CMK, meaning anyone with access to the underlying etcd storage or EKS backups can read sensitive secrets in plaintext",
+   "remediation": "Add an encryption_config block to the aws_eks_cluster resource specifying resources = [\"secrets\"] and a provider key_arn pointing to a customer-managed AWS KMS key"
+  },
+  {
+   "resource": "aws_subnet.eks_subnet1",
+   "issue": "Subnet auto-assigns public IP addresses (map_public_ip_on_launch = true)",
+   "risk": "Any EC2 instance or EKS worker node launched in this subnet automatically receives a public IP, directly exposing it to the internet and increasing the attack surface",
+   "remediation": "Set map_public_ip_on_launch = false. Worker nodes should reside in private subnets and access the internet through a NAT Gateway if outbound connectivity is required"
+  },
+  {
+   "resource": "aws_subnet.eks_subnet2",
+   "issue": "Subnet auto-assigns public IP addresses (map_public_ip_on_launch = true)",
+   "risk": "Any EC2 instance or EKS worker node launched in this subnet automatically receives a public IP, directly exposing it to the internet and increasing the attack surface",
+   "remediation": "Set map_public_ip_on_launch = false. Worker nodes should reside in private subnets and access the internet through a NAT Gateway if outbound connectivity is required"
+  },
+  {
+   "resource": "aws_vpc.eks_vpc",
+   "issue": "No VPC Flow Logs configured",
+   "risk": "Without Flow Logs, there is no network-level visibility into traffic to and from the EKS cluster, making it impossible to detect lateral movement, data exfiltration, or port scanning activity",
+   "remediation": "Add an aws_flow_log resource referencing this VPC (vpc_id = aws_vpc.eks_vpc.id) with traffic_type = \"ALL\" and a destination CloudWatch Log Group or S3 bucket"
+  },
+  {
+   "resource": "output.kubeconfig-certificate-authority-data",
+   "issue": "Sensitive cluster certificate authority data exposed as a plain Terraform output",
+   "risk": "The cluster's certificate authority data is written to Terraform state and any output consumer in plaintext, which could allow an attacker who gains access to state files or CI/CD logs to impersonate the cluster or craft malicious kubeconfig files",
+   "remediation": "Add sensitive = true to the output block so Terraform masks the value in logs and plan output, and ensure the state backend is encrypted and access-controlled"
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c54"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c52"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c55"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c56"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c57"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c58"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  }
+ ]
+}

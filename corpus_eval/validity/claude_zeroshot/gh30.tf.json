@@ -1,0 +1,76 @@
+{
+ "labels": [
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "INVALID"
+  },
+  {
+   "finding": 4,
+   "label": "VALID"
+  },
+  {
+   "finding": 5,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 6,
+   "label": "VALID"
+  },
+  {
+   "finding": 7,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "1": {
+   "resource": "aws_security_group.loadtest",
+   "issue": "SSH port 22 open to potentially unrestricted CIDR blocks",
+   "risk": "If var.ssh_cidr_ingress_blocks contains broad ranges (e.g. 0.0.0.0/0), SSH is exposed to the internet, enabling brute-force attacks, credential stuffing, and unauthorised remote access.",
+   "remediation": "Ensure var.ssh_cidr_ingress_blocks is restricted to known, trusted IP ranges (e.g. corporate VPN or bastion host IPs only). Add a variable validation block to reject 0.0.0.0/0 or ::/0. Consider replacing direct SSH access with AWS Systems Manager Session Manager and removing port 22 ingress entirely."
+  },
+  "2": {
+   "resource": "aws_security_group.loadtest",
+   "issue": "HTTP (port 80) ingress allowed without enforced redirect to HTTPS",
+   "risk": "Allowing unencrypted HTTP traffic exposes data in transit to interception and man-in-the-middle attacks. For a load-test environment this may expose credentials or test payloads.",
+   "remediation": "Remove the port 80 ingress rule if plaintext HTTP is not required, or ensure the application layer enforces a redirect to HTTPS (443). If a load balancer is in use, configure it to redirect HTTP to HTTPS and restrict the security group to port 443 only."
+  },
+  "3": {
+   "resource": "aws_security_group.loadtest",
+   "issue": "IPv6 egress not restricted",
+   "risk": "The egress rule only specifies cidr_blocks (IPv4). If the VPC has IPv6 enabled, outbound IPv6 traffic is uncontrolled by this rule, potentially bypassing intended egress restrictions.",
+   "remediation": "Add an ipv6_cidr_blocks restriction to the egress block, or explicitly add a deny-all IPv6 egress rule. If IPv6 is not needed, ensure it is disabled on the VPC and subnets."
+  },
+  "4": {
+   "resource": "tls_private_key.loadtest",
+   "issue": "Private key generated and stored in Terraform state",
+   "risk": "The tls_private_key resource generates an RSA private key that is stored in plaintext in the Terraform state file. Anyone with access to the state (e.g. S3 bucket, Terraform Cloud) can retrieve the private key and gain SSH access to all instances using this key pair.",
+   "remediation": "Do not generate SSH key pairs within Terraform. Generate the key pair out-of-band (e.g. ssh-keygen locally or via AWS Systems Manager), store the private key in a secrets manager (AWS Secrets Manager or HashiCorp Vault), and pass only the public key to aws_key_pair.loadtest via a secure variable or data source. Ensure the Terraform state backend is encrypted (S3 with SSE-KMS) and access-controlled."
+  },
+  "5": {
+   "resource": "locals.export_pem_cmd",
+   "issue": "Private key written to local disk via shell command and exposed in plan output",
+   "risk": "The local-exec provisioner writes the plaintext private key to a .pem file on the machine running Terraform. This file may be committed to source control, left on CI/CD runners, or visible in Terraform plan/apply logs, leading to key compromise.",
+   "remediation": "Remove the export_pem_cmd local and the null_resource.key_pair_exporter resource entirely. Manage private key distribution through a secrets manager. If a local file is absolutely required, use the local_sensitive_file resource with strict file permissions (0400) and ensure it is added to .gitignore, but prefer secrets manager distribution."
+  },
+  "6": {
+   "resource": "null_resource.key_pair_exporter",
+   "issue": "Sensitive private key value interpolated directly into a shell command",
+   "risk": "Interpolating tls_private_key.loadtest.private_key_pem directly into a shell command exposes the key in process listings (ps aux), shell history, CI/CD logs, and Terraform state triggers, significantly increasing the attack surface for key exfiltration.",
+   "remediation": "Remove this resource. If key export is necessary, use a dedicated secrets management workflow. Never interpolate sensitive values into command strings. Mark any variable or output containing key material as sensitive = true to suppress log output."
+  },
+  "7": {
+   "resource": "aws_iam_role.loadtest",
+   "issue": "IAM role has no permission boundary or restrictive inline/managed policies shown",
+   "risk": "The IAM role is created without any visible permission boundary or least-privilege policy. If overly permissive policies are later attached (or if this is used as-is), the EC2 instance could be used for privilege escalation or unauthorised access to AWS resources.",
+   "remediation": "Attach a permissions_boundary to the aws_iam_role resource referencing a pre-approved boundary policy ARN. Attach only the minimum required IAM policies (aws_iam_role_policy or aws_iam_role_policy_attachment) needed for the load-test workload, and avoid attaching AdministratorAccess or PowerUserAccess."
+  }
+ }
+}

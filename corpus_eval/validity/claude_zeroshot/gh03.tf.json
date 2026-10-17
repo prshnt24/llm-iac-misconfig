@@ -1,0 +1,46 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 4,
+   "label": "INVALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "data.aws_iam_policy_document.lambda_write_logs",
+   "issue": "Overly Permissive CloudWatch Logs Resource ARN",
+   "risk": "The IAM policy grants CloudWatch Logs write permissions (CreateLogGroup, CreateLogStream, PutLogEvents) to all log groups across all AWS accounts and all regions ('arn:aws:logs:*:*:*'). This violates the principle of least privilege and could allow the Lambda function to write to or create log groups in unintended accounts or regions, potentially enabling log injection or data exfiltration.",
+   "remediation": "Restrict the resources to only the specific log group(s) used by the Lambda functions. Replace 'arn:aws:logs:*:*:*' with a scoped ARN such as 'arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${module.function_label[each.key].id}:*'. Use a separate policy document per function or use a wildcard scoped to the known log group prefix."
+  },
+  "1": {
+   "resource": "aws_lambda_function.default",
+   "issue": "Lambda Function Code Not Encrypted with Customer-Managed KMS Key",
+   "risk": "The Lambda function deployment package and environment variables are encrypted at rest using the default AWS-managed key rather than a customer-managed KMS key (CMK). This reduces the ability to audit, rotate, or revoke encryption keys, and does not meet compliance requirements that mandate CMK usage for sensitive workloads.",
+   "remediation": "Add a 'kms_key_arn' attribute to the 'aws_lambda_function' resource block pointing to a customer-managed KMS key: 'kms_key_arn = aws_kms_key.lambda.arn'. Create a corresponding 'aws_kms_key' resource with appropriate key policies and enable key rotation."
+  },
+  "2": {
+   "resource": "aws_lambda_function.default",
+   "issue": "No Environment Variable Encryption Configuration",
+   "risk": "If environment variables are added to the Lambda function in the future (or are passed via the module), they will not be explicitly encrypted with a CMK. Sensitive values such as API keys or database credentials stored in environment variables could be exposed if the default AWS-managed key is compromised or if access controls on the key are insufficient.",
+   "remediation": "Add an 'environment' block with a corresponding 'kms_key_arn' to ensure any environment variables are encrypted with a CMK. Even if no environment variables are currently set, explicitly configure 'kms_key_arn' at the function level to enforce encryption by default."
+  },
+  "4": {
+   "resource": "aws_lambda_function.default",
+   "issue": "Lambda Function Uses Potentially Untrusted or Unvalidated Source ZIP",
+   "risk": "The function accepts an externally provided 'source_zip' file path via 'each.value.source_zip'. If this path is not validated or the file integrity is not verified beyond a SHA-256 hash of the content, a malicious or tampered ZIP could be deployed as a Lambda function, leading to arbitrary code execution in the AWS environment.",
+   "remediation": "Ensure that 'source_zip' inputs are validated against a known-good checksum stored separately (e.g., in a secure S3 bucket with versioning and object lock). Consider using 'aws_s3_object' with server-side encryption and signed URLs rather than local file references, and enforce code signing for Lambda functions using 'aws_lambda_code_signing_config' with a 'code_signing_config_arn' attribute on the 'aws_lambda_function' resource."
+  }
+ }
+}

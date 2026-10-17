@@ -1,0 +1,56 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 4,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "data.aws_iam_policy_document.ssm_policy",
+   "issue": "Overly Broad EC2 Describe Actions with Wildcard Resource",
+   "risk": "The EC2 describe actions (DescribeInstances, DescribeSubnets, DescribeVpcs, DescribeSecurityGroups) are granted against resources = [\"*\"]. While these are read-only actions, granting wildcard resource scope allows the SSM role to enumerate all EC2 infrastructure across the entire account, which can aid an attacker in reconnaissance if the role is compromised. It also violates the principle of least privilege.",
+   "remediation": "EC2 Describe actions are inherently not resource-constrainable via ARN in IAM, but you should add a Condition block to restrict usage context. For example, add a condition to limit to a specific VPC or use an aws:RequestedRegion condition key to restrict to the intended region: add `condition { test = \"StringEquals\" variable = \"aws:RequestedRegion\" values = [data.aws_region.current.region] }` inside the statement block. Additionally, remove any describe actions not strictly required by the automation."
+  },
+  "1": {
+   "resource": "data.aws_iam_policy_document.ssm_policy",
+   "issue": "SSM GetParameter/GetParameters Grants Access to All Parameters Under Project Prefix Without KMS Decrypt Permission Boundary",
+   "risk": "The policy allows reading all SSM parameters under the project prefix (parameter/${local.project}/*). If any of these parameters are SecureString type encrypted with KMS, the role can still retrieve them (decryption is handled transparently). There is no explicit ssm:GetParametersByPath restriction or condition to limit access to only the specific parameters needed, meaning any new parameter added under that prefix is automatically accessible, potentially exposing secrets added in the future.",
+   "remediation": "Restrict the resource ARN to only the specific parameter paths required rather than a broad wildcard. Replace the wildcard with explicit parameter ARNs: `resources = [\"arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter/${local.project}/specific-param-name\"]`. If a wildcard is necessary, add a condition block to enforce encryption: `condition { test = \"StringEquals\" variable = \"ssm:resourceTag/Environment\" values = [\"production\"] }`. Also add an explicit `kms:Decrypt` permission scoped to only the KMS key used for those SecureString parameters."
+  },
+  "2": {
+   "resource": "data.aws_iam_policy_document.ssm_assume_role",
+   "issue": "SSM Service Principal Trust Policy Lacks Condition Constraints (Confused Deputy Risk)",
+   "risk": "The assume role trust policy allows any SSM service principal (`ssm.amazonaws.com`) to assume this role without any condition constraints such as aws:SourceAccount or aws:SourceArn. This exposes the role to the confused deputy problem, where another AWS account's SSM service could potentially assume this role if they can influence SSM automation execution, leading to privilege escalation or unauthorized access to CodeBuild, SNS, and SSM resources.",
+   "remediation": "Add condition constraints to the trust policy to restrict which SSM executions can assume the role. Update the statement block to include: `condition { test = \"StringEquals\" variable = \"aws:SourceAccount\" values = [data.aws_caller_identity.current.account_id] }` and optionally `condition { test = \"ArnLike\" variable = \"aws:SourceArn\" values = [\"arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:automation-execution/*\"] }` to enforce that only SSM automations from the same account can assume this role."
+  },
+  "3": {
+   "resource": "aws_iam_role.ssm_service_role",
+   "issue": "IAM Role Missing Permissions Boundary",
+   "risk": "The SSM service role is created without a permissions boundary policy. Without a permissions boundary, if the role or its attached policies are ever modified (e.g., through a misconfiguration or supply chain attack on Terraform state), the role could be escalated to have broader permissions than intended. Permissions boundaries act as a guardrail to enforce maximum allowable permissions.",
+   "remediation": "Add a `permissions_boundary` attribute to the `aws_iam_role` resource pointing to a pre-defined boundary policy ARN: `permissions_boundary = \"arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${local.project}-PermissionsBoundary\"`. Create a corresponding `aws_iam_policy` resource that defines the maximum permissions this role should ever have, and reference it as the boundary."
+  },
+  "4": {
+   "resource": "aws_iam_role.ssm_service_role",
+   "issue": "IAM Role Missing Tags for Governance and Auditability",
+   "risk": "The IAM role has no tags applied. Without tags, it is difficult to attribute the role to a specific project, environment, owner, or cost center during security audits, incident response, or automated compliance checks. Untagged IAM roles can be overlooked during access reviews and may persist beyond their intended lifecycle.",
+   "remediation": "Add a `tags` block to the `aws_iam_role` resource with at minimum: `tags = { Project = local.project, Environment = var.environment, ManagedBy = \"Terraform\", Owner = var.owner_team }`. Enforce tagging via AWS Config rules or IAM tag policies to ensure compliance."
+  }
+ }
+}

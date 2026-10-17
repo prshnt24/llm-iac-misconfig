@@ -1,0 +1,69 @@
+{
+ "file": "gh23.tf",
+ "findings": [
+  {
+   "resource": "aws_iam_policy.ab_tag_policy",
+   "issue": "Overly permissive IAM policy with wildcard resource scope",
+   "risk": "Allows tagging and untagging of any AWS Backup resource and broad discovery via tag:GetResources across the account, violating least privilege and increasing the impact of credential misuse.",
+   "remediation": "In data.aws_iam_policy_document.ab_tag_policy_document, replace resources = [\"*\"] with specific AWS Backup resource ARNs that this role must manage, and scope tag:GetResources as narrowly as possible using conditions or separate statements limited to required resource types."
+  },
+  {
+   "resource": "aws_iam_policy.restore_testing_policy",
+   "issue": "Overly permissive Backup permissions with wildcard resource scope",
+   "risk": "Grants restore testing capabilities across all backup resources in the account, which could enable unauthorized restore operations, job enumeration, and broader impact if the role is abused.",
+   "remediation": "In data.aws_iam_policy_document.restore_testing_policy_document, change the statement for backup:StartRestoreJob, backup:DescribeRestoreJob, backup:ListRestoreJobs, backup:StartRestoreTestingJob, backup:DescribeRestoreTestingPlan, backup:DescribeRestoreTestingSelection, backup:ListRestoreTestingPlans, and backup:ListRestoreTestingSelections from resources = [\"*\"] to the specific backup vault, recovery point, restore testing plan, or other required ARNs."
+  },
+  {
+   "resource": "aws_iam_policy.restore_testing_policy",
+   "issue": "Overly broad iam:PassRole permission",
+   "risk": "Allows passing any IAM role matching aws-backup-* in any account within the partition, which can lead to privilege escalation if a more privileged role with that naming pattern exists.",
+   "remediation": "In data.aws_iam_policy_document.restore_testing_policy_document, restrict the iam:PassRole statement resources from arn:${data.aws_partition.current.partition}:iam::*:role/aws-backup-* to the exact role ARN(s) required in the current account, and add a condition such as iam:PassedToService = backup.amazonaws.com if applicable."
+  },
+  {
+   "resource": "aws_iam_policy.restore_testing_policy",
+   "issue": "CloudWatch Logs permissions not fully scoped and missing stream-level granularity",
+   "risk": "Permits log group and stream creation and log writes broadly under /aws/backup/* across all regions and accounts in the partition, which may allow unnecessary log resource manipulation and data injection.",
+   "remediation": "In data.aws_iam_policy_document.restore_testing_policy_document, scope logs resources to the specific log group and log stream ARNs used by this workflow, and separate actions so logs:CreateLogGroup targets only the necessary log group ARN while stream actions target specific log-stream ARNs instead of arn:${data.aws_partition.current.partition}:logs:*:*:log-group:/aws/backup/*."
+  },
+  {
+   "resource": "aws_iam_policy.restore_testing_policy",
+   "issue": "Excessive EC2 read permissions with wildcard resource scope",
+   "risk": "Allows broad enumeration of EC2 environment details such as instances, snapshots, volumes, subnets, VPCs, and security groups across the account, increasing reconnaissance capability for an attacker.",
+   "remediation": "In data.aws_iam_policy_document.restore_testing_policy_document, remove unneeded ec2:Describe* actions and keep only those strictly required for restore testing. Where supported, scope resources or use condition keys to limit access to specific regions, VPCs, subnets, or tagged resources instead of resources = [\"*\"]."
+  },
+  {
+   "resource": "aws_iam_policy.restore_testing_policy",
+   "issue": "Excessive RDS read permissions with wildcard resource scope",
+   "risk": "Allows broad enumeration of RDS instances, clusters, snapshots, subnet groups, and parameter groups across the account, exposing infrastructure metadata and increasing attack surface for reconnaissance.",
+   "remediation": "In data.aws_iam_policy_document.restore_testing_policy_document, remove unnecessary rds:Describe* actions and restrict access to only the specific RDS resources needed for restore testing. Use explicit resource ARNs where supported instead of resources = [\"*\"]."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c94"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  }
+ ]
+}

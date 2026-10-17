@@ -1,0 +1,95 @@
+{
+ "file": "gh01.tf",
+ "findings": [
+  {
+   "resource": "aws_networkfirewall_rule_group.drop_remote",
+   "issue": "RDP Protocol Number Incorrect \u2013 RDP Traffic Not Blocked",
+   "risk": "The stateless rule intended to block RDP uses protocol number 27 (RDP is a common name collision; protocol 27 is 'RDP' in the IANA list but TCP port 3389 is the actual Remote Desktop Protocol). The rule matches protocol 27 with no destination port filter, meaning TCP port 3389 RDP sessions are never dropped. Attackers can reach instances via RDP over TCP (protocol 6, port 3389) unimpeded.",
+   "remediation": "Change the second stateless_rule to use protocols = [6] (TCP) and add destination_port { from_port = 3389, to_port = 3389 } and source_port { from_port = 0, to_port = 65535 } to correctly match and drop RDP traffic on TCP/3389."
+  },
+  {
+   "resource": "aws_networkfirewall_rule_group.drop_remote",
+   "issue": "SSH Rule Missing Source Port Range \u2013 Overly Narrow Match",
+   "risk": "The SSH drop rule matches only traffic where the SOURCE port is exactly 22. Legitimate SSH attack traffic originates from an ephemeral source port (1024-65535) and targets destination port 22. As written, the rule will not drop inbound SSH connection attempts from clients using a standard ephemeral source port, allowing SSH access through the firewall.",
+   "remediation": "Remove or broaden the source_port block in the SSH stateless_rule so it covers all source ports (from_port = 0, to_port = 65535), ensuring any TCP traffic destined for port 22 is dropped regardless of source port."
+  },
+  {
+   "resource": "aws_networkfirewall_rule_group.allow_domains",
+   "issue": "Overly Permissive TCP Pass Rule \u2013 Allows All TCP/443 Without SNI Inspection",
+   "risk": "The first Suricata rule 'pass tcp any any <> $EXTERNAL_NET 443 (flow:not_established;)' passes all TCP traffic to/from port 443 that is not yet in an established flow (i.e., the handshake packets). Because it uses the bidirectional operator (<>) and matches pre-established flows, it can allow TLS sessions to be set up to any destination on port 443, bypassing the domain-restriction intent of the second TLS/SNI rule. Malicious traffic to non-.amazon.com destinations over HTTPS may pass uninspected.",
+   "remediation": "Remove the broad 'pass tcp' rule or replace it with a more targeted rule that only permits the TCP handshake specifically for .amazon.com-bound connections. Rely solely on the TLS SNI rule (sid:892125) for allowing HTTPS, and ensure a default drop rule exists for all other TCP/443 traffic. Consider adding: 'drop tls any any -> $EXTERNAL_NET 443 (msg:\"Block non-amazon HTTPS\"; sid:892126; rev:1;)' at a lower priority."
+  },
+  {
+   "resource": "aws_networkfirewall_rule_group.allow_icmp",
+   "issue": "Unrestricted ICMP Pass Rule Allows ICMP to/from Any Address",
+   "risk": "The rule 'pass icmp any any -> any any' permits all ICMP traffic in all directions without restriction. This can facilitate network reconnaissance (ping sweeps, traceroute-based topology mapping), ICMP-based data exfiltration (ICMP tunneling), and amplification or flood attacks. There is no restriction on ICMP type/code, source, or destination.",
+   "remediation": "Restrict the ICMP pass rule to specific trusted source/destination CIDR ranges and limit allowed ICMP types/codes. For example, only permit ICMP echo-request (type 8) and echo-reply (type 0) from known internal ranges: 'pass icmp $HOME_NET any -> $HOME_NET any (itype:8; msg:\"Allow internal ICMP echo\"; sid:2; rev:2;)'. Drop all other ICMP with an explicit drop rule."
+  },
+  {
+   "resource": "aws_networkfirewall_firewall_policy.anfw_policy",
+   "issue": "No Encryption (KMS CMK) Configured for Firewall Policy",
+   "risk": "The firewall policy does not specify an encryption_configuration block using a customer-managed KMS key (CMK). AWS Network Firewall resources are encrypted with an AWS-managed key by default, which does not allow customer control over key rotation, access policies, or audit trails. This may violate compliance requirements (PCI-DSS, HIPAA, etc.) that mandate customer-managed encryption keys.",
+   "remediation": "Add an encryption_configuration block to the aws_networkfirewall_firewall_policy resource specifying type = \"CUSTOMER_KMS\" and a key_arn pointing to a customer-managed KMS key: encryption_configuration { key_arn = aws_kms_key.anfw.arn, type = \"CUSTOMER_KMS\" }."
+  },
+  {
+   "resource": "aws_networkfirewall_rule_group.allow_domains",
+   "issue": "No Encryption (KMS CMK) Configured for Rule Group",
+   "risk": "The stateful rule group for domain allowlisting does not specify an encryption_configuration block. Rule group definitions may contain sensitive network policy information. Without a CMK, customers cannot enforce key access controls or meet compliance mandates requiring customer-managed encryption.",
+   "remediation": "Add encryption_configuration { key_arn = aws_kms_key.anfw.arn, type = \"CUSTOMER_KMS\" } to the aws_networkfirewall_rule_group.allow_domains resource block."
+  },
+  {
+   "resource": "aws_networkfirewall_rule_group.drop_remote",
+   "issue": "No Encryption (KMS CMK) Configured for Rule Group",
+   "risk": "Same as above \u2013 the stateless drop rule group lacks a customer-managed KMS encryption configuration, preventing customer control over encryption key lifecycle and access.",
+   "remediation": "Add encryption_configuration { key_arn = aws_kms_key.anfw.arn, type = \"CUSTOMER_KMS\" } to the aws_networkfirewall_rule_group.drop_remote resource block."
+  },
+  {
+   "resource": "aws_networkfirewall_rule_group.allow_icmp",
+   "issue": "No Encryption (KMS CMK) Configured for Rule Group",
+   "risk": "Same as above \u2013 the ICMP rule group lacks a customer-managed KMS encryption configuration.",
+   "remediation": "Add encryption_configuration { key_arn = aws_kms_key.anfw.arn, type = \"CUSTOMER_KMS\" } to the aws_networkfirewall_rule_group.allow_icmp resource block."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c11"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c12"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": [
+    "c14"
+   ]
+  },
+  {
+   "finding": 7,
+   "candidates": [
+    "c13"
+   ]
+  }
+ ]
+}

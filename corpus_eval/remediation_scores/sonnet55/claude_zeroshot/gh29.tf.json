@@ -1,0 +1,28 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_24 Ensure no security groups allow ingress from 0.0.0.0:0 to port 22 (resource aws_security_group.ec2_security_group)",
+   "issue": "Unrestricted SSH Access (Port 22) from the Internet",
+   "remediation": "Restrict the SSH ingress rule to known, trusted IP ranges (e.g., your corporate NAT gateway or VPN egress IP). Replace cidr_blocks = [\"0.0.0.0/0\"] with a specific CIDR such as cidr_blocks = [\"203.0.113.0/32\"]. Alternatively, remove SSH entirely and use AWS Systems Manager Session Manager (SSM) for shell access, eliminating the need for port 22 to be open at all."
+  },
+  {
+   "finding": 6,
+   "known": "CKV_AWS_382 Ensure no security groups allow egress from 0.0.0.0:0 to port -1 (resource aws_security_group.ec2_security_group)",
+   "issue": "Unrestricted Outbound Egress to the Internet",
+   "remediation": "Restrict egress rules to only the ports and destinations required by the application (principle of least privilege). For example, if the instance only needs to reach an RDS database and an S3 VPC endpoint, scope egress rules accordingly. Remove the catch-all egress rule and replace it with specific rules, e.g., port 443 to known CIDR ranges or VPC endpoint security groups."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Names the exact ingress cidr_blocks for port 22 and gives a specific restricted CIDR. Also offers SSM as an alternative. This satisfies CKV_AWS_24."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "Says to remove the catch-all egress (protocol -1, 0.0.0.0/0) and replace it with specific port and destination rules, such as 443 to known CIDRs or VPC endpoint security groups. This fixes CKV_AWS_382. It is a little generic but actionable."
+  }
+ ]
+}

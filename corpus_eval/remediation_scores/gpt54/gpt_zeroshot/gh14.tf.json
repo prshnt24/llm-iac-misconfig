@@ -1,0 +1,17 @@
+{
+ "items": [
+  {
+   "finding": 4,
+   "known": "CKV_AWS_382 Ensure no security groups allow egress from 0.0.0.0:0 to port -1 (resource aws_security_group.terra_sg)",
+   "issue": "Unrestricted outbound access",
+   "remediation": "Replace the egress block allowing `cidr_blocks = [\"0.0.0.0/0\"]`, `protocol = \"-1\"`, `from_port = 0`, and `to_port = 0` with least-privilege outbound rules limited to required destinations, ports, and protocols."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correctly identifies the aws_security_group egress block and says to replace 0.0.0.0/0 with least-privilege destinations/ports/protocols, which fixes the check."
+  }
+ ]
+}

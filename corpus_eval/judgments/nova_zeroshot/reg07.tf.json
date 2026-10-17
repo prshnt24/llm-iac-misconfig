@@ -1,0 +1,37 @@
+{
+ "file": "reg07.tf",
+ "findings": [
+  {
+   "resource": "aws_secretsmanager_secret_policy.this",
+   "issue": "Public Policy",
+   "risk": "Allows public access to the secret if not properly configured",
+   "remediation": "Set `block_public_policy` to `true` to prevent public access"
+  },
+  {
+   "resource": "aws_secretsmanager_secret_version.this",
+   "issue": "Insecure Secret Storage",
+   "risk": "Secrets may be stored in an insecure manner if `secret_binary` or `secret_string` are not properly managed",
+   "remediation": "Ensure `secret_binary` and `secret_string` are securely managed and encrypted"
+  },
+  {
+   "resource": "aws_secretsmanager_secret_version.ignore_changes",
+   "issue": "Insecure Secret Storage",
+   "risk": "Secrets may be stored in an insecure manner if `secret_binary` or `secret_string` are not properly managed",
+   "remediation": "Ensure `secret_binary` and `secret_string` are securely managed and encrypted"
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  }
+ ]
+}

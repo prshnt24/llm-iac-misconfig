@@ -1,0 +1,8 @@
+{
+  "model": "global.openai.gpt-5.4",
+  "strategy": "zeroshot",
+  "file": "ecr.tf",
+  "temperature": null,
+  "timestamp": "2026-10-16T21:39:59",
+  "response": "[\n  {\n    \"resource\": \"aws_ecr_repository.repository\",\n    \"issue\": \"ECR image tags are mutable\",\n    \"risk\": \"Mutable tags allow an existing image tag to be overwritten with different image contents, which can enable supply chain attacks, rollback confusion, and deployment of unverified images under trusted tags such as latest or release tags.\",\n    \"remediation\": \"Set the repository to use immutable tags by changing the attribute `image_tag_mutability = \\\"IMMUTABLE\\\"` in `aws_ecr_repository.repository`.\"\n  },\n  {\n    \"resource\": \"aws_ecr_repository.repository\",\n    \"issue\": \"ECR image scanning on push is not enabled\",\n    \"risk\": \"Without image scanning on push, vulnerable container images may be stored and deployed without automatic detection of known CVEs, increasing the likelihood of running exploitable software in production.\",\n    \"remediation\": \"Add an image scanning configuration block to `aws_ecr_repository.repository`: `image_scanning_configuration { scan_on_push = true }`.\"\n  }\n]"
+}

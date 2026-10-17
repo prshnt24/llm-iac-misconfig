@@ -1,0 +1,89 @@
+{
+ "file": "lambda.tf",
+ "findings": [
+  {
+   "resource": "aws_lambda_function.analysis_lambda",
+   "issue": "Plaintext AWS Access Key in Environment Variables",
+   "risk": "Hardcoded AWS access key (AKIAIOSFODNN7EXAMPLE) is exposed in the Terraform configuration and Lambda environment variables. This credential can be extracted from state files, version control, or the Lambda console, leading to unauthorized AWS account access and potential full account compromise.",
+   "remediation": "Remove the hardcoded access key from the environment variables block. Use AWS Secrets Manager or SSM Parameter Store to store secrets and retrieve them at runtime, or use the Lambda function's IAM role (aws_iam_role.iam_for_lambda) with appropriate permissions instead of static credentials. Replace the 'access_key' environment variable reference with a data source: data \"aws_secretsmanager_secret_version\" and pass the ARN instead."
+  },
+  {
+   "resource": "aws_lambda_function.analysis_lambda",
+   "issue": "Plaintext AWS Secret Access Key in Environment Variables",
+   "risk": "Hardcoded AWS secret access key (wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY) is exposed in the Terraform configuration and Lambda environment variables. Combined with the access key, this allows full programmatic access to AWS services under the associated IAM identity, risking data exfiltration, resource manipulation, and privilege escalation.",
+   "remediation": "Remove the hardcoded secret key from the environment variables block. Store the secret in AWS Secrets Manager and grant the Lambda execution role (aws_iam_role.iam_for_lambda) permission to retrieve it via secretsmanager:GetSecretValue. Fetch the secret at runtime within the Lambda function code rather than injecting it as a plaintext environment variable."
+  },
+  {
+   "resource": "aws_lambda_function.analysis_lambda",
+   "issue": "Lambda Environment Variables Not Encrypted with Customer-Managed KMS Key",
+   "risk": "Without a customer-managed KMS key, Lambda environment variables are encrypted at rest using an AWS-managed key. This means the customer has no control over key rotation, access policies, or audit trails for decryption events, reducing the ability to detect unauthorized access to sensitive configuration data.",
+   "remediation": "Add a 'kms_key_arn' attribute to the aws_lambda_function resource pointing to a customer-managed KMS key: kms_key_arn = aws_kms_key.lambda_env_key.arn. Create a corresponding aws_kms_key resource with key rotation enabled (enable_key_rotation = true) and a restrictive key policy."
+  },
+  {
+   "resource": "aws_lambda_function.analysis_lambda",
+   "issue": "Deprecated and End-of-Life Lambda Runtime (nodejs12.x)",
+   "risk": "Node.js 12.x reached end-of-life and is no longer supported by AWS Lambda. Using a deprecated runtime means the function runs on an unpatched environment with known security vulnerabilities, increasing the attack surface for exploitation via runtime-level CVEs.",
+   "remediation": "Update the 'runtime' attribute to a currently supported Node.js version, such as runtime = \"nodejs20.x\" or runtime = \"nodejs18.x\", and validate that the function code is compatible with the updated runtime."
+  },
+  {
+   "resource": "aws_lambda_function.analysis_lambda",
+   "issue": "Lambda Function Not Deployed Inside a VPC",
+   "risk": "Without VPC configuration, the Lambda function runs in the default AWS-managed network environment and communicates with AWS services and the internet over public endpoints. This prevents the use of VPC security groups, NACLs, and private endpoints to restrict network access, increasing exposure to network-based attacks.",
+   "remediation": "Add a 'vpc_config' block to the aws_lambda_function resource specifying subnet_ids (private subnets) and security_group_ids with least-privilege ingress/egress rules. Ensure VPC endpoints exist for any AWS services the function needs to call to avoid routing traffic over the public internet."
+  },
+  {
+   "resource": "aws_lambda_function.analysis_lambda",
+   "issue": "Code Signing Not Configured for Lambda Function",
+   "risk": "Without code signing, there is no verification that the deployment package (lambda_function_payload.zip) originates from a trusted source and has not been tampered with. A compromised CI/CD pipeline or storage location could allow malicious code to be deployed without detection.",
+   "remediation": "Create an aws_lambda_code_signing_config resource referencing a trusted aws_signer_signing_profile, then add 'code_signing_config_arn = aws_lambda_code_signing_config.example.arn' to the aws_lambda_function resource to enforce signature validation on all deployments."
+  },
+  {
+   "resource": "aws_iam_role.iam_for_lambda",
+   "issue": "Lambda IAM Role Lacks a Permission Boundary",
+   "risk": "Without a permissions boundary on the IAM role, if the Lambda function is compromised or the role is misconfigured with overly broad policies, there is no secondary control to limit the maximum permissions the role can exercise. This can lead to privilege escalation beyond the intended scope.",
+   "remediation": "Add a 'permissions_boundary' attribute to the aws_iam_role resource: permissions_boundary = aws_iam_policy.lambda_boundary.arn. Define the boundary policy to restrict the role to only the AWS services and actions required by the Lambda function."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c96"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c96"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c93"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c95"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c92"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c94"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  }
+ ]
+}

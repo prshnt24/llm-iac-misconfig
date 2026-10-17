@@ -1,0 +1,17 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_24 Ensure no security groups allow ingress from 0.0.0.0:0 to port 22 (resource aws_security_group.ec2_security_group)",
+   "issue": "Unrestricted Ingress Rules",
+   "remediation": "Restrict the CIDR blocks to only trusted IP ranges. For example:\n```hcl\ningress {\n  from_port   = 22\n  to_port     = 22\n  protocol    = \"tcp\"\n  cidr_blocks = [\"192.168.0.0/16\"] // Replace with your trusted IP range\n}\n```"
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correctly identifies the SSH ingress block and specifies changing ingress.cidr_blocks from 0.0.0.0/0 to a trusted range."
+  }
+ ]
+}

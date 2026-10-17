@@ -1,0 +1,39 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_46 Ensure no hard-coded secrets exist in EC2 user data (resource aws_instance.web_host)",
+   "issue": "Plain text secrets in user data",
+   "remediation": "Remove the AWS credentials from the user_data script and use AWS IAM roles for EC2 instances to grant necessary permissions."
+  },
+  {
+   "finding": 1,
+   "known": "CKV_AWS_3 Ensure all data stored in the EBS is securely encrypted (resource aws_ebs_volume.web_host_storage)",
+   "issue": "Unencrypted volume",
+   "remediation": "Set the `encrypted` attribute to `true` and provide a `kms_key_id` for the encryption."
+  },
+  {
+   "finding": 3,
+   "known": "CKV_AWS_24 Ensure no security groups allow ingress from 0.0.0.0:0 to port 22 (resource aws_security_group.web-node)",
+   "issue": "Security group is open to the world on SSH port",
+   "remediation": "Restrict the ingress rule for port 22 to specific IP ranges or security groups that require access."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Removes hard-coded credentials from user_data and uses an IAM role (instance profile), which is the standard fix for CKV_AWS_46."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "Sets encrypted = true on aws_ebs_volume, which satisfies CKV_AWS_3. The kms_key_id is optional but a reasonable addition."
+  },
+  {
+   "item": 2,
+   "score": 1,
+   "reason": "Right direction: restrict port 22 ingress. It names no attribute or value, such as replacing cidr_blocks 0.0.0.0/0 with a specific trusted CIDR, so it is vague."
+  }
+ ]
+}

@@ -1,0 +1,8 @@
+{
+  "model": "global.openai.gpt-5.4",
+  "strategy": "fewshot",
+  "file": "lambda.tf",
+  "temperature": null,
+  "timestamp": "2026-10-16T21:47:48",
+  "response": "[\n  {\n    \"resource\": \"aws_lambda_function.analysis_lambda\",\n    \"issue\": \"Hardcoded AWS access credentials in Lambda environment variables\",\n    \"risk\": \"Plaintext access keys in Terraform code and Lambda configuration can be exposed through source control, Terraform state, logs, or console access, enabling unauthorized AWS access.\",\n    \"remediation\": \"Remove the `environment.variables.access_key` and `environment.variables.secret_key` entries. Use the Lambda execution role for AWS API access, or store secrets in AWS Secrets Manager or SSM Parameter Store and retrieve them at runtime.\"\n  },\n  {\n    \"resource\": \"aws_lambda_function.analysis_lambda\",\n    \"issue\": \"Outdated Lambda runtime\",\n    \"risk\": \"Using `nodejs12.x` leaves the function on an end-of-life runtime that no longer receives security patches, increasing exposure to known vulnerabilities.\",\n    \"remediation\": \"Change the `runtime` attribute from `nodejs12.x` to a currently supported runtime such as `nodejs20.x`.\"\n  }\n]"
+}

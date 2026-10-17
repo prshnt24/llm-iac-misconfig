@@ -1,0 +1,46 @@
+{
+ "labels": [
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 5,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 6,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 7,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "2": {
+   "resource": "aws_elasticache_replication_group.this",
+   "issue": "AUTH token not enforced",
+   "risk": "If var.auth_token is unset, Redis/Valkey authentication may not be enabled, allowing clients on the network path who can reach the cluster to connect without password-based authentication.",
+   "remediation": "Set auth_token to a strong secret in aws_elasticache_replication_group.this and keep transit_encryption_enabled = true, or use user_group_ids with RBAC/ACLs."
+  },
+  "5": {
+   "resource": "aws_elasticache_replication_group.global",
+   "issue": "AUTH token not enforced",
+   "risk": "If var.auth_token is unset, clients that can reach the global replication group may be able to connect without authentication.",
+   "remediation": "Set auth_token to a strong secret in aws_elasticache_replication_group.global and enforce transit_encryption_enabled = true, or use user_group_ids with RBAC/ACLs."
+  },
+  "6": {
+   "resource": "aws_elasticache_cluster.this",
+   "issue": "Memcached in-transit encryption not enforced",
+   "risk": "For Memcached deployments, if var.transit_encryption_enabled is false or unset, cache traffic may be transmitted in cleartext and be vulnerable to interception or tampering.",
+   "remediation": "When var.engine == \"memcached\", set transit_encryption_enabled = true in aws_elasticache_cluster.this."
+  },
+  "7": {
+   "resource": "aws_cloudwatch_log_group.this",
+   "issue": "CloudWatch log group encryption not enforced",
+   "risk": "If each log group's kms_key_id is null, engine and slow logs stored in CloudWatch Logs are encrypted only with the default service-managed controls, which may not meet organizational requirements for key management and access control.",
+   "remediation": "Set kms_key_id in aws_cloudwatch_log_group.this by providing cloudwatch_log_group_kms_key_id in var.log_delivery_configuration for each log group."
+  }
+ }
+}

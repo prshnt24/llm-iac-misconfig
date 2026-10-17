@@ -1,0 +1,39 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_17 Ensure all data stored in RDS is not publicly accessible (resource aws_db_instance.default)",
+   "issue": "Database is publicly accessible",
+   "remediation": "Set the aws_db_instance.default attribute publicly_accessible = false."
+  },
+  {
+   "finding": 1,
+   "known": "CKV_AWS_16 Ensure all data stored in the RDS is securely encrypted at rest (resource aws_db_instance.default)",
+   "issue": "Storage encryption is disabled",
+   "remediation": "Set the aws_db_instance.default attribute storage_encrypted = true and optionally specify kms_key_id for a customer-managed KMS key."
+  },
+  {
+   "finding": 6,
+   "known": "CKV_AWS_355 Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions (resource aws_iam_role_policy.ec2policy)",
+   "issue": "Overly broad IAM permissions",
+   "remediation": "Replace Action values \"s3:*\", \"ec2:*\", and \"rds:*\" with only required actions and replace Resource = \"*\" with the specific ARNs needed in aws_iam_role_policy.ec2policy."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Setting publicly_accessible = false is the exact fix for CKV_AWS_17."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "storage_encrypted = true is the correct fix for CKV_AWS_16; the optional kms_key_id is a valid addition."
+  },
+  {
+   "item": 2,
+   "score": 2,
+   "reason": "Correctly targets the policy's Resource = \"*\" by scoping it to specific ARNs and narrowing the wildcard actions, which satisfies CKV_AWS_355."
+  }
+ ]
+}

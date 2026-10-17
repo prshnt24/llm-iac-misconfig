@@ -1,0 +1,63 @@
+{
+ "file": "gh14.tf",
+ "findings": [
+  {
+   "resource": "aws_route_table.terra_rt",
+   "issue": "Default route to the Internet from the associated subnet",
+   "risk": "The associated subnet is configured with a 0.0.0.0/0 route to an Internet Gateway, making resources in that subnet potentially internet-reachable when combined with public IP assignment or permissive security groups.",
+   "remediation": "Remove or restrict the route block `cidr_block = \"0.0.0.0/0\"` with `gateway_id = aws_internet_gateway.terra_igw.id` for private workloads. If internet access is not required, delete this route block. If only outbound access is needed, place instances in a private subnet and route through a NAT Gateway instead."
+  },
+  {
+   "resource": "aws_subnet.terra_sub",
+   "issue": "Automatic public IP assignment on instance launch",
+   "risk": "If `map_public_ip_on_launch` is true, instances launched in this subnet automatically receive public IPs, increasing exposure to direct internet access and attack surface.",
+   "remediation": "Set `map_public_ip_on_launch = false` in `aws_subnet.terra_sub` for private workloads. Use a dedicated public subnet only for resources that must be internet-facing."
+  },
+  {
+   "resource": "aws_security_group.terra_sg",
+   "issue": "Security group allows SSH from anywhere",
+   "risk": "Ingress on TCP/22 from 0.0.0.0/0 exposes administrative access to the internet, increasing the risk of brute-force attacks, credential compromise, and unauthorized access.",
+   "remediation": "In the SSH ingress rule, replace `cidr_blocks = [\"0.0.0.0/0\"]` with a restricted trusted source range such as a specific corporate IP/CIDR, or remove the rule and use AWS Systems Manager Session Manager instead."
+  },
+  {
+   "resource": "aws_security_group.terra_sg",
+   "issue": "Security group allows RDP from anywhere",
+   "risk": "Ingress on TCP/3389 from 0.0.0.0/0 exposes Windows remote administration to the internet, increasing the risk of brute-force attacks, exploitation, and unauthorized access.",
+   "remediation": "In the RDP ingress rule, replace `cidr_blocks = [\"0.0.0.0/0\"]` with a restricted trusted source range such as a specific corporate IP/CIDR, or remove the rule and use a bastion host or AWS Systems Manager."
+  },
+  {
+   "resource": "aws_security_group.terra_sg",
+   "issue": "Unrestricted outbound access",
+   "risk": "The egress rule permits all protocols and ports to 0.0.0.0/0, enabling unrestricted outbound traffic that can facilitate data exfiltration and command-and-control communications if a resource is compromised.",
+   "remediation": "Replace the egress block allowing `cidr_blocks = [\"0.0.0.0/0\"]`, `protocol = \"-1\"`, `from_port = 0`, and `to_port = 0` with least-privilege outbound rules limited to required destinations, ports, and protocols."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c53"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c54"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c56"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 6,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "6": {
+   "resource": "aws_instance.db_app",
+   "issue": "Plain Text Secrets in User Data",
+   "risk": "Exposes sensitive information such as database credentials.",
+   "remediation": "Use AWS Systems Manager Parameter Store or AWS Secrets Manager to securely manage secrets instead of embedding them in user data."
+  }
+ }
+}

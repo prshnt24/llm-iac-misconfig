@@ -1,0 +1,39 @@
+{
+ "file": "es.tf",
+ "findings": [
+  {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Outdated Elasticsearch version",
+   "risk": "Using an outdated version of Elasticsearch may expose the domain to known vulnerabilities",
+   "remediation": "Update elasticsearch_version to a supported and secure version"
+  },
+  {
+   "resource": "data.aws_iam_policy_document.policy",
+   "issue": "Overly permissive IAM policy",
+   "risk": "Allows all Elasticsearch actions from any principal, which could lead to unauthorized access and data breaches",
+   "remediation": "Restrict the principals to specific AWS accounts or IAM roles and limit actions to only those necessary"
+  },
+  {
+   "resource": "aws_elasticsearch_domain_policy.monitoring-framework-policy",
+   "issue": "Overly permissive access policy",
+   "risk": "The policy allows all actions on the Elasticsearch domain from any principal, which could lead to unauthorized access and data breaches",
+   "remediation": "Update the access_policies to restrict actions and principals to only those necessary"
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c78"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  }
+ ]
+}

@@ -1,0 +1,17 @@
+{
+ "items": [
+  {
+   "finding": 1,
+   "known": "CKV_AWS_5 Ensure all data stored in the Elasticsearch is securely encrypted at rest (resource aws_elasticsearch_domain.monitoring-framework)",
+   "issue": "Encryption at rest not enabled",
+   "remediation": "Add an encrypt_at_rest block to the resource, for example: encrypt_at_rest { enabled = true }."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correctly identifies aws_elasticsearch_domain needs an encrypt_at_rest block with enabled = true."
+  }
+ ]
+}

@@ -1,0 +1,29 @@
+{
+ "file": "elb.tf",
+ "findings": [
+  {
+   "resource": "aws_elb.weblb",
+   "issue": "Load balancer listener uses unencrypted HTTP",
+   "risk": "Traffic between clients and the load balancer is transmitted in cleartext, allowing interception or manipulation of sensitive data in transit.",
+   "remediation": "Change the listener block to use TLS/HTTPS by setting lb_protocol = \"https\", configuring an SSL certificate with ssl_certificate_id, and preferably using instance_protocol = \"https\" if backend instances support encryption."
+  },
+  {
+   "resource": "aws_elb.weblb",
+   "issue": "Backend instance communication uses unencrypted HTTP",
+   "risk": "Traffic between the load balancer and the registered instance is unencrypted, which can expose internal application data to interception within the VPC or connected networks.",
+   "remediation": "Update the listener and health_check configuration to use HTTPS for backend communication by setting instance_protocol = \"https\", using an HTTPS-capable instance_port, and changing health_check.target to an HTTPS endpoint such as \"HTTPS:443/\" or the appropriate secure backend port."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c61"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  }
+ ]
+}

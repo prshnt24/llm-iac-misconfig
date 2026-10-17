@@ -1,0 +1,117 @@
+{
+ "file": "reg14.tf",
+ "findings": [
+  {
+   "resource": "aws_iam_role.lambda",
+   "issue": "Use of wildcard in ARN for Lambda@Edge",
+   "risk": "Allows Lambda@Edge to log in every region, which can lead to unintended access and increased attack surface.",
+   "remediation": "Remove the wildcard (*) in the ARN and specify a specific region. Update the log_group_arn attribute to use a specific region instead of a wildcard."
+  },
+  {
+   "resource": "aws_iam_role_policy.logs",
+   "issue": "Overly permissive resource policy",
+   "risk": "Allows actions on all log groups, which can lead to unauthorized access to sensitive log data.",
+   "remediation": "Restrict the resources attribute to specific log group ARNs instead of using wildcards. Update the resources attribute to include specific log group ARNs."
+  },
+  {
+   "resource": "aws_iam_role_policy.dead_letter",
+   "issue": "Overly permissive resource policy",
+   "risk": "Allows actions on a specific dead letter queue, which might not be necessary for all Lambda functions.",
+   "remediation": "Ensure that the dead_letter_target_arn is correctly scoped and necessary for the Lambda function. Verify and update the resources attribute if needed."
+  },
+  {
+   "resource": "aws_iam_role_policy.vpc",
+   "issue": "Use of AWS managed policy",
+   "risk": "AWS managed policies might have more permissions than necessary, leading to potential security risks.",
+   "remediation": "Review the AWS managed policy and create a custom policy with only the necessary permissions. Replace the policy attribute with a custom policy JSON."
+  },
+  {
+   "resource": "aws_iam_role_policy.tracing",
+   "issue": "Use of AWS managed policy",
+   "risk": "AWS managed policies might have more permissions than necessary, leading to potential security risks.",
+   "remediation": "Review the AWS managed policy and create a custom policy with only the necessary permissions. Replace the policy attribute with a custom policy JSON."
+  },
+  {
+   "resource": "aws_iam_role_policy.async",
+   "issue": "Overly permissive resource policy",
+   "risk": "Allows actions on specific SNS, SQS, EventBridge, and Lambda resources, which might not be necessary for all Lambda functions.",
+   "remediation": "Ensure that the destination_on_failure and destination_on_success variables are correctly scoped and necessary for the Lambda function. Verify and update the resources attribute if needed."
+  },
+  {
+   "resource": "aws_iam_role_policy.additional_json",
+   "issue": "Use of custom JSON policy without review",
+   "risk": "Custom JSON policies might contain unnecessary or excessive permissions, leading to potential security risks.",
+   "remediation": "Review the custom JSON policy and ensure it contains only the necessary permissions. Update the policy attribute if needed."
+  },
+  {
+   "resource": "aws_iam_role_policy.additional_jsons",
+   "issue": "Use of custom JSON policies without review",
+   "risk": "Custom JSON policies might contain unnecessary or excessive permissions, leading to potential security risks.",
+   "remediation": "Review each custom JSON policy and ensure they contain only the necessary permissions. Update the policy attribute if needed."
+  },
+  {
+   "resource": "aws_iam_role_policy_attachment.additional_one",
+   "issue": "Use of custom policy ARN without review",
+   "risk": "Custom policy ARNs might contain unnecessary or excessive permissions, leading to potential security risks.",
+   "remediation": "Review the custom policy ARN and ensure it contains only the necessary permissions. Update the policy_arn attribute if needed."
+  },
+  {
+   "resource": "aws_iam_role_policy_attachment.additional_many",
+   "issue": "Use of custom policy ARNs without review",
+   "risk": "Custom policy ARNs might contain unnecessary or excessive permissions, leading to potential security risks.",
+   "remediation": "Review each custom policy ARN and ensure they contain only the necessary permissions. Update the policy_arn attribute if needed."
+  },
+  {
+   "resource": "aws_iam_role_policy.additional_inline",
+   "issue": "Use of custom inline policy without review",
+   "risk": "Custom inline policies might contain unnecessary or excessive permissions, leading to potential security risks.",
+   "remediation": "Review the custom inline policy and ensure it contains only the necessary permissions. Update the policy attribute if needed."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  },
+  {
+   "finding": 7,
+   "candidates": []
+  },
+  {
+   "finding": 8,
+   "candidates": []
+  },
+  {
+   "finding": 9,
+   "candidates": []
+  },
+  {
+   "finding": 10,
+   "candidates": []
+  }
+ ]
+}

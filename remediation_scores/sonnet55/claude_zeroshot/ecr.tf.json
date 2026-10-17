@@ -1,0 +1,39 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_51 Ensure ECR Image Tags are immutable (resource aws_ecr_repository.repository)",
+   "issue": "Image Tag Mutability Enabled (MUTABLE)",
+   "remediation": "Set `image_tag_mutability = \"IMMUTABLE\"` to prevent tags from being overwritten once pushed, ensuring image provenance and integrity."
+  },
+  {
+   "finding": 1,
+   "known": "CKV_AWS_163 Ensure ECR image scanning on push is enabled (resource aws_ecr_repository.repository)",
+   "issue": "Image Scanning on Push Not Enabled",
+   "remediation": "Add an `image_scanning_configuration` block with `scan_on_push = true`:\n```hcl\nimage_scanning_configuration {\n  scan_on_push = true\n}\n```"
+  },
+  {
+   "finding": 2,
+   "known": "CKV_AWS_136 Ensure that ECR repositories are encrypted using KMS (resource aws_ecr_repository.repository)",
+   "issue": "Encryption at Rest Not Configured (No KMS CMK)",
+   "remediation": "Add an `encryption_configuration` block specifying a KMS CMK:\n```hcl\nencryption_configuration {\n  encryption_type = \"KMS\"\n  kms_key         = aws_kms_key.ecr_key.arn\n}\n```"
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Setting image_tag_mutability = \"IMMUTABLE\" is exactly the standard fix for CKV_AWS_51."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "An image_scanning_configuration block with scan_on_push = true is the correct fix for CKV_AWS_163."
+  },
+  {
+   "item": 2,
+   "score": 2,
+   "reason": "An encryption_configuration block with encryption_type = \"KMS\" and a kms_key ARN is the correct fix for CKV_AWS_136. The referenced aws_kms_key.ecr_key must be defined, but this does not affect the fix itself."
+  }
+ ]
+}

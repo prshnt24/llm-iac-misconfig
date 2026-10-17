@@ -1,0 +1,50 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_17 Ensure all data stored in RDS is not publicly accessible (resource aws_db_instance.default)",
+   "issue": "RDS instance is publicly accessible",
+   "remediation": "Set the attribute `publicly_accessible = false` in `aws_db_instance.default`."
+  },
+  {
+   "finding": 1,
+   "known": "CKV_AWS_16 Ensure all data stored in the RDS is securely encrypted at rest (resource aws_db_instance.default)",
+   "issue": "RDS storage encryption is disabled",
+   "remediation": "Set `storage_encrypted = true` in `aws_db_instance.default` and preferably add `kms_key_id = <KMS key ARN>` to use a customer-managed KMS key."
+  },
+  {
+   "finding": 6,
+   "known": "CKV_AWS_382 Ensure no security groups allow egress from 0.0.0.0:0 to port -1 (resource aws_security_group_rule.egress)",
+   "issue": "Unrestricted outbound access from database security group",
+   "remediation": "Restrict the `cidr_blocks`, `protocol`, and port range in `aws_security_group_rule.egress` to only required destinations, or remove the rule if outbound access is not needed."
+  },
+  {
+   "finding": 7,
+   "known": "CKV_AWS_355 Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions (resource aws_iam_role_policy.ec2policy)",
+   "issue": "Overly permissive IAM policy with wildcard actions and resources",
+   "remediation": "Replace the inline policy in `aws_iam_role_policy.ec2policy` with least-privilege permissions by narrowing the `Action` list to only required API calls and scoping `Resource` to specific ARNs."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correctly identifies aws_db_instance.default and the exact fix: set publicly_accessible = false."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "Correctly fixes the check with storage_encrypted = true on aws_db_instance.default; kms_key_id is an appropriate specific enhancement."
+  },
+  {
+   "item": 2,
+   "score": 1,
+   "reason": "Right direction on aws_security_group_rule.egress, but does not give a concrete compliant replacement value for cidr_blocks/protocol/ports."
+  },
+  {
+   "item": 3,
+   "score": 1,
+   "reason": "Correct least-privilege direction for aws_iam_role_policy.ec2policy, but vague and not a specific policy change with concrete actions/resources."
+  }
+ ]
+}

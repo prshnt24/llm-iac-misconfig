@@ -1,0 +1,27 @@
+{
+ "file": "gh24.tf",
+ "findings": [
+  {
+   "resource": "aws_route53_record.default",
+   "issue": "Insecure allow_overwrite",
+   "risk": "Allowing overwrite of DNS records can lead to potential DNS hijacking or unauthorized changes.",
+   "remediation": "Set `allow_overwrite` to `false` to prevent unauthorized changes to DNS records."
+  },
+  {
+   "resource": "aws_route53_record.ipv6",
+   "issue": "Insecure allow_overwrite",
+   "risk": "Allowing overwrite of DNS records can lead to potential DNS hijacking or unauthorized changes.",
+   "remediation": "Set `allow_overwrite` to `false` to prevent unauthorized changes to DNS records."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  }
+ ]
+}

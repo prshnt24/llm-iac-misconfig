@@ -1,0 +1,479 @@
+{
+ "file": "rds.tf",
+ "findings": [
+  {
+   "resource": "aws_rds_cluster.app1-rds-cluster",
+   "issue": "Backup retention period disabled (set to 0)",
+   "risk": "A retention period of 0 disables automated backups entirely, meaning there is no point-in-time recovery capability. Data loss from accidental deletion, corruption, or ransomware cannot be recovered.",
+   "remediation": "Set backup_retention_period to a value between 7 and 35 (e.g., backup_retention_period = 7) to enable automated backups."
+  },
+  {
+   "resource": "aws_rds_cluster.app2-rds-cluster",
+   "issue": "Insufficient backup retention period (1 day)",
+   "risk": "A 1-day retention window provides minimal recovery capability. Incidents that go undetected for more than 24 hours (e.g., silent data corruption, delayed ransomware activation) cannot be recovered from automated backups.",
+   "remediation": "Increase backup_retention_period to at least 7 days (e.g., backup_retention_period = 7) to align with common compliance and operational best practices."
+  },
+  {
+   "resource": "aws_rds_cluster.app1-rds-cluster",
+   "issue": "Storage encryption not enabled",
+   "risk": "Without storage_encrypted = true, data at rest in the RDS cluster (including automated backups, snapshots, and read replicas) is stored in plaintext. A compromise of the underlying storage media exposes sensitive data.",
+   "remediation": "Add storage_encrypted = true and specify a kms_key_id pointing to a customer-managed KMS key to encrypt all data at rest."
+  },
+  {
+   "resource": "aws_rds_cluster.app2-rds-cluster",
+   "issue": "Storage encryption not enabled",
+   "risk": "Without storage_encrypted = true, data at rest in the RDS cluster (including automated backups, snapshots, and read replicas) is stored in plaintext. A compromise of the underlying storage media exposes sensitive data.",
+   "remediation": "Add storage_encrypted = true and specify a kms_key_id pointing to a customer-managed KMS key to encrypt all data at rest."
+  },
+  {
+   "resource": "aws_rds_cluster.app3-rds-cluster",
+   "issue": "Storage encryption not enabled",
+   "risk": "Without storage_encrypted = true, data at rest in the RDS cluster (including automated backups, snapshots, and read replicas) is stored in plaintext. A compromise of the underlying storage media exposes sensitive data.",
+   "remediation": "Add storage_encrypted = true and specify a kms_key_id pointing to a customer-managed KMS key to encrypt all data at rest."
+  },
+  {
+   "resource": "aws_rds_cluster.app4-rds-cluster",
+   "issue": "Storage encryption not enabled",
+   "risk": "Without storage_encrypted = true, data at rest in the RDS cluster (including automated backups, snapshots, and read replicas) is stored in plaintext. A compromise of the underlying storage media exposes sensitive data.",
+   "remediation": "Add storage_encrypted = true and specify a kms_key_id pointing to a customer-managed KMS key to encrypt all data at rest."
+  },
+  {
+   "resource": "aws_rds_cluster.app5-rds-cluster",
+   "issue": "Storage encryption not enabled",
+   "risk": "Without storage_encrypted = true, data at rest in the RDS cluster (including automated backups, snapshots, and read replicas) is stored in plaintext. A compromise of the underlying storage media exposes sensitive data.",
+   "remediation": "Add storage_encrypted = true and specify a kms_key_id pointing to a customer-managed KMS key to encrypt all data at rest."
+  },
+  {
+   "resource": "aws_rds_cluster.app6-rds-cluster",
+   "issue": "Storage encryption not enabled",
+   "risk": "Without storage_encrypted = true, data at rest in the RDS cluster (including automated backups, snapshots, and read replicas) is stored in plaintext. A compromise of the underlying storage media exposes sensitive data.",
+   "remediation": "Add storage_encrypted = true and specify a kms_key_id pointing to a customer-managed KMS key to encrypt all data at rest."
+  },
+  {
+   "resource": "aws_rds_cluster.app7-rds-cluster",
+   "issue": "Storage encryption not enabled",
+   "risk": "Without storage_encrypted = true, data at rest in the RDS cluster (including automated backups, snapshots, and read replicas) is stored in plaintext. A compromise of the underlying storage media exposes sensitive data.",
+   "remediation": "Add storage_encrypted = true and specify a kms_key_id pointing to a customer-managed KMS key to encrypt all data at rest."
+  },
+  {
+   "resource": "aws_rds_cluster.app8-rds-cluster",
+   "issue": "Storage encryption not enabled",
+   "risk": "Without storage_encrypted = true, data at rest in the RDS cluster (including automated backups, snapshots, and read replicas) is stored in plaintext. A compromise of the underlying storage media exposes sensitive data.",
+   "remediation": "Add storage_encrypted = true and specify a kms_key_id pointing to a customer-managed KMS key to encrypt all data at rest."
+  },
+  {
+   "resource": "aws_rds_cluster.app9-rds-cluster",
+   "issue": "Storage encryption not enabled",
+   "risk": "Without storage_encrypted = true, data at rest in the RDS cluster (including automated backups, snapshots, and read replicas) is stored in plaintext. A compromise of the underlying storage media exposes sensitive data.",
+   "remediation": "Add storage_encrypted = true and specify a kms_key_id pointing to a customer-managed KMS key to encrypt all data at rest."
+  },
+  {
+   "resource": "aws_rds_cluster.app1-rds-cluster",
+   "issue": "Deletion protection not enabled",
+   "risk": "Without deletion_protection = true, the RDS cluster can be deleted accidentally or maliciously (e.g., by a compromised IAM principal), resulting in permanent data loss.",
+   "remediation": "Add deletion_protection = true to prevent the cluster from being deleted without first explicitly disabling this setting."
+  },
+  {
+   "resource": "aws_rds_cluster.app2-rds-cluster",
+   "issue": "Deletion protection not enabled",
+   "risk": "Without deletion_protection = true, the RDS cluster can be deleted accidentally or maliciously (e.g., by a compromised IAM principal), resulting in permanent data loss.",
+   "remediation": "Add deletion_protection = true to prevent the cluster from being deleted without first explicitly disabling this setting."
+  },
+  {
+   "resource": "aws_rds_cluster.app3-rds-cluster",
+   "issue": "Deletion protection not enabled",
+   "risk": "Without deletion_protection = true, the RDS cluster can be deleted accidentally or maliciously (e.g., by a compromised IAM principal), resulting in permanent data loss.",
+   "remediation": "Add deletion_protection = true to prevent the cluster from being deleted without first explicitly disabling this setting."
+  },
+  {
+   "resource": "aws_rds_cluster.app4-rds-cluster",
+   "issue": "Deletion protection not enabled",
+   "risk": "Without deletion_protection = true, the RDS cluster can be deleted accidentally or maliciously (e.g., by a compromised IAM principal), resulting in permanent data loss.",
+   "remediation": "Add deletion_protection = true to prevent the cluster from being deleted without first explicitly disabling this setting."
+  },
+  {
+   "resource": "aws_rds_cluster.app5-rds-cluster",
+   "issue": "Deletion protection not enabled",
+   "risk": "Without deletion_protection = true, the RDS cluster can be deleted accidentally or maliciously (e.g., by a compromised IAM principal), resulting in permanent data loss.",
+   "remediation": "Add deletion_protection = true to prevent the cluster from being deleted without first explicitly disabling this setting."
+  },
+  {
+   "resource": "aws_rds_cluster.app6-rds-cluster",
+   "issue": "Deletion protection not enabled",
+   "risk": "Without deletion_protection = true, the RDS cluster can be deleted accidentally or maliciously (e.g., by a compromised IAM principal), resulting in permanent data loss.",
+   "remediation": "Add deletion_protection = true to prevent the cluster from being deleted without first explicitly disabling this setting."
+  },
+  {
+   "resource": "aws_rds_cluster.app7-rds-cluster",
+   "issue": "Deletion protection not enabled",
+   "risk": "Without deletion_protection = true, the RDS cluster can be deleted accidentally or maliciously (e.g., by a compromised IAM principal), resulting in permanent data loss.",
+   "remediation": "Add deletion_protection = true to prevent the cluster from being deleted without first explicitly disabling this setting."
+  },
+  {
+   "resource": "aws_rds_cluster.app8-rds-cluster",
+   "issue": "Deletion protection not enabled",
+   "risk": "Without deletion_protection = true, the RDS cluster can be deleted accidentally or maliciously (e.g., by a compromised IAM principal), resulting in permanent data loss.",
+   "remediation": "Add deletion_protection = true to prevent the cluster from being deleted without first explicitly disabling this setting."
+  },
+  {
+   "resource": "aws_rds_cluster.app9-rds-cluster",
+   "issue": "Deletion protection not enabled",
+   "risk": "Without deletion_protection = true, the RDS cluster can be deleted accidentally or maliciously (e.g., by a compromised IAM principal), resulting in permanent data loss.",
+   "remediation": "Add deletion_protection = true to prevent the cluster from being deleted without first explicitly disabling this setting."
+  },
+  {
+   "resource": "aws_rds_cluster.app1-rds-cluster",
+   "issue": "IAM database authentication not enabled",
+   "risk": "Without iam_database_authentication_enabled = true, the cluster relies solely on static username/password credentials. Static credentials are more susceptible to theft, reuse, and are harder to rotate, increasing the risk of unauthorised database access.",
+   "remediation": "Add iam_database_authentication_enabled = true to allow IAM roles and users to authenticate to the database using short-lived tokens instead of static passwords."
+  },
+  {
+   "resource": "aws_rds_cluster.app2-rds-cluster",
+   "issue": "IAM database authentication not enabled",
+   "risk": "Without iam_database_authentication_enabled = true, the cluster relies solely on static username/password credentials. Static credentials are more susceptible to theft, reuse, and are harder to rotate, increasing the risk of unauthorised database access.",
+   "remediation": "Add iam_database_authentication_enabled = true to allow IAM roles and users to authenticate to the database using short-lived tokens instead of static passwords."
+  },
+  {
+   "resource": "aws_rds_cluster.app3-rds-cluster",
+   "issue": "IAM database authentication not enabled",
+   "risk": "Without iam_database_authentication_enabled = true, the cluster relies solely on static username/password credentials. Static credentials are more susceptible to theft, reuse, and are harder to rotate, increasing the risk of unauthorised database access.",
+   "remediation": "Add iam_database_authentication_enabled = true to allow IAM roles and users to authenticate to the database using short-lived tokens instead of static passwords."
+  },
+  {
+   "resource": "aws_rds_cluster.app4-rds-cluster",
+   "issue": "IAM database authentication not enabled",
+   "risk": "Without iam_database_authentication_enabled = true, the cluster relies solely on static username/password credentials. Static credentials are more susceptible to theft, reuse, and are harder to rotate, increasing the risk of unauthorised database access.",
+   "remediation": "Add iam_database_authentication_enabled = true to allow IAM roles and users to authenticate to the database using short-lived tokens instead of static passwords."
+  },
+  {
+   "resource": "aws_rds_cluster.app5-rds-cluster",
+   "issue": "IAM database authentication not enabled",
+   "risk": "Without iam_database_authentication_enabled = true, the cluster relies solely on static username/password credentials. Static credentials are more susceptible to theft, reuse, and are harder to rotate, increasing the risk of unauthorised database access.",
+   "remediation": "Add iam_database_authentication_enabled = true to allow IAM roles and users to authenticate to the database using short-lived tokens instead of static passwords."
+  },
+  {
+   "resource": "aws_rds_cluster.app6-rds-cluster",
+   "issue": "IAM database authentication not enabled",
+   "risk": "Without iam_database_authentication_enabled = true, the cluster relies solely on static username/password credentials. Static credentials are more susceptible to theft, reuse, and are harder to rotate, increasing the risk of unauthorised database access.",
+   "remediation": "Add iam_database_authentication_enabled = true to allow IAM roles and users to authenticate to the database using short-lived tokens instead of static passwords."
+  },
+  {
+   "resource": "aws_rds_cluster.app7-rds-cluster",
+   "issue": "IAM database authentication not enabled",
+   "risk": "Without iam_database_authentication_enabled = true, the cluster relies solely on static username/password credentials. Static credentials are more susceptible to theft, reuse, and are harder to rotate, increasing the risk of unauthorised database access.",
+   "remediation": "Add iam_database_authentication_enabled = true to allow IAM roles and users to authenticate to the database using short-lived tokens instead of static passwords."
+  },
+  {
+   "resource": "aws_rds_cluster.app8-rds-cluster",
+   "issue": "IAM database authentication not enabled",
+   "risk": "Without iam_database_authentication_enabled = true, the cluster relies solely on static username/password credentials. Static credentials are more susceptible to theft, reuse, and are harder to rotate, increasing the risk of unauthorised database access.",
+   "remediation": "Add iam_database_authentication_enabled = true to allow IAM roles and users to authenticate to the database using short-lived tokens instead of static passwords."
+  },
+  {
+   "resource": "aws_rds_cluster.app9-rds-cluster",
+   "issue": "IAM database authentication not enabled",
+   "risk": "Without iam_database_authentication_enabled = true, the cluster relies solely on static username/password credentials. Static credentials are more susceptible to theft, reuse, and are harder to rotate, increasing the risk of unauthorised database access.",
+   "remediation": "Add iam_database_authentication_enabled = true to allow IAM roles and users to authenticate to the database using short-lived tokens instead of static passwords."
+  },
+  {
+   "resource": "aws_rds_cluster.app1-rds-cluster",
+   "issue": "CloudWatch audit/error/general/slowquery logs not enabled",
+   "risk": "Without enabled_cloudwatch_logs_exports configured, database activity (queries, errors, logins) is not shipped to CloudWatch Logs. This prevents detection of suspicious activity, failed login attempts, and complicates forensic investigation after a security incident.",
+   "remediation": "Add enabled_cloudwatch_logs_exports = [\"audit\", \"error\", \"general\", \"slowquery\"] (adjust list to the engine in use) to stream database logs to CloudWatch for monitoring and alerting."
+  },
+  {
+   "resource": "aws_rds_cluster.app2-rds-cluster",
+   "issue": "CloudWatch audit/error/general/slowquery logs not enabled",
+   "risk": "Without enabled_cloudwatch_logs_exports configured, database activity (queries, errors, logins) is not shipped to CloudWatch Logs. This prevents detection of suspicious activity, failed login attempts, and complicates forensic investigation after a security incident.",
+   "remediation": "Add enabled_cloudwatch_logs_exports = [\"audit\", \"error\", \"general\", \"slowquery\"] (adjust list to the engine in use) to stream database logs to CloudWatch for monitoring and alerting."
+  },
+  {
+   "resource": "aws_rds_cluster.app3-rds-cluster",
+   "issue": "CloudWatch audit/error/general/slowquery logs not enabled",
+   "risk": "Without enabled_cloudwatch_logs_exports configured, database activity (queries, errors, logins) is not shipped to CloudWatch Logs. This prevents detection of suspicious activity, failed login attempts, and complicates forensic investigation after a security incident.",
+   "remediation": "Add enabled_cloudwatch_logs_exports = [\"audit\", \"error\", \"general\", \"slowquery\"] (adjust list to the engine in use) to stream database logs to CloudWatch for monitoring and alerting."
+  },
+  {
+   "resource": "aws_rds_cluster.app4-rds-cluster",
+   "issue": "CloudWatch audit/error/general/slowquery logs not enabled",
+   "risk": "Without enabled_cloudwatch_logs_exports configured, database activity (queries, errors, logins) is not shipped to CloudWatch Logs. This prevents detection of suspicious activity, failed login attempts, and complicates forensic investigation after a security incident.",
+   "remediation": "Add enabled_cloudwatch_logs_exports = [\"audit\", \"error\", \"general\", \"slowquery\"] (adjust list to the engine in use) to stream database logs to CloudWatch for monitoring and alerting."
+  },
+  {
+   "resource": "aws_rds_cluster.app5-rds-cluster",
+   "issue": "CloudWatch audit/error/general/slowquery logs not enabled",
+   "risk": "Without enabled_cloudwatch_logs_exports configured, database activity (queries, errors, logins) is not shipped to CloudWatch Logs. This prevents detection of suspicious activity, failed login attempts, and complicates forensic investigation after a security incident.",
+   "remediation": "Add enabled_cloudwatch_logs_exports = [\"audit\", \"error\", \"general\", \"slowquery\"] (adjust list to the engine in use) to stream database logs to CloudWatch for monitoring and alerting."
+  },
+  {
+   "resource": "aws_rds_cluster.app6-rds-cluster",
+   "issue": "CloudWatch audit/error/general/slowquery logs not enabled",
+   "risk": "Without enabled_cloudwatch_logs_exports configured, database activity (queries, errors, logins) is not shipped to CloudWatch Logs. This prevents detection of suspicious activity, failed login attempts, and complicates forensic investigation after a security incident.",
+   "remediation": "Add enabled_cloudwatch_logs_exports = [\"audit\", \"error\", \"general\", \"slowquery\"] (adjust list to the engine in use) to stream database logs to CloudWatch for monitoring and alerting."
+  },
+  {
+   "resource": "aws_rds_cluster.app7-rds-cluster",
+   "issue": "CloudWatch audit/error/general/slowquery logs not enabled",
+   "risk": "Without enabled_cloudwatch_logs_exports configured, database activity (queries, errors, logins) is not shipped to CloudWatch Logs. This prevents detection of suspicious activity, failed login attempts, and complicates forensic investigation after a security incident.",
+   "remediation": "Add enabled_cloudwatch_logs_exports = [\"audit\", \"error\", \"general\", \"slowquery\"] (adjust list to the engine in use) to stream database logs to CloudWatch for monitoring and alerting."
+  },
+  {
+   "resource": "aws_rds_cluster.app8-rds-cluster",
+   "issue": "CloudWatch audit/error/general/slowquery logs not enabled",
+   "risk": "Without enabled_cloudwatch_logs_exports configured, database activity (queries, errors, logins) is not shipped to CloudWatch Logs. This prevents detection of suspicious activity, failed login attempts, and complicates forensic investigation after a security incident.",
+   "remediation": "Add enabled_cloudwatch_logs_exports = [\"audit\", \"error\", \"general\", \"slowquery\"] (adjust list to the engine in use) to stream database logs to CloudWatch for monitoring and alerting."
+  },
+  {
+   "resource": "aws_rds_cluster.app9-rds-cluster",
+   "issue": "CloudWatch audit/error/general/slowquery logs not enabled",
+   "risk": "Without enabled_cloudwatch_logs_exports configured, database activity (queries, errors, logins) is not shipped to CloudWatch Logs. This prevents detection of suspicious activity, failed login attempts, and complicates forensic investigation after a security incident.",
+   "remediation": "Add enabled_cloudwatch_logs_exports = [\"audit\", \"error\", \"general\", \"slowquery\"] (adjust list to the engine in use) to stream database logs to CloudWatch for monitoring and alerting."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c128"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c116",
+    "c117"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c126",
+    "c127"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c136",
+    "c137"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c145",
+    "c146"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": [
+    "c154",
+    "c155"
+   ]
+  },
+  {
+   "finding": 7,
+   "candidates": [
+    "c163",
+    "c164"
+   ]
+  },
+  {
+   "finding": 8,
+   "candidates": [
+    "c172",
+    "c173"
+   ]
+  },
+  {
+   "finding": 9,
+   "candidates": [
+    "c181",
+    "c182"
+   ]
+  },
+  {
+   "finding": 10,
+   "candidates": [
+    "c190",
+    "c191"
+   ]
+  },
+  {
+   "finding": 11,
+   "candidates": [
+    "c110"
+   ]
+  },
+  {
+   "finding": 12,
+   "candidates": [
+    "c120"
+   ]
+  },
+  {
+   "finding": 13,
+   "candidates": [
+    "c130"
+   ]
+  },
+  {
+   "finding": 14,
+   "candidates": [
+    "c139"
+   ]
+  },
+  {
+   "finding": 15,
+   "candidates": [
+    "c148"
+   ]
+  },
+  {
+   "finding": 16,
+   "candidates": [
+    "c157"
+   ]
+  },
+  {
+   "finding": 17,
+   "candidates": [
+    "c166"
+   ]
+  },
+  {
+   "finding": 18,
+   "candidates": [
+    "c175"
+   ]
+  },
+  {
+   "finding": 19,
+   "candidates": [
+    "c184"
+   ]
+  },
+  {
+   "finding": 20,
+   "candidates": [
+    "c111"
+   ]
+  },
+  {
+   "finding": 21,
+   "candidates": [
+    "c121"
+   ]
+  },
+  {
+   "finding": 22,
+   "candidates": [
+    "c131"
+   ]
+  },
+  {
+   "finding": 23,
+   "candidates": [
+    "c140"
+   ]
+  },
+  {
+   "finding": 24,
+   "candidates": [
+    "c149"
+   ]
+  },
+  {
+   "finding": 25,
+   "candidates": [
+    "c158"
+   ]
+  },
+  {
+   "finding": 26,
+   "candidates": [
+    "c167"
+   ]
+  },
+  {
+   "finding": 27,
+   "candidates": [
+    "c176"
+   ]
+  },
+  {
+   "finding": 28,
+   "candidates": [
+    "c185"
+   ]
+  },
+  {
+   "finding": 29,
+   "candidates": [
+    "c113",
+    "c114"
+   ]
+  },
+  {
+   "finding": 30,
+   "candidates": [
+    "c123",
+    "c124"
+   ]
+  },
+  {
+   "finding": 31,
+   "candidates": [
+    "c133",
+    "c134"
+   ]
+  },
+  {
+   "finding": 32,
+   "candidates": [
+    "c142",
+    "c143"
+   ]
+  },
+  {
+   "finding": 33,
+   "candidates": [
+    "c151",
+    "c152"
+   ]
+  },
+  {
+   "finding": 34,
+   "candidates": [
+    "c160",
+    "c161"
+   ]
+  },
+  {
+   "finding": 35,
+   "candidates": [
+    "c169",
+    "c170"
+   ]
+  },
+  {
+   "finding": 36,
+   "candidates": [
+    "c178",
+    "c179"
+   ]
+  },
+  {
+   "finding": 37,
+   "candidates": [
+    "c187",
+    "c188"
+   ]
+  }
+ ]
+}

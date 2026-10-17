@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "reg07.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:16:34",
+  "response": "```json\n[\n  {\n    \"resource\": \"aws_secretsmanager_secret_policy.this\",\n    \"issue\": \"Public Policy\",\n    \"risk\": \"Allows public access to the secret if not properly configured\",\n    \"remediation\": \"Set `block_public_policy` to `true` to prevent public access\"\n  },\n  {\n    \"resource\": \"aws_secretsmanager_secret_version.this\",\n    \"issue\": \"Insecure Secret Storage\",\n    \"risk\": \"Secrets may be stored in an insecure manner if `secret_binary` or `secret_string` are not properly managed\",\n    \"remediation\": \"Ensure `secret_binary` and `secret_string` are securely managed and encrypted\"\n  },\n  {\n    \"resource\": \"aws_secretsmanager_secret_version.ignore_changes\",\n    \"issue\": \"Insecure Secret Storage\",\n    \"risk\": \"Secrets may be stored in an insecure manner if `secret_binary` or `secret_string` are not properly managed\",\n    \"remediation\": \"Ensure `secret_binary` and `secret_string` are securely managed and encrypted\"\n  }\n]\n```"
+}

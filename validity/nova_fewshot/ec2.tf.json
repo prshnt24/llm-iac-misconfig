@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "2": {
+   "resource": "aws_ebs_snapshot.example_snapshot",
+   "issue": "Unencrypted EBS snapshot",
+   "risk": "Data in the EBS snapshot is not encrypted, which can be accessed if the snapshot is compromised",
+   "remediation": "Set the `encrypted` attribute to `true` and provide a `kms_key_id` for the encryption"
+  }
+ }
+}

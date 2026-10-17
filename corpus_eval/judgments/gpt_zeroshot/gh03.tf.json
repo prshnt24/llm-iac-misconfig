@@ -1,0 +1,17 @@
+{
+ "file": "gh03.tf",
+ "findings": [
+  {
+   "resource": "data.aws_iam_policy_document.lambda_write_logs",
+   "issue": "Overly broad CloudWatch Logs permissions",
+   "risk": "The policy allows log group and log stream creation and log event writes to all CloudWatch Logs resources in all regions and accounts, violating least privilege and increasing blast radius if the Lambda execution role is abused.",
+   "remediation": "Restrict the `resources` attribute in `data \"aws_iam_policy_document\" \"lambda_write_logs\"` to the specific Lambda log group ARN pattern for each function instead of `arn:aws:logs:*:*:*`, e.g. scope to `/aws/lambda/<function_name>` and its streams."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  }
+ ]
+}

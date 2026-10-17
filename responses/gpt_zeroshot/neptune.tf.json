@@ -1,0 +1,8 @@
+{
+  "model": "global.openai.gpt-5.4",
+  "strategy": "zeroshot",
+  "file": "neptune.tf",
+  "temperature": null,
+  "timestamp": "2026-10-16T21:40:23",
+  "response": "[\n  {\n    \"resource\": \"aws_neptune_cluster.default\",\n    \"issue\": \"Storage encryption disabled\",\n    \"risk\": \"Data stored in the Neptune cluster is not encrypted at rest, increasing the impact of unauthorized access to underlying storage, snapshots, or backups and potentially violating compliance requirements.\",\n    \"remediation\": \"Set the attribute `storage_encrypted = true` in `aws_neptune_cluster.default`. Optionally specify `kms_key_arn` to use a customer-managed KMS key.\"\n  },\n  {\n    \"resource\": \"aws_neptune_cluster.default\",\n    \"issue\": \"Final snapshot disabled on deletion\",\n    \"risk\": \"Deleting the cluster will skip creation of a final snapshot, which can cause irreversible data loss and hinder forensic recovery after accidental or malicious deletion.\",\n    \"remediation\": \"Set `skip_final_snapshot = false` in `aws_neptune_cluster.default` and provide a `final_snapshot_identifier` value.\"\n  }\n]"
+}

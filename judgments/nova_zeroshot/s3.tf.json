@@ -1,0 +1,127 @@
+{
+ "file": "s3.tf",
+ "findings": [
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "Public Bucket",
+   "risk": "Data stored in the bucket can be accessed by anyone, leading to potential data breaches.",
+   "remediation": "Set the `acl` attribute to `private` or use a bucket policy to restrict access."
+  },
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "Unencrypted Bucket",
+   "risk": "Data stored in the bucket is not encrypted, which can lead to unauthorized access if the data is intercepted.",
+   "remediation": "Add a `server_side_encryption_configuration` block to enable encryption."
+  },
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "No Access Logs",
+   "risk": "Without access logs, it is difficult to track who has accessed the data and when, making it harder to detect and respond to security incidents.",
+   "remediation": "Add a `logging` block to enable access logging."
+  },
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "No Versioning",
+   "risk": "Without versioning, it is difficult to recover from accidental deletions or overwrites.",
+   "remediation": "Add a `versioning` block and set `enabled` to `true`."
+  },
+  {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "Unencrypted Bucket",
+   "risk": "Data stored in the bucket is not encrypted, which can lead to unauthorized access if the data is intercepted.",
+   "remediation": "Add a `server_side_encryption_configuration` block to enable encryption."
+  },
+  {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "No Access Logs",
+   "risk": "Without access logs, it is difficult to track who has accessed the data and when, making it harder to detect and respond to security incidents.",
+   "remediation": "Add a `logging` block to enable access logging."
+  },
+  {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "No Versioning",
+   "risk": "Without versioning, it is difficult to recover from accidental deletions or overwrites.",
+   "remediation": "Add a `versioning` block and set `enabled` to `true`."
+  },
+  {
+   "resource": "aws_s3_bucket.operations",
+   "issue": "Unencrypted Bucket",
+   "risk": "Data stored in the bucket is not encrypted, which can lead to unauthorized access if the data is intercepted.",
+   "remediation": "Add a `server_side_encryption_configuration` block to enable encryption."
+  },
+  {
+   "resource": "aws_s3_bucket.operations",
+   "issue": "No Access Logs",
+   "risk": "Without access logs, it is difficult to track who has accessed the data and when, making it harder to detect and respond to security incidents.",
+   "remediation": "Add a `logging` block to enable access logging."
+  },
+  {
+   "resource": "aws_s3_bucket.data_science",
+   "issue": "Unencrypted Bucket",
+   "risk": "Data stored in the bucket is not encrypted, which can lead to unauthorized access if the data is intercepted.",
+   "remediation": "Add a `server_side_encryption_configuration` block to enable encryption."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c192"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c196"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c197"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c198"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c208"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c209"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": [
+    "c210"
+   ]
+  },
+  {
+   "finding": 7,
+   "candidates": [
+    "c220"
+   ]
+  },
+  {
+   "finding": 8,
+   "candidates": [
+    "c221"
+   ]
+  },
+  {
+   "finding": 9,
+   "candidates": [
+    "c203"
+   ]
+  }
+ ]
+}

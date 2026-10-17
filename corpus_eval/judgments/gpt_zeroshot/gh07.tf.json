@@ -1,0 +1,57 @@
+{
+ "file": "gh07.tf",
+ "findings": [
+  {
+   "resource": "module.nlb_sg",
+   "issue": "Unrestricted outbound access",
+   "risk": "The load balancer security group allows all egress traffic to 0.0.0.0/0, which violates least privilege and can enable unintended outbound connectivity if the security group is reused or if future LB features initiate outbound traffic.",
+   "remediation": "Restrict the egress_with_cidr_blocks rule by replacing `{ rule = \"all-all\", cidr_blocks = \"0.0.0.0/0\" }` with only the required destination ports and CIDRs, or remove broad egress and define explicit egress rules."
+  },
+  {
+   "resource": "module.cluster_sg",
+   "issue": "Overly permissive intra-cluster ingress",
+   "risk": "The rule `ingress_with_self = [{ rule = \"all-all\" }]` allows all protocols and all ports from any resource sharing the same security group, increasing the blast radius of a compromised node and enabling unrestricted lateral movement.",
+   "remediation": "Replace `ingress_with_self = [{ rule = \"all-all\" }]` with explicit self-referencing ingress rules only for required cluster communication ports and protocols."
+  },
+  {
+   "resource": "module.cluster_sg",
+   "issue": "Direct external access to backend nodes",
+   "risk": "The control-plane nodes accept traffic directly from `var.external_source_cidrs` on ports 6443 and 50000, bypassing the load balancer and exposing the nodes themselves to attack, scanning, and potential exploitation.",
+   "remediation": "Remove the direct external ingress by deleting the `ingress_cidr_blocks = var.external_source_cidrs` and corresponding `ingress_with_cidr_blocks` entries for ports 6443 and 50000, and allow only `ingress_with_source_security_group_id` from `module.nlb_sg.security_group_id` unless direct access is strictly required."
+  },
+  {
+   "resource": "module.cluster_sg",
+   "issue": "Unrestricted outbound access",
+   "risk": "The cluster security group allows all outbound traffic to 0.0.0.0/0, enabling unrestricted internet egress from nodes and increasing the risk of data exfiltration or command-and-control communication if a node is compromised.",
+   "remediation": "Restrict `egress_with_cidr_blocks` by replacing `{ rule = \"all-all\", cidr_blocks = \"0.0.0.0/0\" }` with explicit outbound rules limited to required destinations, ports, and protocols."
+  },
+  {
+   "resource": "aws_lb_listener.https",
+   "issue": "No TLS termination or listener-level encryption",
+   "risk": "The listener on port 443 uses `protocol = \"TCP\"` rather than `TLS`, so the load balancer does not enforce certificate-based termination or listener-level TLS policy, reducing control over transport security at the edge.",
+   "remediation": "If TLS termination at the load balancer is desired, change the listener to `protocol = \"TLS\"` and configure the required `certificate_arn` and an appropriate SSL policy on `aws_lb_listener.https`."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  }
+ ]
+}

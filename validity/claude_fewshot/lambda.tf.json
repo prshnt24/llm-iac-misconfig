@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 6,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "6": {
+   "resource": "aws_iam_role.iam_for_lambda",
+   "issue": "No permissions boundary on the Lambda execution role",
+   "risk": "Without a permissions_boundary the role can be granted any policy up to the maximum allowed by the account, making privilege escalation easier if an attacker can attach additional policies to the role or to the Lambda function.",
+   "remediation": "Define an aws_iam_policy that acts as a permissions boundary limiting the maximum effective permissions, then set permissions_boundary = aws_iam_policy.lambda_boundary.arn on the aws_iam_role resource."
+  }
+ }
+}

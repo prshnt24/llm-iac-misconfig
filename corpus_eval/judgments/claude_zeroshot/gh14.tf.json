@@ -1,0 +1,85 @@
+{
+ "file": "gh14.tf",
+ "findings": [
+  {
+   "resource": "aws_security_group.terra_sg",
+   "issue": "Unrestricted SSH access from the internet (0.0.0.0/0 on port 22)",
+   "risk": "Exposes the SSH port to the entire internet, allowing brute-force attacks, credential stuffing, and exploitation of SSH vulnerabilities by any actor on the internet.",
+   "remediation": "Restrict the cidr_blocks for the SSH ingress rule to a known, trusted IP range (e.g., your corporate NAT IP or VPN CIDR). Change cidr_blocks = [\"0.0.0.0/0\"] to cidr_blocks = [\"<trusted-ip>/32\"] for the ingress block with from_port = 22 and to_port = 22."
+  },
+  {
+   "resource": "aws_security_group.terra_sg",
+   "issue": "Unrestricted RDP access from the internet (0.0.0.0/0 on port 3389)",
+   "risk": "Exposes the RDP port to the entire internet, making instances vulnerable to brute-force attacks, ransomware delivery, and exploitation of RDP vulnerabilities such as BlueKeep.",
+   "remediation": "Restrict the cidr_blocks for the RDP ingress rule to a known, trusted IP range. Change cidr_blocks = [\"0.0.0.0/0\"] to cidr_blocks = [\"<trusted-ip>/32\"] for the ingress block with from_port = 3389 and to_port = 3389."
+  },
+  {
+   "resource": "aws_security_group.terra_sg",
+   "issue": "Unrestricted egress to all destinations (0.0.0.0/0 on all ports/protocols)",
+   "risk": "Allows any outbound traffic to any destination on any port, enabling data exfiltration, command-and-control communication, and lateral movement if an instance is compromised.",
+   "remediation": "Restrict egress rules to only the specific ports, protocols, and destination CIDRs required by the application. Replace the egress block's cidr_blocks = [\"0.0.0.0/0\"] and protocol = \"-1\" with explicit rules, e.g., allow only port 443 to specific CIDRs needed by the workload."
+  },
+  {
+   "resource": "aws_subnet.terra_sub",
+   "issue": "Auto-assignment of public IP addresses on instance launch (map_public_ip_on_launch = true implied by variable)",
+   "risk": "Any EC2 instance launched in this subnet automatically receives a public IP address, directly exposing it to the internet and increasing the attack surface unnecessarily.",
+   "remediation": "Set map_public_ip_on_launch = false in the aws_subnet.terra_sub resource (or ensure var.map_public_ip_on_launch defaults to false). Use an Elastic IP or NAT Gateway pattern to control public exposure explicitly."
+  },
+  {
+   "resource": "aws_vpc.terra_vpc",
+   "issue": "VPC Flow Logs not enabled",
+   "risk": "Without Flow Logs, there is no visibility into network traffic within the VPC, making it impossible to detect anomalous traffic patterns, data exfiltration, or unauthorized access attempts.",
+   "remediation": "Add an aws_flow_log resource referencing this VPC. For example: resource \"aws_flow_log\" \"terra_vpc_flow_log\" { vpc_id = aws_vpc.terra_vpc.id traffic_type = \"ALL\" iam_role_arn = aws_iam_role.flow_log_role.arn log_destination = aws_cloudwatch_log_group.flow_log.arn }"
+  },
+  {
+   "resource": "aws_vpc.terra_vpc",
+   "issue": "DNS hostnames not explicitly enabled",
+   "risk": "Without explicit configuration, DNS hostname resolution behaviour is undefined and may default to disabled, but more importantly the absence of explicit hardening settings (enable_dns_support, enable_dns_hostnames) indicates a lack of deliberate security baseline configuration.",
+   "remediation": "Explicitly set enable_dns_hostnames = false and enable_dns_support = true in the aws_vpc.terra_vpc resource to enforce a known, intentional DNS configuration baseline."
+  },
+  {
+   "resource": "aws_route_table.terra_rt",
+   "issue": "Default route (0.0.0.0/0) points directly to an Internet Gateway making this a fully public subnet",
+   "risk": "All instances in the associated subnet are directly reachable from and can reach the internet, maximising the blast radius of any compromise. There is no NAT Gateway or private subnet separation.",
+   "remediation": "Separate public and private subnets. Move workloads that do not need inbound internet access to a private subnet with a NAT Gateway for outbound-only internet access. Remove the 0.0.0.0/0 -> igw route from subnets hosting sensitive resources."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c53"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c54"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c56"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c57"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  }
+ ]
+}

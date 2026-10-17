@@ -1,0 +1,67 @@
+{
+ "file": "reg13.tf",
+ "findings": [
+  {
+   "resource": "aws_kms_key.this",
+   "issue": "KMS key policy lockout safety check can be disabled",
+   "risk": "Setting bypass_policy_lockout_safety_check to true can allow creation of a key policy that removes administrative access to the key, causing loss of control over the key or unsafe policy deployment.",
+   "remediation": "Set the aws_kms_key.this attribute bypass_policy_lockout_safety_check = false, or remove the attribute so the safety check remains enforced."
+  },
+  {
+   "resource": "aws_kms_external_key.this",
+   "issue": "KMS key policy lockout safety check can be disabled",
+   "risk": "Setting bypass_policy_lockout_safety_check to true can allow creation of a key policy that removes administrative access to the key, causing loss of control over the key or unsafe policy deployment.",
+   "remediation": "Set the aws_kms_external_key.this attribute bypass_policy_lockout_safety_check = false, or remove the attribute so the safety check remains enforced."
+  },
+  {
+   "resource": "aws_kms_replica_key.this",
+   "issue": "KMS key policy lockout safety check can be disabled",
+   "risk": "Setting bypass_policy_lockout_safety_check to true can allow creation of a key policy that removes administrative access to the key, causing loss of control over the key or unsafe policy deployment.",
+   "remediation": "Set the aws_kms_replica_key.this attribute bypass_policy_lockout_safety_check = false, or remove the attribute so the safety check remains enforced."
+  },
+  {
+   "resource": "aws_kms_replica_external_key.this",
+   "issue": "KMS key policy lockout safety check can be disabled",
+   "risk": "Setting bypass_policy_lockout_safety_check to true can allow creation of a key policy that removes administrative access to the key, causing loss of control over the key or unsafe policy deployment.",
+   "remediation": "Set the aws_kms_replica_external_key.this attribute bypass_policy_lockout_safety_check = false, or remove the attribute so the safety check remains enforced."
+  },
+  {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "Overly permissive default key policy grants kms:* to the account root principal",
+   "risk": "Granting full KMS administration and usage permissions with actions = [\"kms:*\"] to the account root principal enables broad privilege escalation and unrestricted use or management of the key by any IAM principal that can obtain delegated access.",
+   "remediation": "Disable the broad default statement by setting var.enable_default_policy = false, or replace the statement sid = \"Default\" with least-privilege actions such as administrative actions only and separate narrowly scoped usage statements."
+  },
+  {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "Overly permissive key owner policy grants kms:* to all configured key owners",
+   "risk": "Granting actions = [\"kms:*\"] to all principals in var.key_owners gives unrestricted administrative and cryptographic access, increasing the blast radius of credential compromise and violating least privilege.",
+   "remediation": "Modify the statement sid = \"KeyOwner\" in data.aws_iam_policy_document.this to replace actions = [\"kms:*\"] with a minimal set of required administrative or usage actions, or move broad permissions into separate tightly scoped statements for specific principals."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  }
+ ]
+}

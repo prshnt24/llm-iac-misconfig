@@ -1,0 +1,46 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "INVALID"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_iam_user_login_profile.default",
+   "issue": "Insecure Password Length",
+   "risk": "Using a short password length can lead to weak passwords that are easier to crack, increasing the risk of unauthorized access.",
+   "remediation": "Set a higher value for `password_length` to ensure stronger passwords. For example, `password_length = 16` or higher."
+  },
+  "1": {
+   "resource": "aws_iam_user_login_profile.default",
+   "issue": "Lack of Password Rotation Policy",
+   "risk": "Without a password rotation policy, passwords may never be changed, increasing the risk of compromise over time.",
+   "remediation": "Implement a password rotation policy using AWS IAM password policy or a custom solution to enforce regular password changes."
+  },
+  "2": {
+   "resource": "aws_iam_user.default",
+   "issue": "Potential Overly Permissive Permissions",
+   "risk": "If `var.permissions_boundary` is not properly set, the IAM user may have more permissions than necessary, increasing the attack surface.",
+   "remediation": "Ensure `var.permissions_boundary` is set to a properly configured policy that limits the user's permissions to the minimum required."
+  },
+  "3": {
+   "resource": "aws_iam_user_login_profile.default",
+   "issue": "Insecure PGP Key Usage",
+   "risk": "If the PGP key is not properly managed or is publicly accessible, it can lead to the compromise of encrypted data.",
+   "remediation": "Ensure that the PGP key is securely managed and not publicly accessible. Consider using AWS KMS for encryption instead of PGP keys."
+  }
+ }
+}

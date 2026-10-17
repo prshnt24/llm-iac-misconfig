@@ -1,0 +1,24 @@
+﻿# Local tooling and temporary build files
+.tmp_python_lib/
+.virtual_documents/
+anaconda_projects/
+*.tmp
+~$*.docx
+
+# Terraform runtime state and credentials
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+credentials.json
+*.tfbackend
+.env
+responses/*.prompt.txt
+__pycache__/
+corpus_work/
+scan_work/
+
+# Dissertation documents are not part of this repository
+/*.docx
+/*.pdf
+patch_builder.py

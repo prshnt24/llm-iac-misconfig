@@ -1,0 +1,28 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_51 Ensure ECR Image Tags are immutable (resource aws_ecr_repository.repository)",
+   "issue": "ECR image tags are mutable",
+   "remediation": "Set the repository to use immutable tags by changing the attribute `image_tag_mutability = \"IMMUTABLE\"` in `aws_ecr_repository.repository`."
+  },
+  {
+   "finding": 1,
+   "known": "CKV_AWS_163 Ensure ECR image scanning on push is enabled (resource aws_ecr_repository.repository)",
+   "issue": "ECR image scanning on push is not enabled",
+   "remediation": "Add an image scanning configuration block to `aws_ecr_repository.repository`: `image_scanning_configuration { scan_on_push = true }`."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Setting image_tag_mutability = \"IMMUTABLE\" on aws_ecr_repository.repository is the standard fix for CKV_AWS_51."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "Adding image_scanning_configuration { scan_on_push = true } to the repository is the standard fix for CKV_AWS_163."
+  }
+ ]
+}

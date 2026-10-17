@@ -1,0 +1,46 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  },
+  {
+   "finding": 3,
+   "label": "VALID"
+  },
+  {
+   "finding": 5,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 7,
+   "label": "INVALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_sns_topic_policy.billing_alert_policy",
+   "issue": "Overly Permissive SNS Subscribe Policy (Wildcard Principal)",
+   "risk": "The 'EmailSubscribe' statement allows any AWS principal ('Principal': {'AWS': '*'}) to subscribe to the SNS topic. Even with the sns:Protocol condition limiting to 'email', this allows any unauthenticated or unauthorized AWS account to subscribe, potentially exfiltrating billing alert notifications to attacker-controlled email addresses and causing information disclosure of financial data.",
+   "remediation": "Restrict the Principal to specific trusted AWS account ARNs or remove the EmailSubscribe statement entirely, relying on Terraform's aws_sns_topic_subscription resource for managing subscriptions. Change Principal from {'AWS': '*'} to {'AWS': 'arn:aws:iam::<ACCOUNT_ID>:root'} or a specific IAM role/user ARN. Also add a Condition with 'aws:SourceAccount' to restrict to your account."
+  },
+  "3": {
+   "resource": "aws_sqs_queue_policy.sns_dlq_policy",
+   "issue": "SQS Queue Policy Missing Source ARN Condition",
+   "risk": "The SQS queue policy allows the SNS service principal to send messages without restricting which specific SNS topic can send to the queue. This is a 'confused deputy' vulnerability \u2014 any SNS topic in any AWS account could potentially send messages to this DLQ if they can reference its ARN, leading to unauthorized message injection or queue flooding.",
+   "remediation": "Add a Condition block to the SQS policy statement to restrict the source SNS topic using 'ArnEquals': Condition = { ArnEquals = { 'aws:SourceArn' = aws_sns_topic.billing_alert.arn } }. Also add 'aws:SourceAccount' condition: StringEquals = { 'aws:SourceAccount' = data.aws_caller_identity.current.account_id }."
+  },
+  "5": {
+   "resource": "aws_sns_topic_policy.billing_alert_policy",
+   "issue": "SNS Topic Policy Missing aws:SourceAccount or aws:SourceArn Condition for CloudWatch",
+   "risk": "The CloudWatchPublish statement allows the cloudwatch.amazonaws.com service principal to publish to the SNS topic without restricting the source account or source ARN. This is a confused deputy attack vector where CloudWatch alarms from other AWS accounts could potentially publish messages to this SNS topic if they obtain the topic ARN.",
+   "remediation": "Add a Condition block to the CloudWatchPublish statement: Condition = { StringEquals = { 'aws:SourceAccount' = '<ACCOUNT_ID>' } } or more specifically ArnLike = { 'aws:SourceArn' = 'arn:aws:cloudwatch:<region>:<account-id>:alarm:*' }. Use data.aws_caller_identity.current.account_id to dynamically reference the account ID."
+  },
+  "7": {
+   "resource": "aws_sns_topic_subscription.sns_dlq_subscription",
+   "issue": "SNS to SQS Subscription Missing Raw Message Delivery and Redrive Policy",
+   "risk": "The SNS subscription to the SQS DLQ does not have 'raw_message_delivery' configured, meaning SNS metadata is wrapped around the message payload. More critically, the SQS queue itself is being used as a DLQ but there is no redrive policy configured on the SNS topic subscription or source queue, meaning the DLQ pattern is not properly implemented and failed messages may be silently dropped.",
+   "remediation": "Set 'raw_message_delivery = true' on the aws_sns_topic_subscription.sns_dlq_subscription resource to ensure clean message format. Additionally, configure a proper redrive policy on the source SQS queue if applicable, and consider adding a redrive_policy attribute to the aws_sqs_queue resource pointing to the DLQ ARN with an appropriate maxReceiveCount."
+  }
+ }
+}

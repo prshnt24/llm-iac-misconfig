@@ -1,0 +1,116 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV2_AWS_6 Ensure that S3 bucket has a Public Access block (resource aws_s3_bucket.data)",
+   "issue": "Public Bucket",
+   "remediation": "Set the `acl` attribute to `private` or use a bucket policy to restrict access."
+  },
+  {
+   "finding": 1,
+   "known": "CKV_AWS_145 Ensure that S3 buckets are encrypted with KMS by default (resource aws_s3_bucket.data)",
+   "issue": "Unencrypted Bucket",
+   "remediation": "Add a `server_side_encryption_configuration` block to enable encryption."
+  },
+  {
+   "finding": 2,
+   "known": "CKV_AWS_18 Ensure the S3 bucket has access logging enabled (resource aws_s3_bucket.data)",
+   "issue": "No Access Logs",
+   "remediation": "Add a `logging` block to enable access logging."
+  },
+  {
+   "finding": 3,
+   "known": "CKV_AWS_21 Ensure all data stored in the S3 bucket have versioning enabled (resource aws_s3_bucket.data)",
+   "issue": "No Versioning",
+   "remediation": "Add a `versioning` block and set `enabled` to `true`."
+  },
+  {
+   "finding": 4,
+   "known": "CKV_AWS_145 Ensure that S3 buckets are encrypted with KMS by default (resource aws_s3_bucket.financials)",
+   "issue": "Unencrypted Bucket",
+   "remediation": "Add a `server_side_encryption_configuration` block to enable encryption."
+  },
+  {
+   "finding": 5,
+   "known": "CKV_AWS_18 Ensure the S3 bucket has access logging enabled (resource aws_s3_bucket.financials)",
+   "issue": "No Access Logs",
+   "remediation": "Add a `logging` block to enable access logging."
+  },
+  {
+   "finding": 6,
+   "known": "CKV_AWS_21 Ensure all data stored in the S3 bucket have versioning enabled (resource aws_s3_bucket.financials)",
+   "issue": "No Versioning",
+   "remediation": "Add a `versioning` block and set `enabled` to `true`."
+  },
+  {
+   "finding": 7,
+   "known": "CKV_AWS_145 Ensure that S3 buckets are encrypted with KMS by default (resource aws_s3_bucket.operations)",
+   "issue": "Unencrypted Bucket",
+   "remediation": "Add a `server_side_encryption_configuration` block to enable encryption."
+  },
+  {
+   "finding": 8,
+   "known": "CKV_AWS_18 Ensure the S3 bucket has access logging enabled (resource aws_s3_bucket.operations)",
+   "issue": "No Access Logs",
+   "remediation": "Add a `logging` block to enable access logging."
+  },
+  {
+   "finding": 9,
+   "known": "CKV_AWS_145 Ensure that S3 buckets are encrypted with KMS by default (resource aws_s3_bucket.data_science)",
+   "issue": "Unencrypted Bucket",
+   "remediation": "Add a `server_side_encryption_configuration` block to enable encryption."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 1,
+   "reason": "Right direction, but CKV2_AWS_6 needs an aws_s3_bucket_public_access_block resource with block_public_acls, block_public_policy, ignore_public_acls and restrict_public_buckets set to true. Setting acl or a policy does not satisfy it."
+  },
+  {
+   "item": 1,
+   "score": 1,
+   "reason": "Names the right block, but omits sse_algorithm = \"aws:kms\" and kms_master_key_id, which the KMS check requires."
+  },
+  {
+   "item": 2,
+   "score": 1,
+   "reason": "Names the logging block, but gives no target_bucket (e.g. the logs bucket) or target_prefix."
+  },
+  {
+   "item": 3,
+   "score": 2,
+   "reason": "A versioning block with enabled = true is the correct fix."
+  },
+  {
+   "item": 4,
+   "score": 1,
+   "reason": "Right block, but missing the aws:kms algorithm and key ID."
+  },
+  {
+   "item": 5,
+   "score": 1,
+   "reason": "Right block, but no target_bucket specified."
+  },
+  {
+   "item": 6,
+   "score": 2,
+   "reason": "A versioning block with enabled = true is the correct fix."
+  },
+  {
+   "item": 7,
+   "score": 1,
+   "reason": "Right block, but missing the aws:kms algorithm and key ID."
+  },
+  {
+   "item": 8,
+   "score": 1,
+   "reason": "Right block, but no target_bucket specified."
+  },
+  {
+   "item": 9,
+   "score": 1,
+   "reason": "Right block, but missing the aws:kms algorithm and key ID."
+  }
+ ]
+}

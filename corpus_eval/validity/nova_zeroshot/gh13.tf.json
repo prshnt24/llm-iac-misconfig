@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "locals.access_entry_map",
+   "issue": "Dynamic IAM permissions assignment",
+   "risk": "Allows the IAM user creating the cluster to administer it, which can lead to unauthorized access and potential misuse of cluster resources.",
+   "remediation": "Create the access_entry_map statically with predefined ARNs that should have access to the cluster. Remove the dynamic assignment based on aws_iam_session_context."
+  },
+  "1": {
+   "resource": "module.eks_cluster.allowed_security_group_ids",
+   "issue": "Insecure security group configuration",
+   "risk": "Using the default VPC security group and the VPC CIDR block for allowed access can expose the cluster to unauthorized access from within the VPC.",
+   "remediation": "Configure specific, restricted security groups and CIDR blocks that are allowed to access the cluster. Replace module.vpc.vpc_default_security_group_id and module.vpc.vpc_cidr_block with specific, secure values."
+  }
+ }
+}

@@ -1,0 +1,29 @@
+{
+ "file": "gh21.tf",
+ "findings": [
+  {
+   "resource": "data.aws_iam_policy_document.main_update",
+   "issue": "Overly permissive S3 bucket policy",
+   "risk": "Allows any principal to perform specified S3 actions on the entire bucket and its objects, which can lead to unauthorized access and data breaches.",
+   "remediation": "Restrict the resources to only the necessary objects or prefixes. Change the resources attribute in the s3HeadObject statement to only include the specific prefix: [\"arn:${data.aws_partition.current.partition}:s3:::${var.av_definition_s3_bucket}/${var.av_definition_s3_prefix}\"]"
+  },
+  {
+   "resource": "aws_lambda_function.main_update",
+   "issue": "Lambda function environment variables",
+   "risk": "Storing sensitive information like S3 bucket names and prefixes as plaintext environment variables can lead to exposure if the Lambda function's configuration is accessed by unauthorized entities.",
+   "remediation": "Consider using AWS Secrets Manager or AWS Systems Manager Parameter Store to store sensitive information and retrieve it at runtime."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c84"
+   ]
+  }
+ ]
+}

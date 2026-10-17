@@ -1,0 +1,36 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_cloudwatch_log_group.flow_log",
+   "issue": "CloudWatch log group encryption not enforced",
+   "risk": "If var.flow_log_cloudwatch_log_group_kms_key_id is null or empty, VPC Flow Logs stored in CloudWatch Logs are not protected with a customer-managed KMS key, reducing control over encryption, key rotation, and access to sensitive network telemetry.",
+   "remediation": "Set the aws_cloudwatch_log_group.flow_log attribute kms_key_id to a customer-managed KMS key ARN, e.g. kms_key_id = aws_kms_key.flow_logs.arn."
+  },
+  "1": {
+   "resource": "aws_cloudwatch_log_group.flow_log",
+   "issue": "CloudWatch log retention may be unlimited or insufficiently bounded",
+   "risk": "If var.flow_log_cloudwatch_log_group_retention_in_days is not set to an appropriate value, flow logs may be retained indefinitely, increasing exposure of sensitive network metadata and enlarging the impact of unauthorized access.",
+   "remediation": "Set aws_cloudwatch_log_group.flow_log.retention_in_days to a defined minimum necessary retention period, for example retention_in_days = 90."
+  },
+  "2": {
+   "resource": "data.aws_iam_policy_document.flow_log_cloudwatch_assume_role",
+   "issue": "IAM trust policy for Flow Logs role lacks restrictive conditions",
+   "risk": "The role trust policy allows the vpc-flow-logs.amazonaws.com service to assume the role without enforcing source account or source ARN constraints. This can broaden the scope for confused deputy abuse if the role ARN is referenced unexpectedly.",
+   "remediation": "Add condition blocks to data.aws_iam_policy_document.flow_log_cloudwatch_assume_role restricting sts:AssumeRole by aws:SourceAccount and aws:SourceArn, for example using ArnLike on the relevant flow log or VPC ARN and StringEquals on the current account ID."
+  }
+ }
+}

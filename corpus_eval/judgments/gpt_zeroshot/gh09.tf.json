@@ -1,0 +1,67 @@
+{
+ "file": "gh09.tf",
+ "findings": [
+  {
+   "resource": "aws_s3_bucket.build_cache",
+   "issue": "S3 bucket force deletion enabled",
+   "risk": "Setting force_destroy = true allows the bucket and all objects in it to be deleted without manual cleanup, increasing the risk of accidental or malicious destruction of cached artifacts and potentially removing evidence needed for investigations.",
+   "remediation": "Change the aws_s3_bucket.build_cache resource attribute force_destroy from true to false."
+  },
+  {
+   "resource": "aws_s3_bucket_versioning.build_cache_versioning",
+   "issue": "S3 bucket versioning can be suspended or disabled",
+   "risk": "If versioning is suspended, objects can be overwritten or deleted without the ability to recover prior versions, increasing the impact of accidental deletion, ransomware, or malicious tampering.",
+   "remediation": "In aws_s3_bucket_versioning.build_cache_versioning, set versioning_configuration.status to \"Enabled\" and ensure var.cache_bucket_versioning cannot disable it."
+  },
+  {
+   "resource": "aws_s3_bucket_public_access_block.build_cache_policy",
+   "issue": "Public access block is optional",
+   "risk": "Because the public access block resource is created only when var.create_aws_s3_bucket_public_access_block is true, the bucket may be deployed without protections against public ACLs or bucket policies, increasing the risk of unintended public exposure.",
+   "remediation": "Remove the conditional count from aws_s3_bucket_public_access_block.build_cache_policy so the resource is always created, or ensure var.create_aws_s3_bucket_public_access_block is always true."
+  },
+  {
+   "resource": "aws_s3_bucket_logging.build_cache",
+   "issue": "S3 server access logging is optional",
+   "risk": "If var.cache_logging_bucket is null, access logging is not enabled, reducing visibility into bucket access and impairing detection and investigation of unauthorized activity.",
+   "remediation": "Configure aws_s3_bucket_logging.build_cache unconditionally by setting a dedicated target_bucket and target_prefix, and ensure var.cache_logging_bucket is always provided."
+  },
+  {
+   "resource": "aws_iam_policy.docker_machine_cache",
+   "issue": "IAM policy allows object ACL modification",
+   "risk": "Granting s3:PutObjectAcl allows principals to alter object ACLs, which can lead to unintended object exposure or privilege changes depending on bucket ownership and ACL behavior.",
+   "remediation": "In data.aws_iam_policy_document.docker_machine_cache_policy, remove the \"s3:PutObjectAcl\" action from the actions list unless it is strictly required."
+  },
+  {
+   "resource": "aws_iam_policy.docker_machine_cache",
+   "issue": "IAM policy can be overridden by arbitrary input",
+   "risk": "The policy document is taken directly from var.cache_bucket_policy when provided, which can permit overly broad or insecure permissions if an unsafe policy is passed in.",
+   "remediation": "Avoid using var.cache_bucket_policy as a direct override for aws_iam_policy.docker_machine_cache.policy, or validate and constrain the supplied policy so it cannot grant broader permissions than intended."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  }
+ ]
+}

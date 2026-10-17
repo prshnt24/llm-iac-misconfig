@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "INVALID"
+  }
+ ],
+ "findings": {
+  "1": {
+   "resource": "aws_kms_key.logs_key",
+   "issue": "KMS Key Deletion Window Too Short",
+   "risk": "A deletion_window_in_days value of 7 (the minimum allowed) provides very little time to detect and cancel an accidental or malicious key deletion. If the key is deleted, all data encrypted with it becomes permanently unrecoverable, leading to potential data loss or service outage.",
+   "remediation": "Increase 'deletion_window_in_days' to a value between 14 and 30 (e.g., 'deletion_window_in_days = 30') to provide a sufficient window to identify and cancel unintended key deletion requests before they become irreversible."
+  },
+  "3": {
+   "resource": "aws_kms_alias.logs_key_alias",
+   "issue": "KMS Alias Uses Interpolation Syntax from Legacy Terraform Version",
+   "risk": "The use of the legacy interpolation syntax '\"${aws_kms_key.logs_key.key_id}\"' instead of the modern direct reference 'aws_kms_key.logs_key.key_id' is not a direct security risk but indicates the configuration may be maintained with outdated Terraform practices, increasing the likelihood of other misconfigurations going undetected by modern linting and security scanning tools.",
+   "remediation": "Update the 'target_key_id' attribute to use the modern reference syntax: 'target_key_id = aws_kms_key.logs_key.key_id' (without the wrapping quotes and interpolation markers) to align with current Terraform best practices and ensure compatibility with up-to-date security scanning tooling."
+  }
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "data.aws_iam_policy_document.main_update",
+   "issue": "Overly broad S3 ListBucket permissions including invalid object ARN",
+   "risk": "Granting s3:ListBucket on the bucket allows enumeration of all objects in the bucket rather than limiting access to only the required prefix. This expands the Lambda function's read scope and can expose object names and metadata outside the intended antivirus definitions path.",
+   "remediation": "In the s3HeadObject statement, restrict s3:ListBucket to only the bucket ARN and add a condition limiting access to the required prefix, e.g. set resources = [\"arn:${data.aws_partition.current.partition}:s3:::${var.av_definition_s3_bucket}\"] and add condition { test = \"StringLike\" variable = \"s3:prefix\" values = [\"${var.av_definition_s3_prefix}/*\"] }. Remove the object ARN from this statement."
+  }
+ }
+}

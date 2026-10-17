@@ -1,0 +1,71 @@
+{
+ "file": "elb.tf",
+ "findings": [
+  {
+   "resource": "aws_elb.weblb",
+   "issue": "Load Balancer Listener Uses HTTP Instead of HTTPS",
+   "risk": "Traffic between clients and the load balancer is transmitted in plaintext over HTTP on port 80. This exposes sensitive data to interception via man-in-the-middle attacks, eavesdropping, and session hijacking.",
+   "remediation": "Change the listener block to use HTTPS on lb_port 443 with lb_protocol set to 'https', and add an ssl_certificate_id referencing a valid ACM or IAM certificate. Example: lb_port = 443, lb_protocol = \"https\", ssl_certificate_id = \"<arn-of-certificate>\"."
+  },
+  {
+   "resource": "aws_elb.weblb",
+   "issue": "Load Balancer Listener Uses HTTP for Instance Protocol",
+   "risk": "Traffic between the load balancer and backend instances is transmitted in plaintext using HTTP. This means data is unencrypted on the internal network segment, violating end-to-end encryption best practices and potentially exposing data to internal threats.",
+   "remediation": "Change instance_protocol to 'https' in the listener block to ensure encrypted communication between the ELB and backend instances. Ensure backend instances are configured with valid SSL/TLS certificates."
+  },
+  {
+   "resource": "aws_elb.weblb",
+   "issue": "No Access Logging Enabled",
+   "risk": "Without access logging, there is no record of requests made to the load balancer. This prevents detection of malicious activity, forensic investigation of security incidents, and compliance with audit requirements.",
+   "remediation": "Add an access_logs block to the aws_elb resource specifying an S3 bucket for log storage. Example: access_logs { bucket = \"<your-log-bucket>\" bucket_prefix = \"weblb\" interval = 5 enabled = true }."
+  },
+  {
+   "resource": "aws_elb.weblb",
+   "issue": "Classic Load Balancer (ELB) in Use Instead of Application Load Balancer (ALB)",
+   "risk": "Classic ELBs are a legacy resource lacking modern security features such as advanced WAF integration, native support for HTTP/2, improved TLS policies, and more granular security controls available in ALBs. Using legacy infrastructure increases the attack surface.",
+   "remediation": "Migrate from aws_elb (Classic ELB) to aws_lb (ALB) with an aws_lb_listener configured for HTTPS. This provides access to modern security features including AWS WAF integration, advanced TLS policies, and HTTP/2 support."
+  },
+  {
+   "resource": "aws_elb.weblb",
+   "issue": "No HTTPS Redirect from HTTP",
+   "risk": "The load balancer accepts plain HTTP traffic on port 80 without redirecting users to HTTPS. Users who connect over HTTP will have their traffic transmitted in plaintext, and there is no mechanism to enforce secure connections.",
+   "remediation": "If migrating to an ALB, add an aws_lb_listener for port 80 that performs a redirect action to HTTPS port 443. For Classic ELB, remove the HTTP listener entirely and only expose the HTTPS listener on port 443."
+  },
+  {
+   "resource": "aws_elb.weblb",
+   "issue": "Sensitive Metadata Exposed in Tags (Git Committer Email)",
+   "risk": "The tags contain a git committer's email address (git_last_modified_by = \"nimrodkor@gmail.com\"). This exposes personally identifiable information (PII) and internal contributor details in resource metadata, which could be leveraged for social engineering or targeted phishing attacks.",
+   "remediation": "Remove or anonymise personally identifiable information such as email addresses from resource tags. Replace git_last_modified_by with a non-identifying value or remove the tag entirely."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c61"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c62"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  }
+ ]
+}

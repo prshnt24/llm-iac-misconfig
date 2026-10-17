@@ -1,0 +1,36 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_secretsmanager_secret_policy.this",
+   "issue": "Public Policy",
+   "risk": "Allows public access to the secret if not properly configured",
+   "remediation": "Set `block_public_policy` to `true` to prevent public access"
+  },
+  "1": {
+   "resource": "aws_secretsmanager_secret_version.this",
+   "issue": "Insecure Secret Storage",
+   "risk": "Secrets may be stored in an insecure manner if `secret_binary` or `secret_string` are not properly managed",
+   "remediation": "Ensure `secret_binary` and `secret_string` are securely managed and encrypted"
+  },
+  "2": {
+   "resource": "aws_secretsmanager_secret_version.ignore_changes",
+   "issue": "Insecure Secret Storage",
+   "risk": "Secrets may be stored in an insecure manner if `secret_binary` or `secret_string` are not properly managed",
+   "remediation": "Ensure `secret_binary` and `secret_string` are securely managed and encrypted"
+  }
+ }
+}

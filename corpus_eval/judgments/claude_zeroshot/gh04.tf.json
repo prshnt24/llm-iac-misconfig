@@ -1,0 +1,97 @@
+{
+ "file": "gh04.tf",
+ "findings": [
+  {
+   "resource": "module.subnets",
+   "issue": "NAT Gateway and NAT Instance Both Disabled",
+   "risk": "Private subnet instances have no managed outbound internet path. This may force engineers to place instances in public subnets or open overly permissive routes as a workaround, increasing the attack surface.",
+   "remediation": "Enable a NAT gateway for private subnets by setting 'nat_gateway_enabled = true' so that private instances can reach the internet for patching and updates without being directly reachable from the internet."
+  },
+  {
+   "resource": "aws_network_interface.one",
+   "issue": "Use of VPC Default Security Group",
+   "risk": "The default security group is often misconfigured over time and AWS best-practice guidance (CIS AWS Foundations) states it should have no inbound or outbound rules. Attaching it to a network interface means the instance inherits whatever permissive rules exist on that group, potentially allowing unintended traffic.",
+   "remediation": "Create a dedicated, least-privilege security group resource (aws_security_group) with explicit ingress and egress rules and reference it instead of 'module.vpc.vpc_default_security_group_id'."
+  },
+  {
+   "resource": "aws_network_interface.two",
+   "issue": "Use of VPC Default Security Group",
+   "risk": "Same as aws_network_interface.one \u2014 attaching the default security group risks inheriting overly permissive or uncontrolled rules, violating the principle of least privilege.",
+   "remediation": "Create a dedicated, least-privilege security group resource (aws_security_group) with explicit ingress and egress rules and reference it instead of 'module.vpc.vpc_default_security_group_id'."
+  },
+  {
+   "resource": "module.ec2_instance",
+   "issue": "Use of VPC Default Security Group for EC2 Instance",
+   "risk": "The EC2 instance itself is also associated with the default security group via the 'security_groups' argument. This compounds the risk of unintended network access if the default security group rules are ever broadened.",
+   "remediation": "Replace the 'security_groups' value with a dedicated, explicitly defined aws_security_group that enforces least-privilege ingress/egress rules for the workload."
+  },
+  {
+   "resource": "module.ec2_instance",
+   "issue": "EBS Root Volume Encryption Not Explicitly Enabled",
+   "risk": "Without explicit root volume encryption, the EC2 instance's root EBS volume may be created unencrypted (depending on the account-level default). Unencrypted volumes expose data at rest to anyone who gains access to the underlying storage or takes a snapshot.",
+   "remediation": "Add a 'root_block_device' block (or the equivalent module input) with 'encrypted = true' and specify a KMS key via 'kms_key_id' to ensure the root volume is always encrypted at rest."
+  },
+  {
+   "resource": "module.ec2_instance",
+   "issue": "IMDSv2 (Instance Metadata Service v2) Not Enforced",
+   "risk": "If the module exposes an 'metadata_options' input and it is not set to require IMDSv2 (http_tokens = \"required\"), the instance is vulnerable to SSRF-based credential theft attacks that exploit IMDSv1's unauthenticated token-less access.",
+   "remediation": "Pass 'metadata_options = { http_tokens = \"required\", http_endpoint = \"enabled\", http_put_response_hop_limit = 1 }' to the module to enforce IMDSv2 and restrict metadata hop count."
+  },
+  {
+   "resource": "module.ec2_instance",
+   "issue": "Detailed Monitoring Not Enabled",
+   "risk": "Without detailed (1-minute interval) CloudWatch monitoring, anomalous CPU, network, or disk activity may go undetected for up to 5 minutes, delaying incident response.",
+   "remediation": "Set 'monitoring = true' in the module inputs to enable detailed CloudWatch monitoring on the instance."
+  },
+  {
+   "resource": "aws_iam_role.test",
+   "issue": "IAM Role Has No Permission Boundary or Inline/Managed Policies Scoped to Least Privilege",
+   "risk": "The IAM role is created with only a trust policy and no permission boundary. If policies are attached later without guardrails, the role could be granted excessive permissions, enabling privilege escalation from the EC2 instance.",
+   "remediation": "Add a 'permissions_boundary' attribute referencing a restrictive IAM managed policy ARN, and attach only the minimum required IAM policies to the role rather than relying on ad-hoc policy attachment."
+  },
+  {
+   "resource": "module.ec2_instance",
+   "issue": "External Network Interfaces Set with delete_on_termination = false",
+   "risk": "Network interfaces that persist after instance termination may retain associated security group memberships and private IP addresses. If not cleaned up, they can be re-attached to unauthorized instances or cause confusion in security group audits.",
+   "remediation": "Set 'delete_on_termination = true' for both entries in 'external_network_interfaces' unless there is a specific, documented operational requirement to retain them, and implement a lifecycle management process if retention is necessary."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  },
+  {
+   "finding": 7,
+   "candidates": []
+  },
+  {
+   "finding": 8,
+   "candidates": []
+  }
+ ]
+}

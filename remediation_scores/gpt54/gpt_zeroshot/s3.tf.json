@@ -1,0 +1,116 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV2_AWS_6 Ensure that S3 bucket has a Public Access block (resource aws_s3_bucket.data)",
+   "issue": "Public access exposure due to missing private ACL and public access block",
+   "remediation": "Set the bucket ACL to private with `acl = \"private\"` and add an `aws_s3_bucket_public_access_block` resource for this bucket with `block_public_acls = true`, `ignore_public_acls = true`, `block_public_policy = true`, and `restrict_public_buckets = true`."
+  },
+  {
+   "finding": 1,
+   "known": "CKV_AWS_145 Ensure that S3 buckets are encrypted with KMS by default (resource aws_s3_bucket.data)",
+   "issue": "Server-side encryption not enabled",
+   "remediation": "Add a `server_side_encryption_configuration` block to `aws_s3_bucket.data` with `rule { apply_server_side_encryption_by_default { sse_algorithm = \"aws:kms\" } }` or `sse_algorithm = \"AES256\"`."
+  },
+  {
+   "finding": 2,
+   "known": "CKV_AWS_18 Ensure the S3 bucket has access logging enabled (resource aws_s3_bucket.data)",
+   "issue": "Access logging not enabled",
+   "remediation": "Add a `logging` block to `aws_s3_bucket.data` such as `logging { target_bucket = aws_s3_bucket.logs.id target_prefix = \"data/\" }`."
+  },
+  {
+   "finding": 3,
+   "known": "CKV_AWS_21 Ensure all data stored in the S3 bucket have versioning enabled (resource aws_s3_bucket.data)",
+   "issue": "Versioning not enabled",
+   "remediation": "Add a `versioning` block to `aws_s3_bucket.data` with `enabled = true`."
+  },
+  {
+   "finding": 6,
+   "known": "CKV_AWS_145 Ensure that S3 buckets are encrypted with KMS by default (resource aws_s3_bucket.financials)",
+   "issue": "Server-side encryption not enabled",
+   "remediation": "Add a `server_side_encryption_configuration` block to `aws_s3_bucket.financials` with `rule { apply_server_side_encryption_by_default { sse_algorithm = \"aws:kms\" } }` or `sse_algorithm = \"AES256\"`."
+  },
+  {
+   "finding": 7,
+   "known": "CKV_AWS_18 Ensure the S3 bucket has access logging enabled (resource aws_s3_bucket.financials)",
+   "issue": "Access logging not enabled",
+   "remediation": "Add a `logging` block to `aws_s3_bucket.financials` such as `logging { target_bucket = aws_s3_bucket.logs.id target_prefix = \"financials/\" }`."
+  },
+  {
+   "finding": 8,
+   "known": "CKV_AWS_21 Ensure all data stored in the S3 bucket have versioning enabled (resource aws_s3_bucket.financials)",
+   "issue": "Versioning not enabled",
+   "remediation": "Add a `versioning` block to `aws_s3_bucket.financials` with `enabled = true`."
+  },
+  {
+   "finding": 10,
+   "known": "CKV_AWS_145 Ensure that S3 buckets are encrypted with KMS by default (resource aws_s3_bucket.operations)",
+   "issue": "Server-side encryption not enabled",
+   "remediation": "Add a `server_side_encryption_configuration` block to `aws_s3_bucket.operations` with `rule { apply_server_side_encryption_by_default { sse_algorithm = \"aws:kms\" } }` or `sse_algorithm = \"AES256\"`."
+  },
+  {
+   "finding": 11,
+   "known": "CKV_AWS_18 Ensure the S3 bucket has access logging enabled (resource aws_s3_bucket.operations)",
+   "issue": "Access logging not enabled",
+   "remediation": "Add a `logging` block to `aws_s3_bucket.operations` such as `logging { target_bucket = aws_s3_bucket.logs.id target_prefix = \"operations/\" }`."
+  },
+  {
+   "finding": 13,
+   "known": "CKV_AWS_145 Ensure that S3 buckets are encrypted with KMS by default (resource aws_s3_bucket.data_science)",
+   "issue": "Server-side encryption not enabled",
+   "remediation": "Add a `server_side_encryption_configuration` block to `aws_s3_bucket.data_science` with `rule { apply_server_side_encryption_by_default { sse_algorithm = \"aws:kms\" } }` or `sse_algorithm = \"AES256\"`."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correctly fixes CKV2_AWS_6 by adding aws_s3_bucket_public_access_block with all four flags; private ACL is also appropriate."
+  },
+  {
+   "item": 1,
+   "score": 1,
+   "reason": "Right block and attribute, but CKV_AWS_145 specifically requires KMS; offering AES256 makes it partially incorrect."
+  },
+  {
+   "item": 2,
+   "score": 2,
+   "reason": "Correctly adds a logging block to aws_s3_bucket.data with a valid target bucket/prefix."
+  },
+  {
+   "item": 3,
+   "score": 2,
+   "reason": "Correctly adds versioning { enabled = true } to aws_s3_bucket.data."
+  },
+  {
+   "item": 4,
+   "score": 1,
+   "reason": "Right block and attribute, but KMS check is weakened by allowing AES256."
+  },
+  {
+   "item": 5,
+   "score": 2,
+   "reason": "Correctly adds a logging block to aws_s3_bucket.financials with appropriate target bucket/prefix."
+  },
+  {
+   "item": 6,
+   "score": 2,
+   "reason": "Correctly adds versioning { enabled = true } to aws_s3_bucket.financials."
+  },
+  {
+   "item": 7,
+   "score": 1,
+   "reason": "Right block and attribute, but KMS check is weakened by allowing AES256."
+  },
+  {
+   "item": 8,
+   "score": 2,
+   "reason": "Correctly adds a logging block to aws_s3_bucket.operations with appropriate target bucket/prefix."
+  },
+  {
+   "item": 9,
+   "score": 1,
+   "reason": "Right block and attribute, but KMS check is weakened by allowing AES256."
+  }
+ ]
+}

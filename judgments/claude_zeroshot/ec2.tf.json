@@ -1,0 +1,184 @@
+{
+ "file": "ec2.tf",
+ "findings": [
+  {
+   "resource": "aws_instance.web_host",
+   "issue": "Plaintext AWS credentials in EC2 user data",
+   "risk": "AWS Access Key ID and Secret Access Key are hardcoded in plaintext within the user_data script. Anyone with access to the Terraform state file, the EC2 instance metadata, or the AWS console can retrieve these credentials, leading to full account compromise.",
+   "remediation": "Remove the hardcoded credentials from user_data entirely. Use an IAM Instance Profile (aws_iam_instance_profile) attached via the iam_instance_profile attribute on aws_instance.web_host to grant the instance the required AWS permissions without any static credentials."
+  },
+  {
+   "resource": "aws_instance.web_host",
+   "issue": "No IAM Instance Profile attached",
+   "risk": "Without an IAM Instance Profile, the instance has no managed identity, which is why static credentials were embedded in user_data. This violates the principle of least privilege and forces the use of long-lived static secrets.",
+   "remediation": "Create an aws_iam_role with an EC2 trust policy, attach the necessary aws_iam_role_policy or aws_iam_policy_attachment, create an aws_iam_instance_profile referencing the role, and set iam_instance_profile = aws_iam_instance_profile.<name>.name on the aws_instance resource."
+  },
+  {
+   "resource": "aws_instance.web_host",
+   "issue": "EC2 instance not configured with IMDSv2 (Instance Metadata Service v2)",
+   "risk": "Without enforcing IMDSv2, the instance is vulnerable to Server-Side Request Forgery (SSRF) attacks that can retrieve IAM credentials and other sensitive metadata from the IMDSv1 endpoint without requiring a session token.",
+   "remediation": "Add a metadata_options block to aws_instance.web_host: metadata_options { http_endpoint = \"enabled\"; http_tokens = \"required\" } to enforce IMDSv2."
+  },
+  {
+   "resource": "aws_instance.web_host",
+   "issue": "EBS root volume encryption not enabled",
+   "risk": "The root EBS volume of the EC2 instance is not encrypted at rest. If the volume or a snapshot is accessed by an unauthorized party, the data it contains is readable in plaintext.",
+   "remediation": "Add a root_block_device block to aws_instance.web_host with encrypted = true and optionally specify a kms_key_id: root_block_device { encrypted = true; kms_key_id = \"<kms_key_arn>\" }."
+  },
+  {
+   "resource": "aws_ebs_volume.web_host_storage",
+   "issue": "EBS volume encryption disabled",
+   "risk": "The EBS volume is created without encryption (the encrypted attribute is commented out and defaults to false). Data stored on the volume is at risk of exposure if the underlying storage media is accessed or if snapshots are shared inadvertently.",
+   "remediation": "Set encrypted = true and optionally specify kms_key_id = \"<kms_key_arn>\" in the aws_ebs_volume.web_host_storage resource block."
+  },
+  {
+   "resource": "aws_ebs_snapshot.example_snapshot",
+   "issue": "EBS snapshot created from an unencrypted volume",
+   "risk": "Because the source EBS volume is unencrypted, the resulting snapshot is also unencrypted. Unencrypted snapshots can be copied or shared, exposing data at rest without any cryptographic protection.",
+   "remediation": "First encrypt the source volume (aws_ebs_volume.web_host_storage) by setting encrypted = true. Snapshots of encrypted volumes are automatically encrypted. Alternatively, use the aws_ebs_snapshot_copy resource with encrypted = true and a kms_key_id to create an encrypted copy."
+  },
+  {
+   "resource": "aws_security_group.web-node",
+   "issue": "SSH port 22 open to the entire internet (0.0.0.0/0)",
+   "risk": "Allowing unrestricted inbound SSH access from any IP address exposes the instance to brute-force attacks, credential stuffing, and exploitation of SSH vulnerabilities by any actor on the internet.",
+   "remediation": "In the ingress block for port 22, replace cidr_blocks = [\"0.0.0.0/0\"] with a specific trusted CIDR range (e.g., your corporate NAT IP), or remove the rule entirely and use AWS Systems Manager Session Manager for shell access without opening port 22."
+  },
+  {
+   "resource": "aws_security_group.web-node",
+   "issue": "HTTP port 80 open to the entire internet without HTTPS",
+   "risk": "Serving traffic over unencrypted HTTP exposes data in transit to interception and man-in-the-middle attacks. Additionally, exposing port 80 broadly increases the attack surface.",
+   "remediation": "Migrate the application to HTTPS (port 443) using a TLS certificate (e.g., via AWS Certificate Manager and an Application Load Balancer). If HTTP must remain open for redirects, restrict access through a WAF or ALB rather than directly on the instance security group."
+  },
+  {
+   "resource": "aws_security_group.web-node",
+   "issue": "Unrestricted outbound egress to all destinations",
+   "risk": "Allowing all outbound traffic (protocol -1, 0.0.0.0/0) means a compromised instance can freely exfiltrate data, communicate with command-and-control servers, or pivot to other network resources without restriction.",
+   "remediation": "Replace the permissive egress rule with specific rules that allow only the outbound traffic required by the application (e.g., port 443 to specific CIDR ranges or AWS service prefix lists). Remove or tighten the catch-all egress rule."
+  },
+  {
+   "resource": "aws_subnet.web_subnet",
+   "issue": "Public IP automatically assigned to instances in subnet",
+   "risk": "Setting map_public_ip_on_launch = true causes every EC2 instance launched in this subnet to receive a public IP address, directly exposing instances to the internet and increasing the attack surface.",
+   "remediation": "Set map_public_ip_on_launch = false on aws_subnet.web_subnet. Place the EC2 instance in a private subnet and use a NAT Gateway for outbound internet access, or an Application Load Balancer in a public subnet to front the instance."
+  },
+  {
+   "resource": "aws_subnet.web_subnet2",
+   "issue": "Public IP automatically assigned to instances in subnet",
+   "risk": "Setting map_public_ip_on_launch = true causes every EC2 instance launched in this subnet to receive a public IP address, directly exposing instances to the internet and increasing the attack surface.",
+   "remediation": "Set map_public_ip_on_launch = false on aws_subnet.web_subnet2. Use a private subnet architecture with a NAT Gateway or ALB as described for aws_subnet.web_subnet."
+  },
+  {
+   "resource": "aws_s3_bucket.flowbucket",
+   "issue": "S3 bucket for VPC flow logs lacks server-side encryption",
+   "risk": "Flow log data stored in the S3 bucket is not encrypted at rest. If bucket permissions are misconfigured or the bucket is accessed by an unauthorized party, network traffic metadata is exposed in plaintext.",
+   "remediation": "Add an aws_s3_bucket_server_side_encryption_configuration resource targeting aws_s3_bucket.flowbucket with a rule using apply_server_side_encryption_by_default { sse_algorithm = \"aws:kms\"; kms_master_key_id = \"<kms_key_arn>\" }."
+  },
+  {
+   "resource": "aws_s3_bucket.flowbucket",
+   "issue": "S3 bucket versioning not enabled",
+   "risk": "Without versioning, flow log objects that are overwritten or deleted cannot be recovered. This undermines audit integrity and incident response capabilities.",
+   "remediation": "Add an aws_s3_bucket_versioning resource for aws_s3_bucket.flowbucket with versioning_configuration { status = \"Enabled\" }."
+  },
+  {
+   "resource": "aws_s3_bucket.flowbucket",
+   "issue": "S3 bucket public access block not configured",
+   "risk": "Without an explicit aws_s3_bucket_public_access_block resource, the bucket could be made public through bucket policies or ACLs, exposing sensitive VPC flow log data to the internet.",
+   "remediation": "Add an aws_s3_bucket_public_access_block resource for aws_s3_bucket.flowbucket with block_public_acls = true, block_public_policy = true, ignore_public_acls = true, and restrict_public_buckets = true."
+  },
+  {
+   "resource": "aws_s3_bucket.flowbucket",
+   "issue": "S3 bucket force_destroy enabled",
+   "risk": "Setting force_destroy = true allows Terraform to delete the bucket and all its contents (including flow logs) in a single destroy operation. This can lead to accidental or malicious permanent deletion of audit logs required for compliance and forensic investigation.",
+   "remediation": "Set force_destroy = false on aws_s3_bucket.flowbucket to prevent accidental deletion of flow log data. Implement S3 Object Lock or a bucket policy to enforce retention if compliance requires it."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c32"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c29"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c33"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c34"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c26",
+    "c28"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": [
+    "c43"
+   ]
+  },
+  {
+   "finding": 7,
+   "candidates": [
+    "c44"
+   ]
+  },
+  {
+   "finding": 8,
+   "candidates": [
+    "c45"
+   ]
+  },
+  {
+   "finding": 9,
+   "candidates": [
+    "c46"
+   ]
+  },
+  {
+   "finding": 10,
+   "candidates": [
+    "c47"
+   ]
+  },
+  {
+   "finding": 11,
+   "candidates": [
+    "c39"
+   ]
+  },
+  {
+   "finding": 12,
+   "candidates": [
+    "c41"
+   ]
+  },
+  {
+   "finding": 13,
+   "candidates": [
+    "c35"
+   ]
+  },
+  {
+   "finding": 14,
+   "candidates": []
+  }
+ ]
+}

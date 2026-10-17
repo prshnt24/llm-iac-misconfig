@@ -1,0 +1,41 @@
+{
+ "file": "neptune.tf",
+ "findings": [
+  {
+   "resource": "aws_neptune_cluster.default",
+   "issue": "storage_encrypted",
+   "risk": "Data at rest in the Neptune cluster is not encrypted, which can lead to unauthorized access if the data is intercepted or the storage media is compromised.",
+   "remediation": "Set `storage_encrypted` to `true` and provide a `kms_key_id` to use a customer-managed CMK for encryption."
+  },
+  {
+   "resource": "aws_neptune_cluster.default",
+   "issue": "iam_database_authentication_enabled",
+   "risk": "IAM database authentication is disabled, which means users must use database credentials to authenticate, increasing the risk of credential misuse or exposure.",
+   "remediation": "Set `iam_database_authentication_enabled` to `true` to enable IAM database authentication."
+  },
+  {
+   "resource": "aws_neptune_cluster.default",
+   "issue": "skip_final_snapshot",
+   "risk": "Setting `skip_final_snapshot` to `true` means that a final snapshot is not created when the DB cluster is deleted, which can lead to data loss.",
+   "remediation": "Set `skip_final_snapshot` to `false` to ensure a final snapshot is created."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c104"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c101"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  }
+ ]
+}

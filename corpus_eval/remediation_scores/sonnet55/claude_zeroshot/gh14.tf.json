@@ -1,0 +1,28 @@
+{
+ "items": [
+  {
+   "finding": 2,
+   "known": "CKV_AWS_382 Ensure no security groups allow egress from 0.0.0.0:0 to port -1 (resource aws_security_group.terra_sg)",
+   "issue": "Unrestricted egress to all destinations (0.0.0.0/0 on all ports/protocols)",
+   "remediation": "Restrict egress rules to only the specific ports, protocols, and destination CIDRs required by the application. Replace the egress block's cidr_blocks = [\"0.0.0.0/0\"] and protocol = \"-1\" with explicit rules, e.g., allow only port 443 to specific CIDRs needed by the workload."
+  },
+  {
+   "finding": 4,
+   "known": "CKV2_AWS_11 Ensure VPC flow logging is enabled in all VPCs (resource aws_vpc.terra_vpc)",
+   "issue": "VPC Flow Logs not enabled",
+   "remediation": "Add an aws_flow_log resource referencing this VPC. For example: resource \"aws_flow_log\" \"terra_vpc_flow_log\" { vpc_id = aws_vpc.terra_vpc.id traffic_type = \"ALL\" iam_role_arn = aws_iam_role.flow_log_role.arn log_destination = aws_cloudwatch_log_group.flow_log.arn }"
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correctly targets the egress block, replacing protocol \"-1\" and 0.0.0.0/0 with specific ports (e.g. 443) and restricted CIDRs, which satisfies CKV_AWS_382."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "Adds an aws_flow_log with vpc_id = aws_vpc.terra_vpc.id, traffic_type, iam_role_arn and log_destination. This is the standard fix for CKV2_AWS_11. The supporting IAM role and log group are referenced but not defined, which is a minor gap."
+  }
+ ]
+}

@@ -1,0 +1,46 @@
+{
+ "labels": [
+  {
+   "finding": 1,
+   "label": "VALID"
+  },
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 4,
+   "label": "VALID"
+  },
+  {
+   "finding": 5,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "1": {
+   "resource": "aws_elb.weblb",
+   "issue": "Load Balancer Listener Uses HTTP for Instance Protocol",
+   "risk": "Traffic between the load balancer and backend instances is transmitted in plaintext using HTTP. This means data is unencrypted on the internal network segment, violating end-to-end encryption best practices and potentially exposing data to internal threats.",
+   "remediation": "Change instance_protocol to 'https' in the listener block to ensure encrypted communication between the ELB and backend instances. Ensure backend instances are configured with valid SSL/TLS certificates."
+  },
+  "3": {
+   "resource": "aws_elb.weblb",
+   "issue": "Classic Load Balancer (ELB) in Use Instead of Application Load Balancer (ALB)",
+   "risk": "Classic ELBs are a legacy resource lacking modern security features such as advanced WAF integration, native support for HTTP/2, improved TLS policies, and more granular security controls available in ALBs. Using legacy infrastructure increases the attack surface.",
+   "remediation": "Migrate from aws_elb (Classic ELB) to aws_lb (ALB) with an aws_lb_listener configured for HTTPS. This provides access to modern security features including AWS WAF integration, advanced TLS policies, and HTTP/2 support."
+  },
+  "4": {
+   "resource": "aws_elb.weblb",
+   "issue": "No HTTPS Redirect from HTTP",
+   "risk": "The load balancer accepts plain HTTP traffic on port 80 without redirecting users to HTTPS. Users who connect over HTTP will have their traffic transmitted in plaintext, and there is no mechanism to enforce secure connections.",
+   "remediation": "If migrating to an ALB, add an aws_lb_listener for port 80 that performs a redirect action to HTTPS port 443. For Classic ELB, remove the HTTP listener entirely and only expose the HTTPS listener on port 443."
+  },
+  "5": {
+   "resource": "aws_elb.weblb",
+   "issue": "Sensitive Metadata Exposed in Tags (Git Committer Email)",
+   "risk": "The tags contain a git committer's email address (git_last_modified_by = \"nimrodkor@gmail.com\"). This exposes personally identifiable information (PII) and internal contributor details in resource metadata, which could be leveraged for social engineering or targeted phishing attacks.",
+   "remediation": "Remove or anonymise personally identifiable information such as email addresses from resource tags. Replace git_last_modified_by with a non-identifying value or remove the tag entirely."
+  }
+ }
+}

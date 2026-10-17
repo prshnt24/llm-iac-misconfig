@@ -1,0 +1,31 @@
+{
+ "file": "gh14.tf",
+ "findings": [
+  {
+   "resource": "aws_security_group.terra_sg",
+   "issue": "Unrestricted Ingress Rules",
+   "risk": "Allowing inbound traffic from 0.0.0.0/0 on ports 80, 443, 22, and 3389 exposes the resources to potential attacks from any IP address.",
+   "remediation": "Restrict ingress rules to specific IP ranges or security groups. For example, change `cidr_blocks = [\"0.0.0.0/0\"]` to specific allowed IP ranges."
+  },
+  {
+   "resource": "aws_subnet.terra_sub",
+   "issue": "Public IP Assignment on Launch",
+   "risk": "Setting `map_public_ip_on_launch = true` can expose instances launched in this subnet to the internet, increasing the attack surface.",
+   "remediation": "Set `map_public_ip_on_launch = false` to prevent instances from receiving a public IP by default."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c53",
+    "c54",
+    "c55"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  }
+ ]
+}

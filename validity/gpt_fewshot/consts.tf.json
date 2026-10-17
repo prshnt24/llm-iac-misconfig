@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "variable.password",
+   "issue": "Hardcoded default database password in Terraform variable",
+   "risk": "Credentials are exposed in source control, Terraform plans, and state files, increasing the likelihood of unauthorized database access if the codebase or state is compromised.",
+   "remediation": "Remove the default value from variable \"password\" and supply it securely at runtime or from a secrets manager. Mark the variable as sensitive by adding sensitive = true to the variable block."
+  }
+ }
+}

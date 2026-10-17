@@ -1,0 +1,39 @@
+{
+ "file": "elb.tf",
+ "findings": [
+  {
+   "resource": "aws_elb.weblb",
+   "issue": "Insecure HTTP health check",
+   "risk": "Health checks over HTTP can be intercepted or tampered with, potentially leading to false health statuses.",
+   "remediation": "Change the health_check target to use HTTPS: `target = \"HTTPS:8000/\"`. Ensure that the instances are configured to handle HTTPS requests."
+  },
+  {
+   "resource": "aws_elb.weblb",
+   "issue": "Insecure listener protocol",
+   "risk": "Using HTTP for the listener protocol can expose data in transit to interception and tampering.",
+   "remediation": "Change the listener protocol to HTTPS: `lb_protocol = \"https\"` and configure SSL certificates appropriately."
+  },
+  {
+   "resource": "aws_elb.weblb",
+   "issue": "Excessive idle timeout",
+   "risk": "A very high idle timeout value can lead to prolonged resource consumption and potential denial of service if connections are held open unnecessarily.",
+   "remediation": "Reduce the idle_timeout to a more reasonable value, such as 60 seconds: `idle_timeout = 60`."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c61"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  }
+ ]
+}

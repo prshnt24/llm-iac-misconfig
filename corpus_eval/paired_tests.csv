@@ -1,0 +1,4 @@
+run_a,run_b,only_a,only_b,p_exact
+claude_zeroshot,gpt_zeroshot,11,0,0.001
+claude_zeroshot,nova_zeroshot,12,0,0.0005
+gpt_zeroshot,nova_zeroshot,2,1,1.0

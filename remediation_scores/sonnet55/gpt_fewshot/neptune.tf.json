@@ -1,0 +1,17 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_347 Ensure Neptune is encrypted by KMS using a customer managed Key (CMK) (resource aws_neptune_cluster.default); CKV_AWS_44 Ensure Neptune storage is securely encrypted (resource aws_neptune_cluster.default)",
+   "issue": "Storage encryption disabled",
+   "remediation": "Set the aws_neptune_cluster.default attribute storage_encrypted = true and optionally specify kms_key_arn with a customer-managed KMS key."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 1,
+   "reason": "storage_encrypted = true is correct for CKV_AWS_44, and kms_key_arn is the right attribute for CKV_AWS_347. However, it calls the CMK 'optional' when CKV_AWS_347 requires it, so the fix is incomplete for that check."
+  }
+ ]
+}

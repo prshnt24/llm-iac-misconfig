@@ -1,0 +1,46 @@
+{
+ "labels": [
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 4,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "1": {
+   "resource": "aws_default_security_group.default",
+   "issue": "Default security group may remain with permissive default rules",
+   "risk": "If `var.default_security_group_deny_all` is false or the resource is not created, the default security group can retain AWS default allow-all egress and self-referencing ingress rules, increasing the risk of unintended lateral movement and unrestricted outbound access.",
+   "remediation": "Set `var.default_security_group_deny_all = true` so `aws_default_security_group.default` is created and managed. Explicitly define empty `ingress = []` and `egress = []` or only the minimum required rules in the `aws_default_security_group` resource."
+  },
+  "2": {
+   "resource": "aws_default_route_table.default",
+   "issue": "Default route table may remain with inherited default routes",
+   "risk": "If `var.default_route_table_no_routes` is false or the resource is not created, the default route table may retain routes that allow unintended connectivity, including internet access when associated with an internet gateway.",
+   "remediation": "Set `var.default_route_table_no_routes = true` so `aws_default_route_table.default` is created and managed. Ensure the resource contains no `route` blocks unless explicitly required and reviewed."
+  },
+  "3": {
+   "resource": "aws_default_network_acl.default",
+   "issue": "Default network ACL may remain with permissive allow-all rules",
+   "risk": "If `var.default_network_acl_deny_all` is false or the resource is not created, the default network ACL can retain AWS default allow-all ingress and egress rules, weakening subnet-level traffic filtering.",
+   "remediation": "Set `var.default_network_acl_deny_all = true` so `aws_default_network_acl.default` is created and managed. Explicitly configure restrictive `ingress` and `egress` rule blocks instead of relying on the AWS defaults."
+  },
+  "4": {
+   "resource": "aws_internet_gateway.default",
+   "issue": "Internet gateway can expose the VPC to direct internet routing",
+   "risk": "When `var.internet_gateway_enabled` is true, public routing can be established for attached subnets, increasing the attack surface and the chance of unintended internet exposure.",
+   "remediation": "Set `var.internet_gateway_enabled = false` unless internet access is strictly required. If it is required, ensure only intended public subnets have route table entries to `aws_internet_gateway.default` and protect workloads with restrictive security groups and NACLs."
+  }
+ }
+}

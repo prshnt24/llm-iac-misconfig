@@ -1,0 +1,31 @@
+{
+ "file": "rds.tf",
+ "findings": [
+  {
+   "resource": "aws_rds_cluster.app1-rds-cluster",
+   "issue": "Backup retention period set to 0",
+   "risk": "No automated backups are retained, risking data loss in case of failure or accidental deletion.",
+   "remediation": "Set backup_retention_period to a non-zero value, e.g., backup_retention_period = 7"
+  },
+  {
+   "resource": "aws_rds_cluster.app2-rds-cluster",
+   "issue": "Insufficient backup retention period",
+   "risk": "Only one day of backups are retained, which may not be sufficient for recovery needs.",
+   "remediation": "Increase backup_retention_period to a higher value, e.g., backup_retention_period = 7"
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c118"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c128"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "rds.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-16T23:05:11",
+  "response": "[\n  {\n    \"resource\": \"aws_rds_cluster.app1-rds-cluster\",\n    \"issue\": \"backup_retention_period\",\n    \"risk\": \"Data loss due to lack of backups\",\n    \"remediation\": \"Set backup_retention_period to a non-zero value, e.g., backup_retention_period = 14\"\n  },\n  {\n    \"resource\": \"aws_rds_cluster.app2-rds-cluster\",\n    \"issue\": \"backup_retention_period\",\n    \"risk\": \"Insufficient backup retention\",\n    \"remediation\": \"Increase backup_retention_period to a more reasonable value, e.g., backup_retention_period = 14\"\n  }\n]"
+}

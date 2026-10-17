@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  },
+  {
+   "finding": 7,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Outdated Elasticsearch version",
+   "risk": "Elasticsearch 2.3 is end-of-life and contains numerous known CVEs including remote code execution and privilege escalation vulnerabilities. It no longer receives security patches.",
+   "remediation": "Upgrade elasticsearch_version to a supported version (e.g., \"7.10\" or migrate to OpenSearch \"2.x\") by changing the elasticsearch_version attribute."
+  },
+  "7": {
+   "resource": "aws_elasticsearch_domain_policy.monitoring-framework-policy",
+   "issue": "Overly permissive domain access policy \u2014 wildcard principal and wildcard actions",
+   "risk": "The policy grants es:* (all Elasticsearch actions) to Principal AWS \"*\" (any unauthenticated or authenticated AWS identity on the internet), effectively making the domain publicly writable and readable by anyone.",
+   "remediation": "Replace the wildcard principal identifiers = [\"*\"] with specific IAM role or user ARNs that require access, restrict actions from es:* to only the minimum required actions (e.g., es:ESHttpGet), and scope resources to the specific domain ARN instead of \"*\"."
+  }
+ }
+}

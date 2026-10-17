@@ -1,0 +1,56 @@
+{
+ "labels": [
+  {
+   "finding": 4,
+   "label": "VALID"
+  },
+  {
+   "finding": 9,
+   "label": "VALID"
+  },
+  {
+   "finding": 12,
+   "label": "VALID"
+  },
+  {
+   "finding": 14,
+   "label": "VALID"
+  },
+  {
+   "finding": 15,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "4": {
+   "resource": "aws_s3_bucket.data",
+   "issue": "Force destroy enabled",
+   "risk": "The bucket and all contained objects can be deleted without manual cleanup, increasing the risk of accidental or malicious data destruction.",
+   "remediation": "Change `force_destroy = true` to `force_destroy = false` in `aws_s3_bucket.data`."
+  },
+  "9": {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "Force destroy enabled",
+   "risk": "The bucket and all contained objects can be deleted without manual cleanup, increasing the risk of accidental or malicious data destruction.",
+   "remediation": "Change `force_destroy = true` to `force_destroy = false` in `aws_s3_bucket.financials`."
+  },
+  "12": {
+   "resource": "aws_s3_bucket.operations",
+   "issue": "Force destroy enabled",
+   "risk": "The bucket and all contained objects can be deleted without manual cleanup, increasing the risk of accidental or malicious data destruction.",
+   "remediation": "Change `force_destroy = true` to `force_destroy = false` in `aws_s3_bucket.operations`."
+  },
+  "14": {
+   "resource": "aws_s3_bucket.data_science",
+   "issue": "Force destroy enabled",
+   "risk": "The bucket and all contained objects can be deleted without manual cleanup, increasing the risk of accidental or malicious data destruction.",
+   "remediation": "Change `force_destroy = true` to `force_destroy = false` in `aws_s3_bucket.data_science`."
+  },
+  "15": {
+   "resource": "aws_s3_bucket.logs",
+   "issue": "Force destroy enabled",
+   "risk": "The log bucket and all retained audit logs can be deleted without manual cleanup, undermining retention and forensic evidence preservation.",
+   "remediation": "Change `force_destroy = true` to `force_destroy = false` in `aws_s3_bucket.logs`."
+  }
+ }
+}

@@ -1,0 +1,29 @@
+{
+ "file": "providers.tf",
+ "findings": [
+  {
+   "resource": "provider.aws.plain_text_access_keys_provider",
+   "issue": "Hardcoded AWS Access Keys",
+   "risk": "Hardcoded access keys can be exposed through version control or logs, leading to unauthorized access to AWS resources.",
+   "remediation": "Use AWS Secrets Manager or environment variables to manage access keys. Remove hardcoded keys and use the `shared_credentials_file` or `profile` attributes to reference credentials securely."
+  },
+  {
+   "resource": "terraform.backend.s3",
+   "issue": "Missing KMS Key for S3 Backend Encryption",
+   "risk": "Using the default encryption without specifying a KMS key may not provide the desired level of security for sensitive state data.",
+   "remediation": "Specify a KMS key ARN for encrypting the S3 backend by adding the `kms_key_id` attribute: `kms_key_id = \"arn:aws:kms:us-west-1:123456789012:key/abcd1234-a123-456a-a1b2-a1b2c3d4e5f6\"`."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c107"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  }
+ ]
+}

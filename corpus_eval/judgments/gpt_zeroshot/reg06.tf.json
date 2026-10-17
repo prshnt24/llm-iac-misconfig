@@ -1,0 +1,47 @@
+{
+ "file": "reg06.tf",
+ "findings": [
+  {
+   "resource": "aws_route53_zone.this",
+   "issue": "Hosted zone force deletion can be enabled",
+   "risk": "Setting force_destroy to true can allow deletion of the hosted zone and all associated records, which can cause denial of service, domain hijacking opportunities, and loss of critical DNS configurations.",
+   "remediation": "Set the force_destroy attribute to false in the aws_route53_zone.this resource: force_destroy = false."
+  },
+  {
+   "resource": "aws_route53_zone.ignore_vpc",
+   "issue": "Hosted zone force deletion can be enabled",
+   "risk": "Setting force_destroy to true can allow deletion of the hosted zone and all associated records, which can cause denial of service, domain hijacking opportunities, and loss of critical DNS configurations.",
+   "remediation": "Set the force_destroy attribute to false in the aws_route53_zone.ignore_vpc resource: force_destroy = false."
+  },
+  {
+   "resource": "module.route53_dnssec_kms",
+   "issue": "KMS key rotation is disabled for DNSSEC key",
+   "risk": "Disabling KMS key rotation increases the impact of long-term key compromise and weakens cryptographic hygiene by keeping the same key material in use indefinitely.",
+   "remediation": "Change the enable_key_rotation attribute in module.route53_dnssec_kms to true: enable_key_rotation = true."
+  },
+  {
+   "resource": "aws_route53_record.this",
+   "issue": "DNS record overwrite may be allowed",
+   "risk": "If allow_overwrite is true, existing DNS records can be replaced unintentionally or maliciously, potentially redirecting traffic, disrupting services, or enabling subdomain takeover scenarios.",
+   "remediation": "Set allow_overwrite to false for records in aws_route53_record.this, or constrain the input so each.value.allow_overwrite resolves to false."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  }
+ ]
+}

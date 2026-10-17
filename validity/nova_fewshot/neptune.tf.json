@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 2,
+   "label": "INVALID"
+  }
+ ],
+ "findings": {
+  "2": {
+   "resource": "aws_neptune_cluster_instance.default",
+   "issue": "Instance publicly accessible (commented out but should be reviewed)",
+   "risk": "If the instance were publicly accessible, it could be exposed to the internet, increasing the attack surface.",
+   "remediation": "Ensure that the instance is not publicly accessible unless absolutely necessary. If needed, uncomment and set publicly_accessible = false."
+  }
+ }
+}

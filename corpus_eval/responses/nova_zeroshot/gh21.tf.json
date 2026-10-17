@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "gh21.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:16:00",
+  "response": "```json\n[\n  {\n    \"resource\": \"data.aws_iam_policy_document.main_update\",\n    \"issue\": \"Overly permissive S3 bucket policy\",\n    \"risk\": \"Allows any principal to perform specified S3 actions on the entire bucket and its objects, which can lead to unauthorized access and data breaches.\",\n    \"remediation\": \"Restrict the resources to only the necessary objects or prefixes. Change the resources attribute in the s3HeadObject statement to only include the specific prefix: [\\\"arn:${data.aws_partition.current.partition}:s3:::${var.av_definition_s3_bucket}/${var.av_definition_s3_prefix}\\\"]\"\n  },\n  {\n    \"resource\": \"aws_lambda_function.main_update\",\n    \"issue\": \"Lambda function environment variables\",\n    \"risk\": \"Storing sensitive information like S3 bucket names and prefixes as plaintext environment variables can lead to exposure if the Lambda function's configuration is accessed by unauthorized entities.\",\n    \"remediation\": \"Consider using AWS Secrets Manager or AWS Systems Manager Parameter Store to store sensitive information and retrieve it at runtime.\"\n  }\n]\n```"
+}

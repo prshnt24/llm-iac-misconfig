@@ -1,0 +1,119 @@
+{
+ "file": "gh08.tf",
+ "findings": [
+  {
+   "resource": "aws_s3_bucket.example",
+   "issue": "S3 Bucket Versioning Not Enabled",
+   "risk": "Without versioning, accidental or malicious deletion or overwriting of objects cannot be recovered. This increases the risk of data loss from both human error and ransomware-style attacks.",
+   "remediation": "Add an aws_s3_bucket_versioning resource: resource \"aws_s3_bucket_versioning\" \"example\" { bucket = aws_s3_bucket.example.id versioning_configuration { status = \"Enabled\" } }"
+  },
+  {
+   "resource": "aws_s3_bucket.example",
+   "issue": "S3 Bucket Server-Side Encryption Not Configured",
+   "risk": "Data stored in the bucket is not encrypted at rest, exposing sensitive data if the underlying storage is compromised or accessed by unauthorized parties.",
+   "remediation": "Add an aws_s3_bucket_server_side_encryption_configuration resource: resource \"aws_s3_bucket_server_side_encryption_configuration\" \"example\" { bucket = aws_s3_bucket.example.id rule { apply_server_side_encryption_by_default { sse_algorithm = \"aws:kms\" kms_master_key_id = aws_kms_key.example.arn } bucket_key_enabled = true } }"
+  },
+  {
+   "resource": "aws_s3_bucket.example",
+   "issue": "S3 Bucket Public Access Block Not Configured",
+   "risk": "Without explicit public access block settings, the bucket or its objects could be made public through ACLs or bucket policies, leading to unintended data exposure.",
+   "remediation": "Add an aws_s3_bucket_public_access_block resource: resource \"aws_s3_bucket_public_access_block\" \"example\" { bucket = aws_s3_bucket.example.id block_public_acls = true block_public_policy = true ignore_public_acls = true restrict_public_buckets = true }"
+  },
+  {
+   "resource": "aws_s3_bucket.example",
+   "issue": "S3 Bucket Logging Not Enabled",
+   "risk": "Without access logging, there is no audit trail of requests made to the bucket, making it impossible to detect unauthorized access, data exfiltration, or forensic investigation after a security incident.",
+   "remediation": "Add an aws_s3_bucket_logging resource: resource \"aws_s3_bucket_logging\" \"example\" { bucket = aws_s3_bucket.example.id target_bucket = aws_s3_bucket.log_bucket.id target_prefix = \"s3-access-logs/\" }"
+  },
+  {
+   "resource": "aws_s3_bucket.example",
+   "issue": "Incorrect Tag Key Used for IAM Condition",
+   "risk": "The bucket is tagged with 'allow-gh-action-access' but the IAM policy condition checks for 'allow-gh-action'. This mismatch means the condition will never match, either silently denying all access or, depending on policy logic, failing to enforce the intended tag-based access control.",
+   "remediation": "Align the tag key on the bucket with the condition variable in the IAM policy. Either change the bucket tag to: tags = { \"allow-gh-action\" = \"true\" } or update the IAM condition variable to match 'allow-gh-action-access'."
+  },
+  {
+   "resource": "aws_ecr_repository.example",
+   "issue": "Incorrect Tag Key and Value Type Used for IAM Condition",
+   "risk": "The ECR repository is tagged with 'allow-gh-action-access' (boolean true) but the IAM policy condition checks for the tag key 'allow-gh-action' with string value 'true'. Both the key mismatch and the boolean vs string type mismatch mean the tag-based access control will never be enforced correctly.",
+   "remediation": "Update the ECR repository tags to match the IAM condition exactly: tags = { \"allow-gh-action\" = \"true\" } (string value, matching key)."
+  },
+  {
+   "resource": "aws_ecr_repository.example",
+   "issue": "ECR Repository Image Scanning Not Enabled",
+   "risk": "Without image scanning on push, container images stored in ECR are not automatically checked for known CVEs and vulnerabilities, increasing the risk of deploying vulnerable images to production.",
+   "remediation": "Add an image_scanning_configuration block to the resource: image_scanning_configuration { scan_on_push = true }"
+  },
+  {
+   "resource": "aws_ecr_repository.example",
+   "issue": "ECR Repository Encryption Not Explicitly Configured with KMS",
+   "risk": "By default ECR uses AES-256 encryption, but without explicit KMS encryption configuration there is no customer-managed key control, audit trail via AWS KMS, or ability to revoke access by disabling the key.",
+   "remediation": "Add an encryption_configuration block: encryption_configuration { encryption_type = \"KMS\" kms_key = aws_kms_key.ecr.arn }"
+  },
+  {
+   "resource": "data.aws_iam_policy_document.ecr",
+   "issue": "Overly Broad ECR IAM Policy Resource Wildcard",
+   "risk": "Setting resources = [\"*\"] grants the GitHub Actions role the ability to push and pull images to and from every ECR repository in the account (subject only to the tag condition). If the tag condition is misconfigured or bypassed, this becomes a full account-wide ECR write permission, enabling supply chain attacks.",
+   "remediation": "Restrict the resources to the specific ECR repository ARN: resources = [aws_ecr_repository.example.arn]. The tag-based condition should be a defence-in-depth control, not the primary scope restriction."
+  },
+  {
+   "resource": "data.aws_iam_policy_document.s3",
+   "issue": "S3 IAM Policy Allows Overly Broad Resource Glob",
+   "risk": "The resource pattern \"${aws_s3_bucket.example.arn}*\" without a path separator matches not only objects within the bucket but also any other bucket whose name starts with the same prefix, potentially granting unintended access to other buckets.",
+   "remediation": "Use a proper object path wildcard with a slash: resources = [aws_s3_bucket.example.arn, \"${aws_s3_bucket.example.arn}/*\"] to restrict access to objects within the specific bucket only."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c39"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c37"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c33"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c38"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": [
+    "c32"
+   ]
+  },
+  {
+   "finding": 7,
+   "candidates": [
+    "c31"
+   ]
+  },
+  {
+   "finding": 8,
+   "candidates": []
+  },
+  {
+   "finding": 9,
+   "candidates": []
+  }
+ ]
+}

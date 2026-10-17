@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "reg16.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:17:05",
+  "response": "```json\n[\n  {\n    \"resource\": \"aws_iam_role.this\",\n    \"issue\": \"Wildcard Action in Assume Role Policy\",\n    \"risk\": \"Allowing the 'sts:AssumeRole' action with a wildcard principal can lead to unauthorized access if misconfigured.\",\n    \"remediation\": \"Restrict the 'identifiers' attribute to specific trusted entities instead of using a wildcard.\"\n  },\n  {\n    \"resource\": \"data.aws_iam_policy_document.logs\",\n    \"issue\": \"Wildcard Resource in CloudWatch Logs Policy\",\n    \"risk\": \"Allowing actions on all resources (*) can lead to unintended access to sensitive log data.\",\n    \"remediation\": \"Restrict the 'resources' attribute to specific log group ARNs instead of using a wildcard.\"\n  },\n  {\n    \"resource\": \"aws_cloudwatch_log_group.sfn\",\n    \"issue\": \"Missing Encryption at Rest\",\n    \"risk\": \"Storing logs without encryption at rest can lead to data breaches if the logs contain sensitive information.\",\n    \"remediation\": \"Ensure the 'kms_key_id' attribute is set to a valid KMS key ARN to enable encryption at rest.\"\n  }\n]\n```"
+}

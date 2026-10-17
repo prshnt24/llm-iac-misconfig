@@ -1,0 +1,17 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_51 Ensure ECR Image Tags are immutable (resource aws_ecr_repository.repository)",
+   "issue": "Image tags are mutable",
+   "remediation": "Change the aws_ecr_repository.repository attribute image_tag_mutability from \"MUTABLE\" to \"IMMUTABLE\"."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correctly identifies aws_ecr_repository.repository.image_tag_mutability and sets it to \"IMMUTABLE\", which fixes CKV_AWS_51."
+  }
+ ]
+}

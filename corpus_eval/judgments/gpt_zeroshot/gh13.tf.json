@@ -1,0 +1,67 @@
+{
+ "file": "gh13.tf",
+ "findings": [
+  {
+   "resource": "module.eks_cluster",
+   "issue": "Worker nodes are placed in public subnets",
+   "risk": "Using concat(module.subnets.private_subnet_ids, module.subnets.public_subnet_ids) allows EKS managed resources and potentially node placement in public subnets, increasing exposure of worker nodes to the internet and raising the risk of direct network attack or unintended public reachability.",
+   "remediation": "Change module.eks_cluster.subnet_ids to use only private subnets: subnet_ids = module.subnets.private_subnet_ids."
+  },
+  {
+   "resource": "module.eks_cluster",
+   "issue": "Kubernetes API access allowed from entire VPC CIDR",
+   "risk": "Setting allowed_cidr_blocks = [module.vpc.vpc_cidr_block] permits API server access from any resource in the VPC, broadening the attack surface and enabling lateral movement from any compromised instance in the VPC.",
+   "remediation": "Restrict module.eks_cluster.allowed_cidr_blocks to only trusted administrative CIDRs, or remove it if not required. Replace allowed_cidr_blocks = [module.vpc.vpc_cidr_block] with a minimal list such as allowed_cidr_blocks = var.admin_cidr_blocks."
+  },
+  {
+   "resource": "module.eks_cluster",
+   "issue": "Kubernetes API access allowed from default security group",
+   "risk": "Allowing module.vpc.vpc_default_security_group_id in allowed_security_group_ids grants cluster API access to resources using the default security group, which is commonly overused and can unintentionally include many instances, increasing unauthorized access risk.",
+   "remediation": "Replace module.eks_cluster.allowed_security_group_ids = [module.vpc.vpc_default_security_group_id] with a dedicated, tightly scoped security group containing only approved admin or control-plane client hosts."
+  },
+  {
+   "resource": "local.access_entry_map",
+   "issue": "Dynamic grant of cluster admin to the current session issuer",
+   "risk": "Automatically granting ClusterAdmin to data.aws_iam_session_context.current.issuer_arn can assign administrative access based on whoever runs Terraform, creating excessive privilege, weak access governance, and risk of unintended persistent admin assignment.",
+   "remediation": "Replace local.access_entry_map with a static, explicitly approved set of IAM principal ARNs. Remove the dynamic key (data.aws_iam_session_context.current.issuer_arn) and define fixed principals in access_entry_map."
+  },
+  {
+   "resource": "module.eks_node_group",
+   "issue": "Node group configured to use public subnets",
+   "risk": "Setting subnet_ids = module.subnets.public_subnet_ids places worker nodes in public subnets, which can expose node network interfaces to the internet and increase the likelihood of compromise.",
+   "remediation": "Change module.eks_node_group.subnet_ids to private subnets: subnet_ids = module.subnets.private_subnet_ids."
+  },
+  {
+   "resource": "module.subnets",
+   "issue": "IPv6 enabled for subnets by default",
+   "risk": "Setting ipv6_enabled = true provisions IPv6 addressing across subnets. If IPv6 security controls, routing, and filtering are not explicitly designed and monitored, resources may become reachable over IPv6 in unexpected ways, bypassing IPv4-focused controls.",
+   "remediation": "Disable IPv6 unless explicitly required by changing module.subnets.ipv6_enabled to false, or ensure IPv6-specific route tables, security groups, and NACLs are explicitly hardened."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  }
+ ]
+}

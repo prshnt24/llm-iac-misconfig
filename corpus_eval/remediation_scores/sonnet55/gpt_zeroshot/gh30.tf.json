@@ -1,0 +1,17 @@
+{
+ "items": [
+  {
+   "finding": 2,
+   "known": "CKV_AWS_382 Ensure no security groups allow egress from 0.0.0.0:0 to port -1 (resource aws_security_group.loadtest)",
+   "issue": "Unrestricted outbound egress",
+   "remediation": "Restrict the egress rule to only required destinations, ports, and protocols. Replace the `egress` block using `protocol = \"-1\"` and `cidr_blocks = [\"0.0.0.0/0\"]` with narrowly scoped egress rules."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 1,
+   "reason": "Right direction: it targets the egress block with protocol -1 and 0.0.0.0/0 and says to narrow it. It gives no concrete attribute values, such as specific ports (e.g. 80/443 with protocol tcp) or restricted CIDR blocks, so it is vague."
+  }
+ ]
+}

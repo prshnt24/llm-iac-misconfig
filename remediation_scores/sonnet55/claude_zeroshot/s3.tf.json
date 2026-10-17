@@ -1,0 +1,160 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV2_AWS_6 Ensure that S3 bucket has a Public Access block (resource aws_s3_bucket.data)",
+   "issue": "S3 Bucket Publicly Accessible (No ACL / Public Access Block)",
+   "remediation": "Add an explicit ACL of 'private' to the bucket and attach an aws_s3_bucket_public_access_block resource with block_public_acls=true, block_public_policy=true, ignore_public_acls=true, restrict_public_buckets=true."
+  },
+  {
+   "finding": 1,
+   "known": "CKV_AWS_145 Ensure that S3 buckets are encrypted with KMS by default (resource aws_s3_bucket.data)",
+   "issue": "S3 Bucket Server-Side Encryption Disabled",
+   "remediation": "Add a server_side_encryption_configuration block with sse_algorithm set to 'aws:kms' (preferred) or 'AES256', e.g.: server_side_encryption_configuration { rule { apply_server_side_encryption_by_default { sse_algorithm = \"aws:kms\" } } }"
+  },
+  {
+   "finding": 2,
+   "known": "CKV_AWS_18 Ensure the S3 bucket has access logging enabled (resource aws_s3_bucket.data)",
+   "issue": "S3 Bucket Access Logging Disabled",
+   "remediation": "Add a logging block pointing to the aws_s3_bucket.logs bucket: logging { target_bucket = aws_s3_bucket.logs.id target_prefix = \"log/\" }"
+  },
+  {
+   "finding": 3,
+   "known": "CKV_AWS_21 Ensure all data stored in the S3 bucket have versioning enabled (resource aws_s3_bucket.data)",
+   "issue": "S3 Bucket Versioning Disabled",
+   "remediation": "Add a versioning block: versioning { enabled = true }"
+  },
+  {
+   "finding": 5,
+   "known": "CKV_AWS_145 Ensure that S3 buckets are encrypted with KMS by default (resource aws_s3_bucket.financials)",
+   "issue": "S3 Bucket Server-Side Encryption Disabled",
+   "remediation": "Add a server_side_encryption_configuration block: server_side_encryption_configuration { rule { apply_server_side_encryption_by_default { sse_algorithm = \"aws:kms\" } } }"
+  },
+  {
+   "finding": 6,
+   "known": "CKV_AWS_18 Ensure the S3 bucket has access logging enabled (resource aws_s3_bucket.financials)",
+   "issue": "S3 Bucket Access Logging Disabled",
+   "remediation": "Add a logging block: logging { target_bucket = aws_s3_bucket.logs.id target_prefix = \"log/\" }"
+  },
+  {
+   "finding": 7,
+   "known": "CKV_AWS_21 Ensure all data stored in the S3 bucket have versioning enabled (resource aws_s3_bucket.financials)",
+   "issue": "S3 Bucket Versioning Disabled",
+   "remediation": "Add a versioning block: versioning { enabled = true }"
+  },
+  {
+   "finding": 8,
+   "known": "CKV2_AWS_6 Ensure that S3 bucket has a Public Access block (resource aws_s3_bucket.financials)",
+   "issue": "No S3 Public Access Block Configuration",
+   "remediation": "Add an aws_s3_bucket_public_access_block resource with block_public_acls=true, block_public_policy=true, ignore_public_acls=true, restrict_public_buckets=true referencing this bucket."
+  },
+  {
+   "finding": 9,
+   "known": "CKV_AWS_145 Ensure that S3 buckets are encrypted with KMS by default (resource aws_s3_bucket.operations)",
+   "issue": "S3 Bucket Server-Side Encryption Disabled",
+   "remediation": "Add a server_side_encryption_configuration block: server_side_encryption_configuration { rule { apply_server_side_encryption_by_default { sse_algorithm = \"aws:kms\" } } }"
+  },
+  {
+   "finding": 10,
+   "known": "CKV_AWS_18 Ensure the S3 bucket has access logging enabled (resource aws_s3_bucket.operations)",
+   "issue": "S3 Bucket Access Logging Disabled",
+   "remediation": "Add a logging block: logging { target_bucket = aws_s3_bucket.logs.id target_prefix = \"log/\" }"
+  },
+  {
+   "finding": 11,
+   "known": "CKV2_AWS_6 Ensure that S3 bucket has a Public Access block (resource aws_s3_bucket.operations)",
+   "issue": "No S3 Public Access Block Configuration",
+   "remediation": "Add an aws_s3_bucket_public_access_block resource with block_public_acls=true, block_public_policy=true, ignore_public_acls=true, restrict_public_buckets=true referencing this bucket."
+  },
+  {
+   "finding": 12,
+   "known": "CKV_AWS_145 Ensure that S3 buckets are encrypted with KMS by default (resource aws_s3_bucket.data_science)",
+   "issue": "S3 Bucket Server-Side Encryption Disabled",
+   "remediation": "Add a server_side_encryption_configuration block: server_side_encryption_configuration { rule { apply_server_side_encryption_by_default { sse_algorithm = \"aws:kms\" } } }"
+  },
+  {
+   "finding": 13,
+   "known": "CKV2_AWS_6 Ensure that S3 bucket has a Public Access block (resource aws_s3_bucket.data_science)",
+   "issue": "No S3 Public Access Block Configuration",
+   "remediation": "Add an aws_s3_bucket_public_access_block resource with block_public_acls=true, block_public_policy=true, ignore_public_acls=true, restrict_public_buckets=true referencing this bucket."
+  },
+  {
+   "finding": 14,
+   "known": "CKV2_AWS_6 Ensure that S3 bucket has a Public Access block (resource aws_s3_bucket.logs)",
+   "issue": "No S3 Public Access Block Configuration",
+   "remediation": "Add an aws_s3_bucket_public_access_block resource with block_public_acls=true, block_public_policy=true, ignore_public_acls=true, restrict_public_buckets=true referencing the logs bucket."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "An aws_s3_bucket_public_access_block with all four flags true fixes CKV2_AWS_6; the private ACL is an extra."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "The example uses sse_algorithm = aws:kms in server_side_encryption_configuration, which satisfies the check. The AES256 alternative is only a side note."
+  },
+  {
+   "item": 2,
+   "score": 2,
+   "reason": "A logging block targeting the logs bucket fixes CKV_AWS_18."
+  },
+  {
+   "item": 3,
+   "score": 2,
+   "reason": "versioning { enabled = true } is the standard fix."
+  },
+  {
+   "item": 4,
+   "score": 2,
+   "reason": "A server_side_encryption_configuration block with aws:kms is correct."
+  },
+  {
+   "item": 5,
+   "score": 2,
+   "reason": "A logging block targeting the logs bucket is correct."
+  },
+  {
+   "item": 6,
+   "score": 2,
+   "reason": "versioning { enabled = true } is correct."
+  },
+  {
+   "item": 7,
+   "score": 2,
+   "reason": "A public access block with all four flags set to true is correct."
+  },
+  {
+   "item": 8,
+   "score": 2,
+   "reason": "A server_side_encryption_configuration block with aws:kms is correct."
+  },
+  {
+   "item": 9,
+   "score": 2,
+   "reason": "A logging block targeting the logs bucket is correct."
+  },
+  {
+   "item": 10,
+   "score": 2,
+   "reason": "A public access block with all four flags set to true is correct."
+  },
+  {
+   "item": 11,
+   "score": 2,
+   "reason": "A server_side_encryption_configuration block with aws:kms is correct."
+  },
+  {
+   "item": 12,
+   "score": 2,
+   "reason": "A public access block with all four flags set to true is correct."
+  },
+  {
+   "item": 13,
+   "score": 2,
+   "reason": "A public access block with all four flags set to true, applied to the logs bucket, is correct."
+  }
+ ]
+}

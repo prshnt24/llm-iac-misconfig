@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "1": {
+   "resource": "terraform.backend.s3",
+   "issue": "S3 backend encryption enabled without explicit KMS key configuration",
+   "risk": "Although backend encryption is enabled, not specifying a customer-managed KMS key may result in reliance on default encryption controls that provide less granular key management, auditing, and access control for sensitive Terraform state.",
+   "remediation": "In the `backend \"s3\"` block, add the `kms_key_id` attribute to use a customer-managed KMS key, for example: `kms_key_id = \"arn:aws:kms:...\"`."
+  }
+ }
+}

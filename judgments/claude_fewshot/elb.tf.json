@@ -1,0 +1,61 @@
+{
+ "file": "elb.tf",
+ "findings": [
+  {
+   "resource": "aws_elb.weblb",
+   "issue": "Load balancer listener uses unencrypted HTTP on port 80",
+   "risk": "Traffic between clients and the load balancer is transmitted in plaintext, exposing sensitive data to interception (man-in-the-middle attacks)",
+   "remediation": "Change lb_port to 443, lb_protocol to 'https', and add an ssl_certificate_id referencing a valid ACM or IAM certificate ARN. Redirect HTTP traffic to HTTPS rather than serving it directly."
+  },
+  {
+   "resource": "aws_elb.weblb",
+   "issue": "Backend instance communication uses unencrypted HTTP",
+   "risk": "Traffic between the load balancer and backend instances is transmitted in plaintext, meaning data can be intercepted within the VPC or by a compromised internal host",
+   "remediation": "Change instance_protocol to 'https' (or 'ssl' for TCP) and ensure backend instances are configured with valid TLS certificates to enforce end-to-end encryption."
+  },
+  {
+   "resource": "aws_elb.weblb",
+   "issue": "Access logging is not enabled",
+   "risk": "Without access logs, there is no audit trail of requests to the load balancer, making it impossible to detect abuse, perform forensic analysis, or meet compliance requirements",
+   "remediation": "Add an 'access_logs' block to the aws_elb resource specifying a target S3 bucket, prefix, and setting 'enabled = true'. Ensure the target S3 bucket has the appropriate ELB service account bucket policy."
+  },
+  {
+   "resource": "aws_elb.weblb",
+   "issue": "Classic ELB (aws_elb) used instead of Application Load Balancer (aws_lb)",
+   "risk": "Classic ELB is a legacy service lacking modern security features such as WAF integration, advanced TLS policies, SNI support, HTTP/2, and fine-grained security group rules available on ALB/NLB",
+   "remediation": "Migrate to an aws_lb (Application Load Balancer) resource with an aws_lb_listener configured for HTTPS (port 443) and an aws_lb_listener_rule for routing, enabling WAF association and modern TLS security policies."
+  },
+  {
+   "resource": "aws_elb.weblb",
+   "issue": "No HTTPS/TLS security policy specified",
+   "risk": "Without an explicit TLS security policy, the load balancer may negotiate weak cipher suites or deprecated protocol versions (e.g., TLS 1.0/1.1), making it vulnerable to downgrade attacks such as POODLE or BEAST",
+   "remediation": "When adding an HTTPS listener, explicitly set a modern security policy (e.g., 'ELBSecurityPolicy-TLS13-1-2-2021-06') using the ssl_certificate_id and ensuring the listener enforces strong ciphers and TLS 1.2+ only."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c61"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c62"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  }
+ ]
+}

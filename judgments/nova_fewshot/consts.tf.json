@@ -1,0 +1,27 @@
+{
+ "file": "consts.tf",
+ "findings": [
+  {
+   "resource": "variable.password",
+   "issue": "Hardcoded sensitive information",
+   "risk": "Hardcoding sensitive information like passwords poses a significant security risk as it can be exposed in version control systems or logs.",
+   "remediation": "Use Terraform sensitive variables or secret management services like AWS Secrets Manager. Replace the hardcoded value with a reference to a secret."
+  },
+  {
+   "resource": "variable.neptune-dbname",
+   "issue": "Hardcoded sensitive information",
+   "risk": "Hardcoding sensitive information like database names can lead to exposure of critical infrastructure details.",
+   "remediation": "Avoid hardcoding sensitive information. Use Terraform variables with sensitive flag or retrieve from a secure source."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  }
+ ]
+}

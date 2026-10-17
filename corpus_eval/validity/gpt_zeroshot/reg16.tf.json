@@ -1,0 +1,66 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "VALID"
+  },
+  {
+   "finding": 4,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 5,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_sfn_state_machine.this",
+   "issue": "State machine encryption at rest is optional and may be omitted",
+   "risk": "If no encryption_configuration is provided, sensitive workflow definition data and execution metadata may not use a customer-managed KMS key, reducing control over key access, auditability, and key rotation.",
+   "remediation": "Add the encryption_configuration block to aws_sfn_state_machine.this and set encryption_configuration.type to \"CUSTOMER_MANAGED_KMS_KEY\" with encryption_configuration.kms_key_id set to a customer-managed KMS key ARN."
+  },
+  "1": {
+   "resource": "aws_sfn_state_machine.this",
+   "issue": "CloudWatch logging may include execution data",
+   "risk": "When logging_configuration.include_execution_data is true, workflow input/output and other potentially sensitive data can be written to CloudWatch Logs, increasing exposure of secrets and regulated data.",
+   "remediation": "In the logging_configuration block of aws_sfn_state_machine.this, set include_execution_data = false."
+  },
+  "2": {
+   "resource": "data.aws_iam_policy_document.assume_role",
+   "issue": "Assume role policy trusts additional arbitrary entities",
+   "risk": "Including var.trusted_entities in the role trust policy can allow unintended principals to assume the Step Functions execution role, enabling privilege escalation or unauthorized workflow execution.",
+   "remediation": "Restrict the principals.identifiers in data.aws_iam_policy_document.assume_role to only the required Step Functions service principal, or tightly validate var.trusted_entities so it does not include unauthorized principals."
+  },
+  "3": {
+   "resource": "data.aws_iam_policy_document.logs",
+   "issue": "CloudWatch Logs IAM policy uses wildcard resource",
+   "risk": "Granting logs permissions on resources = [\"*\"] provides broader access than necessary and increases blast radius if the role is abused.",
+   "remediation": "In data.aws_iam_policy_document.logs, replace resources = [\"*\"] with the specific CloudWatch Logs resource ARNs required where supported. If some listed actions require \"*\", split the statement so only those actions remain wildcarded and scope other actions to the target log group ARN."
+  },
+  "4": {
+   "resource": "aws_cloudwatch_log_group.sfn",
+   "issue": "Log group encryption with KMS is optional and may be omitted",
+   "risk": "If kms_key_id is not set, CloudWatch Logs data may only use default service-managed encryption, limiting key management controls and separation of duties for sensitive execution logs.",
+   "remediation": "Set aws_cloudwatch_log_group.sfn.kms_key_id to a customer-managed KMS key ARN."
+  },
+  "5": {
+   "resource": "aws_cloudwatch_log_group.sfn",
+   "issue": "Log retention may be unlimited or too long",
+   "risk": "If retention_in_days is null or excessively long, sensitive execution logs may be retained indefinitely, increasing data exposure and compliance risk.",
+   "remediation": "Set aws_cloudwatch_log_group.sfn.retention_in_days to a defined minimum necessary retention period, for example 30 or 90 days, via the retention_in_days attribute."
+  }
+ }
+}

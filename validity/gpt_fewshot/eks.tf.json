@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 3,
+   "label": "VALID"
+  },
+  {
+   "finding": 4,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "3": {
+   "resource": "output.endpoint",
+   "issue": "Sensitive infrastructure endpoint exposed via Terraform output",
+   "risk": "The EKS cluster API endpoint is exposed in Terraform output and may be disclosed in logs, state consumers, or CI/CD output, aiding reconnaissance.",
+   "remediation": "Remove the output block if not needed, or mark it sensitive by adding sensitive = true to output \"endpoint\"."
+  },
+  "4": {
+   "resource": "output.kubeconfig-certificate-authority-data",
+   "issue": "Cluster certificate authority data exposed via Terraform output",
+   "risk": "Exposing certificate authority data in Terraform output can leak internal cluster connection details through logs, state consumers, or CI/CD systems, assisting reconnaissance and misuse.",
+   "remediation": "Remove the output block if not needed, or mark it sensitive by adding sensitive = true to output \"kubeconfig-certificate-authority-data\"."
+  }
+ }
+}

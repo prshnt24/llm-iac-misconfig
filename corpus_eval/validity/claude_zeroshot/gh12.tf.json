@@ -1,0 +1,96 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  },
+  {
+   "finding": 1,
+   "label": "VALID"
+  },
+  {
+   "finding": 3,
+   "label": "VALID"
+  },
+  {
+   "finding": 4,
+   "label": "VALID"
+  },
+  {
+   "finding": 5,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 6,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 7,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 9,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 10,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "module.alb",
+   "issue": "ALB Access Logging Disabled",
+   "risk": "Without access logs, there is no record of HTTP requests processed by the load balancer. This prevents forensic analysis, incident response, and compliance auditing of traffic patterns, malicious requests, or data exfiltration attempts.",
+   "remediation": "Set `access_logs_enabled = true` and provide an S3 bucket via the module's `access_logs_s3_bucket_id` (or equivalent) attribute. Example: `access_logs_enabled = true`, `access_logs_s3_bucket_id = aws_s3_bucket.alb_logs.id`."
+  },
+  "1": {
+   "resource": "module.alb",
+   "issue": "ALB Using HTTP Listener Instead of HTTPS",
+   "risk": "The ALB is configured with an HTTP listener (`http_listener_arn` is referenced throughout). Traffic between clients and the load balancer is transmitted in plaintext, exposing sensitive data to interception (man-in-the-middle attacks) and violating data-in-transit encryption requirements.",
+   "remediation": "Configure the ALB module to use an HTTPS listener by providing an ACM certificate ARN (e.g., `certificate_arn = var.acm_certificate_arn`) and setting `http_redirect = true` to redirect HTTP to HTTPS. Update `aws_lb_listener_rule.blue_green` and `aws_lb_listener_rule.blue_green_test` to reference `module.alb.https_listener_arn` instead of `module.alb.http_listener_arn`."
+  },
+  "3": {
+   "resource": "aws_lb_listener_rule.blue_green",
+   "issue": "Listener Rule Attached to Unencrypted HTTP Listener",
+   "risk": "The production listener rule forwards traffic received on the HTTP listener, meaning production traffic is never encrypted in transit between the client and the ALB. This exposes user data and session tokens to network-level interception.",
+   "remediation": "Update `listener_arn = module.alb.https_listener_arn` after configuring the ALB with an HTTPS listener and ACM certificate. Remove or repurpose the HTTP listener to only issue 301 redirects to HTTPS."
+  },
+  "4": {
+   "resource": "aws_lb_listener_rule.blue_green_test",
+   "issue": "Test Listener Rule Attached to Unencrypted HTTP Listener",
+   "risk": "Test traffic is also routed over an unencrypted HTTP listener. Even test/staging traffic may carry sensitive payloads or credentials, and using HTTP normalises insecure patterns that can bleed into production.",
+   "remediation": "Update `listener_arn = module.alb.https_listener_arn` (or a dedicated HTTPS test listener) after configuring TLS on the ALB. Ensure test traffic is also encrypted in transit."
+  },
+  "5": {
+   "resource": "module.subnets",
+   "issue": "NAT Gateway and NAT Instance Both Disabled",
+   "risk": "ECS tasks deployed in public subnets (`subnet_ids = module.subnets.public_subnet_ids`) with `assign_public_ip` potentially enabled have direct internet exposure. Disabling NAT forces workloads into public subnets, increasing the attack surface. Private subnets with a NAT gateway provide outbound internet access without inbound exposure.",
+   "remediation": "Set `nat_gateway_enabled = true` in the `module.subnets` block, move ECS tasks to private subnets by changing `subnet_ids = module.subnets.private_subnet_ids` in `module.ecs_alb_service_task`, and set `assign_public_ip = false`."
+  },
+  "6": {
+   "resource": "module.ecs_alb_service_task",
+   "issue": "ECS Tasks Deployed in Public Subnets",
+   "risk": "Using `subnet_ids = module.subnets.public_subnet_ids` for ECS tasks places compute workloads directly in public subnets. Combined with `assign_public_ip` potentially being true, tasks may receive public IP addresses and be directly reachable from the internet, bypassing the ALB as the sole ingress point.",
+   "remediation": "Change `subnet_ids = module.subnets.private_subnet_ids` and set `assign_public_ip = false`. Enable a NAT gateway (`nat_gateway_enabled = true` in `module.subnets`) to allow outbound internet access for image pulls and AWS API calls."
+  },
+  "7": {
+   "resource": "module.ecs_alb_service_task",
+   "issue": "Default VPC Security Group Used for ECS Tasks",
+   "risk": "`security_group_ids = [module.vpc.vpc_default_security_group_id]` attaches the default VPC security group to ECS tasks. The default security group typically allows unrestricted inbound traffic from all resources sharing the same group and may have overly permissive rules. Using it violates least-privilege networking.",
+   "remediation": "Create a dedicated `aws_security_group` resource for ECS tasks that allows inbound traffic only from the ALB security group on the container port, and allows all outbound traffic. Replace `module.vpc.vpc_default_security_group_id` with the new security group ID."
+  },
+  "9": {
+   "resource": "module.test_policy",
+   "issue": "IAM Policy Uses Wildcard Resource",
+   "risk": "The IAM policy statement specifies `resources = [\"*\"]`. Even though the action is `none:null` (a no-op placeholder), this pattern is dangerous as a template because wildcard resources grant permissions across all AWS resources if the action is ever changed, violating the principle of least privilege.",
+   "remediation": "Replace `resources = [\"*\"]` with the specific ARN(s) of the resources the policy needs to act on. For example: `resources = [\"arn:aws:s3:::my-specific-bucket/*\"]`. Never use `*` as a resource unless absolutely required and documented."
+  },
+  "10": {
+   "resource": "aws_iam_role.ecs_blue_green",
+   "issue": "IAM Role Trust Policy Uses Broad ECS Service Principal",
+   "risk": "The trust policy allows `ecs.amazonaws.com` (the ECS service principal) to assume this role. Depending on the AWS account configuration, this could allow any ECS task or service in the account to assume the role, not just the intended blue/green deployment service, potentially enabling privilege escalation.",
+   "remediation": "Restrict the trust policy using a condition to limit assumption to the specific ECS cluster or use the more specific `codedeploy.amazonaws.com` principal if CodeDeploy manages the blue/green deployment. Add a condition such as `Condition = { ArnLike = { \"aws:SourceArn\" = aws_ecs_cluster.default[0].arn } }`."
+  }
+ }
+}

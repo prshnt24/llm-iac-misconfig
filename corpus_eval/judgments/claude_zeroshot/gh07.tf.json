@@ -1,0 +1,101 @@
+{
+ "file": "gh07.tf",
+ "findings": [
+  {
+   "resource": "aws_lb.api",
+   "issue": "NLB access logging disabled",
+   "risk": "Without access logs there is no audit trail of requests hitting the load balancer, making incident investigation, compliance reporting, and anomaly detection impossible.",
+   "remediation": "Add an `access_logs` block with `enabled = true` and an S3 bucket destination: `access_logs { bucket = aws_s3_bucket.nlb_logs.id prefix = \"${var.cluster_name}-api\" enabled = true }`."
+  },
+  {
+   "resource": "aws_lb.api",
+   "issue": "NLB deletion protection disabled",
+   "risk": "Without deletion protection the load balancer can be accidentally or maliciously destroyed, causing a complete outage of the Kubernetes and Talos APIs.",
+   "remediation": "Add `enable_deletion_protection = true` to the `aws_lb.api` resource block."
+  },
+  {
+   "resource": "aws_lb_listener.https",
+   "issue": "Listener on port 443 uses raw TCP instead of TLS termination",
+   "risk": "Using `protocol = \"TCP\"` on port 443 means TLS is passed through without the NLB inspecting or enforcing it. There is no certificate pinning, no enforced minimum TLS version, and no ability to rotate certificates at the load-balancer layer. If the backend misconfigures TLS, traffic is silently unencrypted from the NLB's perspective.",
+   "remediation": "Change `protocol` to `\"TLS\"` and add `ssl_policy = \"ELBSecurityPolicy-TLS13-1-2-2021-06\"` plus `certificate_arn = var.acm_certificate_arn` to the listener. This enforces TLS 1.2+ and allows certificate management at the NLB layer."
+  },
+  {
+   "resource": "aws_lb_listener.talos",
+   "issue": "Talos API listener uses unencrypted TCP at the NLB layer",
+   "risk": "Port 50000 carries Talos machine-configuration API traffic. Using plain TCP forwarding means the NLB cannot enforce TLS policy or certificate validity, and any misconfiguration on the node side could expose sensitive bootstrap credentials in transit.",
+   "remediation": "Change `protocol` to `\"TLS\"` and specify `ssl_policy = \"ELBSecurityPolicy-TLS13-1-2-2021-06\"` and `certificate_arn = var.acm_certificate_arn` so the NLB enforces TLS for Talos API connections."
+  },
+  {
+   "resource": "module.nlb_sg",
+   "issue": "Unrestricted egress to 0.0.0.0/0",
+   "risk": "Allowing all outbound traffic from the NLB security group means a compromised load balancer can initiate connections to any internet destination, facilitating data exfiltration or C2 communication.",
+   "remediation": "Replace `egress_with_cidr_blocks = [{ rule = \"all-all\", cidr_blocks = \"0.0.0.0/0\" }]` with rules scoped to the cluster security group and specific ports: allow TCP 6443 and 50000 to the cluster node CIDR or `module.cluster_sg.security_group_id` only."
+  },
+  {
+   "resource": "module.cluster_sg",
+   "issue": "Unrestricted egress to 0.0.0.0/0",
+   "risk": "Allowing all outbound traffic from cluster nodes enables exfiltration of secrets, container images being pulled from untrusted registries, and lateral movement to other AWS services if credentials are compromised.",
+   "remediation": "Replace the catch-all egress rule with specific rules: allow HTTPS (443) to required registries/AWS endpoints, DNS (53 UDP/TCP) to the VPC resolver, and inter-node traffic within the VPC CIDR. Remove `cidr_blocks = \"0.0.0.0/0\"` from the egress block."
+  },
+  {
+   "resource": "module.cluster_sg",
+   "issue": "Kubernetes and Talos API ports exposed directly from external CIDRs, bypassing the NLB",
+   "risk": "Adding `ingress_cidr_blocks = var.external_source_cidrs` with ports 6443 and 50000 directly on the cluster node security group allows external clients to reach control-plane nodes without going through the NLB, circumventing any NLB-level controls (WAF, TLS policy, access logging) and increasing the attack surface.",
+   "remediation": "Remove the `ingress_cidr_blocks` and the corresponding `ingress_with_cidr_blocks` entries for ports 6443 and 50000 from `module.cluster_sg`. All external access should flow exclusively through the NLB, which is already modelled by the `ingress_with_source_security_group_id` rules referencing `module.nlb_sg.security_group_id`."
+  },
+  {
+   "resource": "aws_lb_target_group.k8s",
+   "issue": "Health check uses TCP rather than HTTPS",
+   "risk": "A TCP health check only verifies that the port is open; it does not validate that the Kubernetes API server is actually serving valid TLS responses. A node with a broken API server that still has port 6443 open will be marked healthy and continue to receive traffic.",
+   "remediation": "Change `health_check.protocol` to `\"HTTPS\"` and add `path = \"/healthz\"` so the NLB validates a real HTTP 200 response from the API server before marking the target healthy."
+  },
+  {
+   "resource": "aws_lb_target_group.talos",
+   "issue": "Health check uses TCP rather than HTTPS/gRPC",
+   "risk": "Same as the k8s target group: a TCP-only health check cannot distinguish between a port that is open and a Talos API that is actually functional, leading to traffic being sent to degraded nodes.",
+   "remediation": "Change `health_check.protocol` to `\"HTTPS\"` (or `\"TCP\"` with a tighter threshold) and, where possible, use the Talos health endpoint to confirm the service is operational before marking the target healthy."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c27"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c26"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  },
+  {
+   "finding": 7,
+   "candidates": []
+  },
+  {
+   "finding": 8,
+   "candidates": []
+  }
+ ]
+}

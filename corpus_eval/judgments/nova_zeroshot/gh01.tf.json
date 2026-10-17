@@ -1,0 +1,27 @@
+{
+ "file": "gh01.tf",
+ "findings": [
+  {
+   "resource": "aws_networkfirewall_rule_group.allow_domains",
+   "issue": "Overly permissive rule",
+   "risk": "Allows all HTTPS traffic to.amazon.com, which could be exploited for data exfiltration or other malicious activities.",
+   "remediation": "Narrow down the allowed traffic to specific, necessary subdomains or IP ranges within.amazon.com. Modify the `rules_string` attribute to include more specific destination addresses or use additional match conditions."
+  },
+  {
+   "resource": "aws_networkfirewall_rule_group.allow_icmp",
+   "issue": "Overly permissive ICMP rule",
+   "risk": "Allows all ICMP traffic, which could be used for reconnaissance or denial-of-service attacks.",
+   "remediation": "Limit ICMP traffic to necessary types and sources. Modify the `rules_string` attribute to include specific ICMP types and codes or restrict the source and destination addresses."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  }
+ ]
+}

@@ -1,0 +1,185 @@
+{
+ "file": "reg11.tf",
+ "findings": [
+  {
+   "resource": "aws_elasticache_replication_group.this",
+   "issue": "At-rest encryption not enforced",
+   "risk": "The attribute 'at_rest_encryption_enabled' is driven entirely by the variable 'var.at_rest_encryption_enabled' with no default enforcement. If the variable is false or unset, data stored on disk in ElastiCache is unencrypted, exposing sensitive cached data if underlying storage media is compromised.",
+   "remediation": "Set 'at_rest_encryption_enabled = true' directly in the resource block, or enforce the variable default to 'true' in variables.tf. Additionally, always supply a customer-managed KMS key via 'kms_key_id' rather than relying on the AWS-managed default."
+  },
+  {
+   "resource": "aws_elasticache_replication_group.global",
+   "issue": "At-rest encryption not enforced for primary global replication group",
+   "risk": "For the primary global replication group path, 'at_rest_encryption_enabled' is passed directly from the variable. If the variable defaults to false, data at rest is unencrypted. The secondary path explicitly sets it to null, which also disables encryption.",
+   "remediation": "Ensure 'at_rest_encryption_enabled = true' is set for the primary path. For the secondary path, encryption is inherited from the global replication group, but the explicit 'null' assignment should be reviewed to confirm inheritance is working as expected and documented."
+  },
+  {
+   "resource": "aws_elasticache_replication_group.this",
+   "issue": "Transit encryption not enforced",
+   "risk": "The attribute 'transit_encryption_enabled' is passed directly from 'var.transit_encryption_enabled' with no hardcoded enforcement. If the variable is false or unset, data in transit between clients and the ElastiCache cluster is unencrypted, making it vulnerable to interception on the network.",
+   "remediation": "Set 'transit_encryption_enabled = true' in the resource block or enforce the variable default to 'true'. When transit encryption is enabled, also set 'auth_token' or configure user-based authentication to prevent unauthenticated access over TLS."
+  },
+  {
+   "resource": "aws_elasticache_replication_group.global",
+   "issue": "Transit encryption not enforced for global replication group",
+   "risk": "For the primary global replication group, 'transit_encryption_enabled' is passed from the variable without enforcement. For the secondary path it is explicitly set to null, disabling in-transit encryption. Data traversing the network is exposed to interception.",
+   "remediation": "Set 'transit_encryption_enabled = true' for the primary path. Review the secondary path null assignment; if the global replication group propagates this setting, document it explicitly. Do not rely on variable defaults for a security-critical attribute."
+  },
+  {
+   "resource": "aws_elasticache_replication_group.this",
+   "issue": "AUTH token not enforced",
+   "risk": "The 'auth_token' attribute is sourced from 'var.auth_token', which may be null or empty. Without an AUTH token, any client that can reach the ElastiCache endpoint (e.g., anything within the VPC or security group) can connect without authentication, leading to unauthorised data access or manipulation.",
+   "remediation": "Require a strong, randomly generated AUTH token by setting a non-null default or using a 'random_password' resource. Store the token in AWS Secrets Manager and reference it via a data source. Ensure 'transit_encryption_enabled = true' is also set, as AUTH tokens require TLS."
+  },
+  {
+   "resource": "aws_elasticache_replication_group.global",
+   "issue": "AUTH token not enforced for global replication group",
+   "risk": "Same as above \u2014 'auth_token' is passed from a variable that may be null, leaving the global replication group endpoints open to unauthenticated access from any host that can reach the security group.",
+   "remediation": "Enforce a non-null AUTH token. Use 'var.auth_token' with a validation rule in variables.tf (e.g., 'length(var.auth_token) >= 16') and store the value in AWS Secrets Manager."
+  },
+  {
+   "resource": "aws_elasticache_cluster.this",
+   "issue": "Transit encryption conditionally disabled for Redis clusters",
+   "risk": "The expression 'var.engine == \"memcached\" ? var.transit_encryption_enabled : null' explicitly sets 'transit_encryption_enabled' to null for Redis standalone clusters, disabling in-transit encryption. Redis clusters managed outside a replication group will have no TLS protection.",
+   "remediation": "Remove the conditional null assignment. Set 'transit_encryption_enabled = var.transit_encryption_enabled' for all engine types, or set it to 'true' unconditionally. The TODO comment in the code acknowledges this should be fixed at the next breaking change \u2014 treat it as a security requirement and fix it now."
+  },
+  {
+   "resource": "aws_elasticache_cluster.this",
+   "issue": "Snapshot retention not enforced",
+   "risk": "'snapshot_retention_limit' is passed from a variable with no enforced minimum. A value of 0 (the AWS default) disables automatic snapshots entirely. Without snapshots, there is no recovery point in the event of data loss, ransomware, or accidental deletion.",
+   "remediation": "Set 'snapshot_retention_limit' to a value of at least 7 (days) in the variable default or directly in the resource. Add a variable validation rule: 'condition = var.snapshot_retention_limit >= 1'."
+  },
+  {
+   "resource": "aws_elasticache_replication_group.this",
+   "issue": "Snapshot retention not enforced",
+   "risk": "Same as above \u2014 'snapshot_retention_limit' sourced from a variable that may default to 0, disabling automated backups for the replication group and eliminating recovery options.",
+   "remediation": "Enforce a minimum snapshot retention period of at least 7 days via the variable default or a validation block. Set 'snapshot_retention_limit = 7' or higher directly in the resource block."
+  },
+  {
+   "resource": "aws_elasticache_replication_group.global",
+   "issue": "Snapshot retention not enforced for global replication group",
+   "risk": "Same risk as above \u2014 no enforced minimum snapshot retention, leaving the global replication group without automated backup protection.",
+   "remediation": "Enforce 'snapshot_retention_limit >= 1' via variable validation and set a sensible default (e.g., 7 days)."
+  },
+  {
+   "resource": "aws_cloudwatch_log_group.this",
+   "issue": "CloudWatch Log Group not always encrypted with a customer-managed KMS key",
+   "risk": "'kms_key_id' is set via 'try(each.value.cloudwatch_log_group_kms_key_id, null)', defaulting to null. Log groups without a CMK are encrypted with the AWS-managed key, which does not allow customer control over key rotation, access policies, or revocation. ElastiCache logs may contain sensitive operational data.",
+   "remediation": "Require a KMS key ID for log group encryption. Create or reference an 'aws_kms_key' resource and set 'kms_key_id' to its ARN. Add a variable validation to ensure the key ID is provided when log delivery to CloudWatch is configured."
+  },
+  {
+   "resource": "aws_cloudwatch_log_group.this",
+   "issue": "Insufficient log retention period",
+   "risk": "'retention_in_days' defaults to 14 days via 'try(each.value.cloudwatch_log_group_retention_in_days, 14)'. Many compliance frameworks (PCI-DSS, HIPAA, SOC 2) require log retention of 90 days to 1 year. Logs deleted after 14 days may be unavailable during a security incident investigation.",
+   "remediation": "Increase the default retention period to at least 90 days (or the value required by your compliance framework). Set 'retention_in_days = 90' as the fallback default and document the compliance rationale."
+  },
+  {
+   "resource": "aws_security_group.this",
+   "issue": "Security group description may be missing or non-descriptive",
+   "risk": "'description' is sourced from 'var.security_group_description', which may be null or an empty string. AWS requires a description for security groups; a missing or generic description makes it difficult to audit the purpose of the group and identify misconfigurations during security reviews.",
+   "remediation": "Provide a meaningful default description in the variable definition, e.g., 'default = \"ElastiCache security group\"', and add a validation rule to prevent empty strings."
+  },
+  {
+   "resource": "aws_vpc_security_group_ingress_rule.this",
+   "issue": "Ingress rules may allow unrestricted access (0.0.0.0/0 or ::/0)",
+   "risk": "The 'cidr_ipv4' and 'cidr_ipv6' attributes are passed directly from 'var.security_group_rules' without any validation. If a caller sets these to '0.0.0.0/0' or '::/0', the ElastiCache port (6379 for Redis, 11211 for Memcached) becomes publicly accessible, allowing anyone on the internet to attempt connections.",
+   "remediation": "Add variable validation rules to reject '0.0.0.0/0' and '::/0' for ingress CIDR values. Prefer 'referenced_security_group_id' over CIDR-based rules so that only specific application security groups can reach the cache. Example validation: 'condition = !contains([\"0.0.0.0/0\", \"::/0\"], coalesce(var.cidr_ipv4, \"10.0.0.0/8\"))'."
+  },
+  {
+   "resource": "aws_elasticache_replication_group.this",
+   "issue": "Automatic minor version upgrades not enforced",
+   "risk": "'auto_minor_version_upgrade' is sourced from a variable with no enforced 'true' default. Disabling automatic minor version upgrades means security patches and bug fixes for the ElastiCache engine are not applied automatically, leaving the cluster exposed to known vulnerabilities.",
+   "remediation": "Set 'auto_minor_version_upgrade = true' directly in the resource block or enforce the variable default to 'true' with a validation rule that prevents it from being set to false."
+  },
+  {
+   "resource": "aws_elasticache_replication_group.this",
+   "issue": "KMS key not enforced when at-rest encryption is enabled",
+   "risk": "The expression 'kms_key_id = var.at_rest_encryption_enabled ? var.kms_key_arn : null' allows 'var.kms_key_arn' to be null even when encryption is enabled, causing ElastiCache to fall back to the AWS-managed key. This removes customer control over key rotation, access, and revocation.",
+   "remediation": "Require a customer-managed KMS key ARN when 'at_rest_encryption_enabled = true'. Add a variable validation: 'condition = !var.at_rest_encryption_enabled || (var.at_rest_encryption_enabled && var.kms_key_arn != null)'. Reference a dedicated 'aws_kms_key' resource with key rotation enabled."
+  },
+  {
+   "resource": "aws_elasticache_replication_group.global",
+   "issue": "KMS key not enforced when at-rest encryption is enabled for global replication group",
+   "risk": "Same as above \u2014 'kms_key_id' may resolve to null even when at-rest encryption is enabled, defaulting to the AWS-managed key and removing customer control over encryption key lifecycle.",
+   "remediation": "Apply the same KMS key enforcement as for 'aws_elasticache_replication_group.this'. Ensure the CMK has a resource policy that grants ElastiCache service access and has 'enable_key_rotation = true'."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c132"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c130"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c133"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c131"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  },
+  {
+   "finding": 7,
+   "candidates": []
+  },
+  {
+   "finding": 8,
+   "candidates": []
+  },
+  {
+   "finding": 9,
+   "candidates": []
+  },
+  {
+   "finding": 10,
+   "candidates": []
+  },
+  {
+   "finding": 11,
+   "candidates": []
+  },
+  {
+   "finding": 12,
+   "candidates": []
+  },
+  {
+   "finding": 13,
+   "candidates": []
+  },
+  {
+   "finding": 14,
+   "candidates": []
+  },
+  {
+   "finding": 15,
+   "candidates": []
+  },
+  {
+   "finding": 16,
+   "candidates": []
+  }
+ ]
+}

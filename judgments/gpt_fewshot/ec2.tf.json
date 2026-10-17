@@ -1,0 +1,136 @@
+{
+ "file": "ec2.tf",
+ "findings": [
+  {
+   "resource": "aws_instance.web_host",
+   "issue": "Hardcoded AWS credentials in user_data",
+   "risk": "Plaintext access keys in instance user data can be exposed via Terraform state, instance metadata access, logs, or console access, allowing attackers to obtain long-term AWS credentials.",
+   "remediation": "Remove the export AWS_ACCESS_KEY_ID and export AWS_SECRET_ACCESS_KEY lines from the user_data attribute and use an IAM instance profile via the iam_instance_profile attribute with least-privilege permissions."
+  },
+  {
+   "resource": "aws_ebs_volume.web_host_storage",
+   "issue": "EBS volume encryption not enabled",
+   "risk": "Data stored on the volume may be exposed if the underlying storage or snapshots are accessed without authorization.",
+   "remediation": "Set the encrypted attribute to true in aws_ebs_volume.web_host_storage and optionally specify kms_key_id for a customer-managed KMS key."
+  },
+  {
+   "resource": "aws_ebs_snapshot.example_snapshot",
+   "issue": "Snapshot created from unencrypted volume",
+   "risk": "The snapshot inherits the lack of encryption from the source volume, exposing backed-up data at rest.",
+   "remediation": "Encrypt the source volume by setting aws_ebs_volume.web_host_storage.encrypted = true; recreate the snapshot from the encrypted volume. Optionally manage snapshot copy encryption with a customer-managed KMS key."
+  },
+  {
+   "resource": "aws_security_group.web-node",
+   "issue": "SSH ingress open to the internet",
+   "risk": "Allowing port 22 from 0.0.0.0/0 exposes the instance to brute-force attacks and unauthorized administrative access attempts.",
+   "remediation": "Modify the ingress block for port 22 to replace cidr_blocks = [\"0.0.0.0/0\"] with a restricted set of trusted IP ranges, or remove the rule entirely and use AWS Systems Manager Session Manager."
+  },
+  {
+   "resource": "aws_security_group.web-node",
+   "issue": "Unrestricted egress to the internet",
+   "risk": "Allowing all outbound traffic can enable data exfiltration and unrestricted command-and-control communications if the instance is compromised.",
+   "remediation": "Restrict the egress block by limiting protocol, ports, and cidr_blocks to only required destinations instead of from_port = 0, to_port = 0, protocol = \"-1\", cidr_blocks = [\"0.0.0.0/0\"]."
+  },
+  {
+   "resource": "aws_subnet.web_subnet",
+   "issue": "Automatic public IP assignment enabled",
+   "risk": "Instances launched in the subnet automatically receive public IPs, increasing internet exposure and attack surface.",
+   "remediation": "Set map_public_ip_on_launch = false in aws_subnet.web_subnet and place internet-facing resources behind controlled entry points such as a load balancer or bastionless access pattern."
+  },
+  {
+   "resource": "aws_subnet.web_subnet2",
+   "issue": "Automatic public IP assignment enabled",
+   "risk": "Instances launched in the subnet automatically receive public IPs, increasing internet exposure and attack surface.",
+   "remediation": "Set map_public_ip_on_launch = false in aws_subnet.web_subnet2 and place internet-facing resources behind controlled entry points such as a load balancer or bastionless access pattern."
+  },
+  {
+   "resource": "aws_s3_bucket.flowbucket",
+   "issue": "S3 bucket encryption not configured",
+   "risk": "VPC Flow Logs stored in the bucket may be readable at rest if storage is accessed without proper controls.",
+   "remediation": "Add a server-side encryption configuration for aws_s3_bucket.flowbucket using a aws_s3_bucket_server_side_encryption_configuration resource and enable SSE-S3 or SSE-KMS."
+  },
+  {
+   "resource": "aws_s3_bucket.flowbucket",
+   "issue": "Missing S3 Block Public Access",
+   "risk": "The bucket could be exposed to the public through bucket policies or ACLs, leaking VPC Flow Logs.",
+   "remediation": "Add an aws_s3_bucket_public_access_block resource for aws_s3_bucket.flowbucket with block_public_acls = true, ignore_public_acls = true, block_public_policy = true, and restrict_public_buckets = true."
+  },
+  {
+   "resource": "aws_s3_bucket.flowbucket",
+   "issue": "Bucket versioning not enabled",
+   "risk": "Accidental or malicious deletion or overwriting of VPC Flow Logs cannot be recovered, reducing audit integrity.",
+   "remediation": "Add an aws_s3_bucket_versioning resource for aws_s3_bucket.flowbucket and set versioning_configuration { status = \"Enabled\" }."
+  },
+  {
+   "resource": "aws_s3_bucket.flowbucket",
+   "issue": "force_destroy enabled on log bucket",
+   "risk": "The bucket and all contained logs can be deleted even when not empty, enabling loss of audit evidence.",
+   "remediation": "Set force_destroy = false in aws_s3_bucket.flowbucket to prevent accidental or unauthorized deletion of populated log storage."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c32"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c26",
+    "c28"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c43"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c45"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c46"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": [
+    "c47"
+   ]
+  },
+  {
+   "finding": 7,
+   "candidates": [
+    "c39"
+   ]
+  },
+  {
+   "finding": 8,
+   "candidates": [
+    "c35"
+   ]
+  },
+  {
+   "finding": 9,
+   "candidates": [
+    "c41"
+   ]
+  },
+  {
+   "finding": 10,
+   "candidates": []
+  }
+ ]
+}

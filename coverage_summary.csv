@@ -1,0 +1,7 @@
+run,consensus_covered,all_tool_rows_covered,of_223,checkov_only_covered,trivy_only_covered
+claude_fewshot,65,137,0.614,69,3
+claude_zeroshot,66,111,0.498,41,4
+gpt_fewshot,34,61,0.274,22,5
+gpt_zeroshot,31,57,0.256,22,4
+nova_fewshot,22,40,0.179,15,3
+nova_zeroshot,22,46,0.206,21,3

@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "gh25.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:16:08",
+  "response": "```json\n[\n  {\n    \"resource\": \"aws_security_group.main\",\n    \"issue\": \"Unrestricted ingress from within VPC\",\n    \"risk\": \"Allows all inbound traffic from within the VPC, which can lead to unauthorized access and potential exploitation of resources.\",\n    \"remediation\": \"Restrict the ingress rule to specific ports and protocols required for the application. Replace the ingress block with specific rules.\"\n  },\n  {\n    \"resource\": \"aws_security_group.main\",\n    \"issue\": \"Unrestricted egress\",\n    \"risk\": \"Allows all outbound traffic to the internet, which can be used for data exfiltration or communication with malicious endpoints.\",\n    \"remediation\": \"Restrict the egress rule to specific destinations and ports required for the application. Replace the egress block with specific rules.\"\n  }\n]\n```"
+}

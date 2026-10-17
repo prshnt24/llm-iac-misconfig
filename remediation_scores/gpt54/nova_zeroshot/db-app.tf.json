@@ -1,0 +1,50 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_17 Ensure all data stored in RDS is not publicly accessible (resource aws_db_instance.default)",
+   "issue": "Publicly Accessible",
+   "remediation": "Set `publicly_accessible = false` to restrict access to within the VPC."
+  },
+  {
+   "finding": 1,
+   "known": "CKV_AWS_16 Ensure all data stored in the RDS is securely encrypted at rest (resource aws_db_instance.default)",
+   "issue": "Storage Not Encrypted",
+   "remediation": "Set `storage_encrypted = true` to enable encryption of the database storage."
+  },
+  {
+   "finding": 4,
+   "known": "CKV_AWS_382 Ensure no security groups allow egress from 0.0.0.0:0 to port -1 (resource aws_security_group_rule.egress)",
+   "issue": "Overly Permissive Egress Rule",
+   "remediation": "Restrict the egress rule to specific destinations and ports, e.g., `cidr_blocks = [\"10.0.0.0/16\"]`."
+  },
+  {
+   "finding": 5,
+   "known": "CKV_AWS_355 Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions (resource aws_iam_role_policy.ec2policy)",
+   "issue": "Overly Permissive IAM Policy",
+   "remediation": "Restrict the policy to necessary actions and resources, e.g., remove `s3:*`, `ec2:*`, and `rds:*` and specify required actions and resources."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correct resource attribute and exact secure value: set aws_db_instance.default publicly_accessible = false."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "Correct resource attribute and exact fix: set aws_db_instance.default storage_encrypted = true."
+  },
+  {
+   "item": 2,
+   "score": 1,
+   "reason": "Right direction to restrict egress CIDR, but incomplete because it does not address protocol/ports (-1 with 0.0.0.0/0) explicitly."
+  },
+  {
+   "item": 3,
+   "score": 1,
+   "reason": "Correctly identifies need to scope actions/resources, but vague and not a specific policy document fix for Resource '*' on restrictable actions."
+  }
+ ]
+}

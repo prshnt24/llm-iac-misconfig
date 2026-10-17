@@ -1,0 +1,8 @@
+{
+  "model": "global.openai.gpt-5.4",
+  "strategy": "fewshot",
+  "file": "providers.tf",
+  "temperature": null,
+  "timestamp": "2026-10-16T21:47:54",
+  "response": "[\n  {\n    \"resource\": \"provider.aws.plain_text_access_keys_provider\",\n    \"issue\": \"Hardcoded AWS access keys in provider configuration\",\n    \"risk\": \"Plaintext long-term credentials in Terraform code can be exposed through source control, logs, state, or developer workstations, leading to unauthorized AWS access.\",\n    \"remediation\": \"Remove the access_key and secret_key attributes from the aliased provider block and use environment variables, an AWS profile, or an IAM role instead.\"\n  },\n  {\n    \"resource\": \"terraform.backend.s3\",\n    \"issue\": \"Incomplete S3 backend configuration for secure state storage\",\n    \"risk\": \"Terraform state may be stored without sufficient protections such as explicit bucket configuration and state locking, increasing the risk of state exposure, tampering, or corruption during concurrent runs.\",\n    \"remediation\": \"Update the backend \\\"s3\\\" block to specify secure state settings including bucket, key, region, and a lock mechanism such as use_lockfile = true or a DynamoDB locking configuration where supported.\"\n  }\n]"
+}

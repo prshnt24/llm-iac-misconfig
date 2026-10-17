@@ -1,0 +1,41 @@
+{
+ "file": "neptune.tf",
+ "findings": [
+  {
+   "resource": "aws_neptune_cluster.default",
+   "issue": "Storage not encrypted",
+   "risk": "Data at rest is not encrypted, which can lead to unauthorized access if the storage media is compromised.",
+   "remediation": "Set storage_encrypted = true and provide a kms_key_id for the encryption key."
+  },
+  {
+   "resource": "aws_neptune_cluster.default",
+   "issue": "IAM database authentication disabled",
+   "risk": "Using IAM roles for database authentication is more secure than managing database credentials. Disabling it can lead to weaker authentication mechanisms.",
+   "remediation": "Set iam_database_authentication_enabled = true."
+  },
+  {
+   "resource": "aws_neptune_cluster_instance.default",
+   "issue": "Instance publicly accessible (commented out but should be reviewed)",
+   "risk": "If the instance were publicly accessible, it could be exposed to the internet, increasing the attack surface.",
+   "remediation": "Ensure that the instance is not publicly accessible unless absolutely necessary. If needed, uncomment and set publicly_accessible = false."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c104"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c101"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  }
+ ]
+}

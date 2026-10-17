@@ -1,0 +1,46 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "INVALID"
+  },
+  {
+   "finding": 1,
+   "label": "VALID"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_security_group.postgresql",
+   "issue": "Unrestricted Inbound Rules",
+   "risk": "The security group allows unrestricted inbound traffic, which can expose the database to unauthorized access.",
+   "remediation": "Add inbound rules to restrict access to only necessary sources. Example:\n```hcl\ningress {\n  from_port   = var.database_port\n  to_port     = var.database_port\n  protocol    = \"tcp\"\n  cidr_blocks = [var.allowed_cidr_blocks]\n}\n```"
+  },
+  "1": {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "Plaintext Password",
+   "risk": "The database password is stored in plaintext, which can lead to credential exposure.",
+   "remediation": "Use AWS Secrets Manager or Terraform sensitive variables to store the password securely. Example:\n```hcl\npassword = var.database_password\n```\nEnsure `var.database_password` is marked as sensitive."
+  },
+  "2": {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "Unencrypted Snapshots",
+   "risk": "Database snapshots are not encrypted, which can lead to data exposure if the snapshots are compromised.",
+   "remediation": "Enable encryption for snapshots by setting `kms_key_id` for the DB instance. Example:\n```hcl\nkms_key_id = var.kms_key_id\n```"
+  },
+  "3": {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "Publicly Accessible DB Instance",
+   "risk": "The DB instance may be publicly accessible, which can expose it to unauthorized access.",
+   "remediation": "Set `publicly_accessible` to `false`. Example:\n```hcl\npublicly_accessible = false\n```"
+  }
+ }
+}

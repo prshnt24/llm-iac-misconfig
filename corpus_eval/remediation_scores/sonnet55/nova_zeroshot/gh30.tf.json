@@ -1,0 +1,17 @@
+{
+ "items": [
+  {
+   "finding": 1,
+   "known": "CKV_AWS_382 Ensure no security groups allow egress from 0.0.0.0:0 to port -1 (resource aws_security_group.loadtest)",
+   "issue": "Unrestricted Egress Rule",
+   "remediation": "Restrict the egress block to specific ports and protocols as needed:\n```hcl\n  egress {\n    from_port   = 0\n    to_port     = 0\n    protocol    = \"-1\"\n    cidr_blocks = [\"0.0.0.0/0\"]\n  }\n```"
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 1,
+   "reason": "Text correctly says to restrict egress to specific ports/protocols, but the example HCL is unchanged from the original (protocol -1, 0.0.0.0/0) and would still fail CKV_AWS_382; no concrete ports or CIDRs given."
+  }
+ ]
+}

@@ -1,0 +1,36 @@
+{
+ "labels": [
+  {
+   "finding": 1,
+   "label": "INVALID"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "1": {
+   "resource": "aws_internet_gateway.project102_gw",
+   "issue": "Internet Gateway Attached Without Security Groups",
+   "risk": "Instances launched in the VPC may be exposed to the internet without proper security group rules, leading to potential unauthorized access.",
+   "remediation": "Ensure instances are launched with appropriate security groups that restrict access. Example:\n\n```hcl\nresource \"aws_security_group\" \"project102_sg\" {\n  name_prefix = \"project102-sg\"\n  vpc_id      = aws_vpc.project102.id\n\n  ingress {\n    from_port   = 22\n    to_port     = 22\n    protocol    = \"tcp\"\n    cidr_blocks = [\"10.0.0.0/16\"]\n  }\n\n  egress {\n    from_port   = 0\n    to_port     = 0\n    protocol    = \"-1\"\n    cidr_blocks = [\"0.0.0.0/0\"]\n  }\n}\n```\n\nAttach this security group to instances."
+  },
+  "2": {
+   "resource": "aws_subnet.public_project102_subnet",
+   "issue": "Public Subnets Without NACLs",
+   "risk": "Network ACLs (NACLs) provide an additional layer of security for your VPC. Without NACLs, there is an increased risk of unauthorized access to resources within the subnet.",
+   "remediation": "Create and associate NACLs with the subnets. Example:\n\n```hcl\nresource \"aws_network_acl\" \"project102_nacl\" {\n  vpc_id = aws_vpc.project102.id\n\n  subnet_ids = [for subnet in aws_subnet.public_project102_subnet : subnet.id]\n\n  ingress {\n    protocol   = \"tcp\"\n    rule_no   = 100\n    action    = \"allow\"\n    cidr_block = \"10.0.0.0/16\"\n    from_port = 22\n    to_port   = 22\n  }\n\n  egress {\n    protocol   = \"-1\"\n    rule_no   = 100\n    action    = \"allow\"\n    cidr_block = \"0.0.0.0/0\"\n    from_port = 0\n    to_port   = 0\n  }\n}\n```\n"
+  },
+  "3": {
+   "resource": "aws_default_route_table.internal_project102_default",
+   "issue": "Default Route Table Used for Public Subnets",
+   "risk": "Using the default route table for public subnets can lead to misconfigurations and security risks if the default route table is modified in the future.",
+   "remediation": "Create a custom route table for public subnets instead of using the default route table. Example:\n\n```hcl\nresource \"aws_route_table\" \"public_project102_rt\" {\n  vpc_id = aws_vpc.project102.id\n\n  route {\n    cidr_block = \"0.0.0.0/0\"\n    gateway_id = aws_internet_gateway.project102_gw.id\n  }\n\n  tags = {\n    Name = \"public-project102-rt\"\n  }\n}\n\nresource \"aws_route_table_association\" \"public\" {\n  count          = var.public_sn_count\n  subnet_id      = aws_subnet.public_project102_subnet[count.index].id\n  route_table_id = aws_route_table.public_project102_rt.id\n}\n```"
+  }
+ }
+}

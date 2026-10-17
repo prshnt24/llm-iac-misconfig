@@ -1,0 +1,46 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 4,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "Database password managed directly in Terraform configuration",
+   "risk": "Storing the master password in the aws_db_instance password attribute can expose sensitive credentials through Terraform state files, plans, logs, or CI/CD systems.",
+   "remediation": "Remove the password attribute and use managed credentials instead by setting manage_master_user_password = true on aws_db_instance.postgresql, or source the secret from AWS Secrets Manager/SSM with appropriate secret handling."
+  },
+  "1": {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "Storage encryption not enforced",
+   "risk": "Because storage_encrypted is controlled by a variable rather than enforced to true, the database may be created unencrypted at rest, exposing data and backups to unauthorized access if underlying storage is compromised.",
+   "remediation": "Set storage_encrypted = true in aws_db_instance.postgresql and optionally specify kms_key_id with a customer-managed KMS key."
+  },
+  "2": {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "Final snapshot deletion protection not enforced",
+   "risk": "Because skip_final_snapshot is controlled by a variable rather than enforced to false, the database could be deleted without a final backup, causing irreversible data loss and weakening recovery controls.",
+   "remediation": "Set skip_final_snapshot = false in aws_db_instance.postgresql and ensure final_snapshot_identifier is set to a valid value."
+  },
+  "4": {
+   "resource": "aws_security_group.postgresql",
+   "issue": "Security group created without explicit ingress or egress restrictions",
+   "risk": "Without defined rules, this security group may rely on separate unmanaged rules or default behavior, increasing the chance of overly permissive network access to or from the database.",
+   "remediation": "Add explicit aws_security_group_rule resources or inline ingress/egress blocks to aws_security_group.postgresql that restrict inbound access to required source security groups/CIDRs and limit egress to only necessary destinations."
+  }
+ }
+}

@@ -1,0 +1,49 @@
+run,category,gt_rows,covered,recall,findings,precision,f1
+claude_fewshot,Availability & Resilience,10,10,1.0,15,0.667,0.8
+claude_fewshot,Encryption at Rest,20,18,0.9,26,0.692,0.783
+claude_fewshot,Hardcoded Secrets,1,1,1.0,3,0.333,0.5
+claude_fewshot,Logging & Monitoring,4,3,0.75,14,0.214,0.333
+claude_fewshot,Network Exposure,13,8,0.615,11,0.727,0.667
+claude_fewshot,Other,9,7,0.778,44,0.159,0.264
+claude_fewshot,Publicly Exposed Storage,6,6,1.0,7,1.0,1.0
+claude_fewshot,Storage Configuration,12,12,1.0,14,0.857,0.923
+claude_zeroshot,Availability & Resilience,10,10,1.0,15,0.667,0.8
+claude_zeroshot,Encryption at Rest,20,19,0.95,24,0.792,0.864
+claude_zeroshot,Hardcoded Secrets,1,1,1.0,5,0.2,0.333
+claude_zeroshot,Logging & Monitoring,4,3,0.75,8,0.375,0.5
+claude_zeroshot,Network Exposure,13,8,0.615,11,0.727,0.667
+claude_zeroshot,Other,9,8,0.889,39,0.205,0.333
+claude_zeroshot,Publicly Exposed Storage,6,6,1.0,6,1.0,1.0
+claude_zeroshot,Storage Configuration,12,11,0.917,13,0.846,0.88
+gpt_fewshot,Availability & Resilience,10,0,0.0,2,0.0,0
+gpt_fewshot,Encryption at Rest,20,6,0.3,7,0.714,0.423
+gpt_fewshot,Hardcoded Secrets,1,1,1.0,3,0.333,0.5
+gpt_fewshot,Logging & Monitoring,4,0,0.0,2,0.0,0
+gpt_fewshot,Network Exposure,13,6,0.462,7,0.857,0.6
+gpt_fewshot,Other,9,4,0.444,18,0.222,0.296
+gpt_fewshot,Publicly Exposed Storage,6,6,1.0,6,1.0,1.0
+gpt_fewshot,Storage Configuration,12,11,0.917,18,0.611,0.733
+gpt_zeroshot,Availability & Resilience,10,0,0.0,2,0.0,0
+gpt_zeroshot,Encryption at Rest,20,5,0.25,10,0.5,0.333
+gpt_zeroshot,Hardcoded Secrets,1,1,1.0,4,0.25,0.4
+gpt_zeroshot,Logging & Monitoring,4,1,0.25,3,0.333,0.286
+gpt_zeroshot,Network Exposure,13,7,0.538,8,0.875,0.667
+gpt_zeroshot,Other,9,4,0.444,16,0.25,0.32
+gpt_zeroshot,Publicly Exposed Storage,6,2,0.333,2,1.0,0.5
+gpt_zeroshot,Storage Configuration,12,11,0.917,17,0.647,0.759
+nova_fewshot,Availability & Resilience,10,0,0.0,3,0.0,0
+nova_fewshot,Encryption at Rest,20,4,0.2,7,0.571,0.296
+nova_fewshot,Hardcoded Secrets,1,1,1.0,2,0.5,0.667
+nova_fewshot,Logging & Monitoring,4,0,0.0,0,0,0
+nova_fewshot,Network Exposure,13,4,0.308,4,1.0,0.471
+nova_fewshot,Other,9,3,0.333,14,0.214,0.261
+nova_fewshot,Publicly Exposed Storage,6,1,0.167,1,1.0,0.286
+nova_fewshot,Storage Configuration,12,9,0.75,9,1.0,0.857
+nova_zeroshot,Availability & Resilience,10,0,0.0,3,0.0,0
+nova_zeroshot,Encryption at Rest,20,4,0.2,5,0.8,0.32
+nova_zeroshot,Hardcoded Secrets,1,1,1.0,3,0.333,0.5
+nova_zeroshot,Logging & Monitoring,4,0,0.0,1,0.0,0
+nova_zeroshot,Network Exposure,13,4,0.308,4,1.0,0.471
+nova_zeroshot,Other,9,3,0.333,16,0.188,0.24
+nova_zeroshot,Publicly Exposed Storage,6,1,0.167,1,1.0,0.286
+nova_zeroshot,Storage Configuration,12,9,0.75,9,1.0,0.857

@@ -1,0 +1,46 @@
+{
+ "labels": [
+  {
+   "finding": 3,
+   "label": "VALID"
+  },
+  {
+   "finding": 6,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 7,
+   "label": "VALID"
+  },
+  {
+   "finding": 11,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "3": {
+   "resource": "aws_db_instance.default",
+   "issue": "No final snapshot on deletion",
+   "risk": "skip_final_snapshot = true means that when the RDS instance is destroyed (e.g. via terraform destroy or an accidental apply) no snapshot is taken, resulting in permanent, unrecoverable data loss.",
+   "remediation": "Set skip_final_snapshot = false and provide a final_snapshot_identifier so a snapshot is always created before the instance is deleted."
+  },
+  "6": {
+   "resource": "aws_db_instance.default",
+   "issue": "Hardcoded admin username",
+   "risk": "Using the well-known username 'admin' makes brute-force and credential-stuffing attacks easier because attackers already know one half of the credential pair.",
+   "remediation": "Change the username attribute to a non-default, non-guessable value stored in a Secrets Manager secret or passed via a sensitive Terraform variable."
+  },
+  "7": {
+   "resource": "aws_db_instance.default",
+   "issue": "Database password managed in Terraform state",
+   "risk": "Even though the password is sourced from a variable, it is stored in plaintext in the Terraform state file. If the state file is stored insecurely or leaked, the database password is compromised.",
+   "remediation": "Generate the password with the random_password resource and store it in AWS Secrets Manager. Reference it via aws_secretsmanager_secret_version and ensure the state backend is encrypted (e.g. S3 with SSE-KMS and restricted bucket policy)."
+  },
+  "11": {
+   "resource": "aws_instance.db_app",
+   "issue": "Plaintext database credentials in EC2 user data",
+   "risk": "The user_data script embeds the database endpoint, username, and password in cleartext. User data is retrievable via the EC2 instance metadata service (IMDSv1 without authentication) and is stored in plaintext in the Terraform state file, exposing credentials to anyone who can read either.",
+   "remediation": "Remove credentials from user_data entirely. Store the database password in AWS Secrets Manager and have the application retrieve it at runtime using the SDK. Also enforce IMDSv2 by adding a metadata_options block with http_tokens = \"required\" and http_endpoint = \"enabled\"."
+  }
+ }
+}

@@ -1,0 +1,109 @@
+{
+ "file": "reg07.tf",
+ "findings": [
+  {
+   "resource": "aws_secretsmanager_secret.this",
+   "issue": "No KMS Customer Managed Key (CMK) enforced",
+   "risk": "The kms_key_id is passed in via variable with no default enforcement, meaning the secret may be encrypted with the default AWS-managed key (aws/secretsmanager) rather than a customer-managed KMS key. This reduces control over key rotation, access policies, and audit trails for the encryption key.",
+   "remediation": "Ensure var.kms_key_id is always set to a customer-managed KMS key ARN. Add a validation block in the variable definition: `validation { condition = var.kms_key_id != null && var.kms_key_id != \"\" error_message = \"A customer-managed KMS key must be provided.\" }`. Alternatively, create an `aws_kms_key` resource and reference it directly instead of relying on a variable default."
+  },
+  {
+   "resource": "aws_secretsmanager_secret.this",
+   "issue": "Replica blocks may lack KMS encryption",
+   "risk": "The replica block accepts a kms_key_id per replica but does not enforce it. If a replica is created without a kms_key_id, the replicated secret will be encrypted with the default AWS-managed key in the replica region, weakening the encryption posture and key management controls.",
+   "remediation": "Add a validation or precondition to ensure every entry in var.replica includes a non-null kms_key_id. In the replica content block, replace `kms_key_id = replica.value.kms_key_id` with a required, validated value: add a `precondition { condition = replica.value.kms_key_id != null error_message = \"Each replica must specify a customer-managed KMS key.\" }` inside the resource lifecycle block."
+  },
+  {
+   "resource": "aws_secretsmanager_secret_policy.this",
+   "issue": "block_public_policy not hardcoded to true",
+   "risk": "The block_public_policy attribute is driven by var.block_public_policy, which could be set to false. If disabled, a resource-based policy that grants public (unauthenticated or cross-account wildcard) access could be attached to the secret, exposing sensitive credentials to unintended principals.",
+   "remediation": "Hardcode `block_public_policy = true` in the aws_secretsmanager_secret_policy resource instead of using a variable, or add a variable validation: `validation { condition = var.block_public_policy == true error_message = \"block_public_policy must always be true to prevent public exposure of secrets.\" }`."
+  },
+  {
+   "resource": "aws_secretsmanager_secret_version.this",
+   "issue": "secret_string passed as plaintext variable",
+   "risk": "var.secret_string is a standard Terraform variable that will be stored in plaintext in the Terraform state file and may appear in plan/apply output logs. This exposes the secret value to anyone with access to the state backend or CI/CD logs.",
+   "remediation": "Mark the variable as sensitive: `variable \"secret_string\" { type = string sensitive = true }`. Additionally, prefer using secret_string_wo (write-only attribute) exclusively for secret values, which avoids storing the value in state. Ensure the Terraform state backend (e.g., S3) is encrypted and access-controlled."
+  },
+  {
+   "resource": "aws_secretsmanager_secret_version.ignore_changes",
+   "issue": "secret_string passed as plaintext variable",
+   "risk": "Same as aws_secretsmanager_secret_version.this \u2014 var.secret_string is stored in Terraform state in plaintext and may be exposed in logs, posing a credential leakage risk.",
+   "remediation": "Mark var.secret_string as sensitive and prefer the write-only secret_string_wo attribute. Ensure the remote state is encrypted at rest and access is restricted via IAM policies."
+  },
+  {
+   "resource": "aws_secretsmanager_secret_version.this",
+   "issue": "secret_binary passed as plaintext variable",
+   "risk": "var.secret_binary is stored in Terraform state and may be logged. Binary secrets (e.g., certificates, keys) stored this way are exposed to anyone with state file access.",
+   "remediation": "Mark var.secret_binary as sensitive: `variable \"secret_binary\" { type = string sensitive = true }`. Consider using a write-only equivalent or generating the binary secret outside Terraform and referencing it via a data source."
+  },
+  {
+   "resource": "aws_secretsmanager_secret_version.ignore_changes",
+   "issue": "secret_binary passed as plaintext variable",
+   "risk": "Same as aws_secretsmanager_secret_version.this \u2014 var.secret_binary is stored in Terraform state in plaintext.",
+   "remediation": "Mark var.secret_binary as sensitive and avoid storing binary secrets directly in Terraform state."
+  },
+  {
+   "resource": "aws_secretsmanager_secret_rotation.this",
+   "issue": "rotation_rules not enforced \u2014 secret may have no automatic rotation configured",
+   "risk": "The rotation_rules dynamic block is only created when var.rotation_rules is non-null. If rotation rules are omitted, the secret will not rotate automatically even though a rotation Lambda is attached. Long-lived static secrets increase the blast radius of a credential compromise.",
+   "remediation": "Enforce a default rotation schedule by providing a default value for var.rotation_rules, e.g., `default = { automatically_after_days = 30, duration = null, schedule_expression = null }`, and remove the null guard so rotation_rules is always configured when rotation is enabled."
+  },
+  {
+   "resource": "aws_secretsmanager_secret_rotation.this",
+   "issue": "rotation_lambda_arn not validated",
+   "risk": "var.rotation_lambda_arn is used without validation. A null or empty value would cause the rotation resource to be created without a valid Lambda, silently disabling actual rotation while appearing configured, leaving secrets unrotated.",
+   "remediation": "Add a variable validation: `validation { condition = var.rotation_lambda_arn != null && can(regex(\"^arn:aws[a-z\\\\-]*:lambda:\", var.rotation_lambda_arn)) error_message = \"A valid Lambda ARN must be provided for secret rotation.\" }`."
+  },
+  {
+   "resource": "aws_secretsmanager_secret.this",
+   "issue": "recovery_window_in_days may be set to 0 (force delete)",
+   "risk": "If var.recovery_window_in_days is set to 0, the secret is deleted immediately without a recovery window. This removes the safety net against accidental or malicious deletion of secrets, which could cause application outages or permanent data loss.",
+   "remediation": "Add a variable validation to enforce a minimum recovery window: `validation { condition = var.recovery_window_in_days == null || var.recovery_window_in_days >= 7 error_message = \"recovery_window_in_days must be at least 7 days (or null) to allow secret recovery.\" }`."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  },
+  {
+   "finding": 7,
+   "candidates": [
+    "c122"
+   ]
+  },
+  {
+   "finding": 8,
+   "candidates": []
+  },
+  {
+   "finding": 9,
+   "candidates": []
+  }
+ ]
+}

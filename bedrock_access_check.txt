@@ -1,0 +1,4 @@
+region: ap-southeast-2   checked: 2026-10-17 22:48:43
+OK   au.anthropic.claude-sonnet-4-6         temp=0  in=14 out=4  1.0s  -> ready
+OK   global.openai.gpt-5.4                  temp=default  in=13 out=5  0.8s  -> ready
+OK   apac.amazon.nova-pro-v1:0              temp=0  in=7 out=3  0.7s  -> Ready!

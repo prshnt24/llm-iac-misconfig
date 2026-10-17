@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "1": {
+   "resource": "null_resource.push_image",
+   "issue": "Use of local-exec provisioner",
+   "risk": "Using local-exec provisioner can introduce security risks such as command injection and exposure of sensitive information.",
+   "remediation": "Avoid using local-exec provisioner for sensitive operations. Instead, use AWS native services or CI/CD pipelines to handle image builds and pushes.\n\nIf local-exec is necessary, ensure that commands are securely constructed and do not expose sensitive information.\n\n```hcl\n# Example of a more secure approach using a CI/CD pipeline\n# resource null_resource \"push_image\" {\n#   provisioner \"local-exec\" {\n#     working_dir = \"${path.module}/resources\"\n#     command     = <<BASH\n#     # Securely construct commands and avoid exposing sensitive information\n#     BASH\n#   }\n# }\n```"
+  }
+ }
+}

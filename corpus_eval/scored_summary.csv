@@ -1,0 +1,4 @@
+run,findings,strict_hits,lenient_hits,consensus_covered,precision_strict,precision_lenient,recall,f1_strict,f1_lenient
+claude_zeroshot,373,16,63,16,0.043,0.169,0.762,0.081,0.277
+gpt_zeroshot,177,5,31,5,0.028,0.175,0.238,0.051,0.202
+nova_zeroshot,152,4,14,4,0.026,0.092,0.19,0.046,0.124

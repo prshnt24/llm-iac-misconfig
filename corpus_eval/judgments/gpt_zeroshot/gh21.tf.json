@@ -1,0 +1,41 @@
+{
+ "file": "gh21.tf",
+ "findings": [
+  {
+   "resource": "data.aws_iam_policy_document.main_update",
+   "issue": "Overly broad S3 ListBucket permissions including invalid object ARN",
+   "risk": "Granting s3:ListBucket on the bucket allows enumeration of all objects in the bucket rather than limiting access to only the required prefix. This expands the Lambda function's read scope and can expose object names and metadata outside the intended antivirus definitions path.",
+   "remediation": "In the s3HeadObject statement, restrict s3:ListBucket to only the bucket ARN and add a condition limiting access to the required prefix, e.g. set resources = [\"arn:${data.aws_partition.current.partition}:s3:::${var.av_definition_s3_bucket}\"] and add condition { test = \"StringLike\" variable = \"s3:prefix\" values = [\"${var.av_definition_s3_prefix}/*\"] }. Remove the object ARN from this statement."
+  },
+  {
+   "resource": "aws_lambda_function.main_update",
+   "issue": "Lambda function code signing not enforced",
+   "risk": "Without a code_signing_config_arn, the function can be updated with unsigned or untrusted deployment packages, increasing the risk of unauthorized or malicious code execution.",
+   "remediation": "Create an aws_lambda_code_signing_config resource and set the aws_lambda_function.main_update attribute code_signing_config_arn to that resource's ARN."
+  },
+  {
+   "resource": "aws_lambda_function.main_update",
+   "issue": "No customer-managed KMS key configured for Lambda environment variable encryption",
+   "risk": "Although Lambda encrypts environment variables by default with an AWS-managed key, not specifying a customer-managed KMS key reduces control over key rotation, access auditing, and key usage restrictions for potentially sensitive configuration values.",
+   "remediation": "Set kms_key_arn on aws_lambda_function.main_update to a customer-managed KMS key ARN, for example kms_key_arn = aws_kms_key.lambda_env.arn."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c85"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c84"
+   ]
+  }
+ ]
+}

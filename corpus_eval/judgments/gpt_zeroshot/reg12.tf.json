@@ -1,0 +1,89 @@
+{
+ "file": "reg12.tf",
+ "findings": [
+  {
+   "resource": "data.aws_iam_policy_document.assume_role",
+   "issue": "Overly permissive trust policy via unvalidated additional trusted entities",
+   "risk": "The assume role policy allows any principals supplied through var.trusted_entities to assume the EventBridge IAM role. If this variable includes unintended AWS accounts, roles, or wildcards, unauthorized principals could assume the role and gain all attached permissions.",
+   "remediation": "Restrict the principals.identifiers in the assume_role policy to only required service principals. Remove or tightly constrain var.trusted_entities, or replace identifiers = distinct(concat([\"events.amazonaws.com\"], var.trusted_entities, ...)) with a fixed allowlist of required services/accounts."
+  },
+  {
+   "resource": "data.aws_iam_policy_document.sqs",
+   "issue": "Incorrectly scoped KMS permissions attached to SQS target ARNs",
+   "risk": "The policy grants kms:Decrypt and kms:GenerateDataKey against var.sqs_target_arns, which are SQS queue ARNs rather than KMS key ARNs. This results in malformed or ineffective access control and can lead operators to broaden permissions later to make it work, increasing the chance of excessive KMS access.",
+   "remediation": "Move KMS permissions into a separate statement scoped to explicit KMS key ARNs. In data.aws_iam_policy_document.sqs, keep sqs:SendMessage* on resources = var.sqs_target_arns, and add a new statement with actions = [\"kms:Decrypt\", \"kms:GenerateDataKey\"] and resources = var.sqs_kms_arns or equivalent KMS key ARN variable."
+  },
+  {
+   "resource": "data.aws_iam_policy_document.ecs",
+   "issue": "iam:PassRole defaults to wildcard resource",
+   "risk": "When var.ecs_pass_role_resources is not set, the policy grants iam:PassRole on \"*\". This allows EventBridge to pass any IAM role to ECS tasks, which can enable privilege escalation by launching tasks with highly privileged roles.",
+   "remediation": "Change the PassRole statement resources from coalescelist(var.ecs_pass_role_resources, [\"*\"]) to a strict list of specific task execution and task role ARNs. Require var.ecs_pass_role_resources to be explicitly set and remove the wildcard default."
+  },
+  {
+   "resource": "resource.aws_iam_policy.additional_json",
+   "issue": "Arbitrary IAM policy JSON can be attached without guardrails",
+   "risk": "The configuration directly attaches var.policy_json as a managed policy to the role. If the supplied JSON contains wildcard actions, wildcard resources, or sensitive permissions such as iam:PassRole or sts:AssumeRole, it can create severe over-privilege or privilege escalation paths.",
+   "remediation": "Avoid attaching unsanitized arbitrary JSON through policy = var.policy_json. Replace this with curated aws_iam_policy_document statements or validate the input so it cannot contain wildcard-sensitive permissions. If this flexibility is required, constrain who can set var.policy_json and enforce policy linting in CI."
+  },
+  {
+   "resource": "resource.aws_iam_policy.additional_jsons",
+   "issue": "Multiple arbitrary IAM policy JSON documents can be attached without guardrails",
+   "risk": "Each entry in var.policy_jsons is attached as a managed policy. Any overly broad or malicious policy document in the list can grant excessive permissions or create privilege escalation opportunities for the EventBridge role.",
+   "remediation": "Replace policy = var.policy_jsons[count.index] with curated aws_iam_policy_document resources for known use cases, or enforce strict validation and CI scanning on var.policy_jsons to block wildcard actions/resources and sensitive IAM permissions."
+  },
+  {
+   "resource": "resource.aws_iam_role_policy_attachment.additional_one",
+   "issue": "Attachment of arbitrary external policy ARN without restriction",
+   "risk": "The role can receive any policy ARN supplied in var.policy, including highly privileged AWS managed or custom policies. This can result in administrative access or unintended cross-service permissions.",
+   "remediation": "Restrict var.policy to an approved allowlist of policy ARNs, or replace aws_iam_role_policy_attachment.additional_one with explicit attachments to known-safe policies only."
+  },
+  {
+   "resource": "resource.aws_iam_role_policy_attachment.additional_many",
+   "issue": "Attachment of arbitrary external policy ARNs without restriction",
+   "risk": "The role can receive multiple arbitrary policies from var.policies. Any one of these policies could grant excessive permissions, administrative access, or privilege escalation capabilities.",
+   "remediation": "Restrict var.policies to an approved allowlist and validate each ARN before attachment, or replace aws_iam_role_policy_attachment.additional_many with explicit aws_iam_role_policy_attachment resources for approved policies only."
+  },
+  {
+   "resource": "data.aws_iam_policy_document.additional_inline",
+   "issue": "User-supplied inline policy statements are unrestricted",
+   "risk": "The role policy is built directly from var.policy_statements, allowing arbitrary actions, resources, principals, not_principals, and conditions. This can create over-privileged access, cross-account exposure, or privilege escalation if unsafe statements are provided.",
+   "remediation": "Do not construct policy statements directly from unrestricted input. Replace var.policy_statements-driven dynamic blocks with predefined statements, or validate inputs to prohibit wildcard actions/resources and sensitive permissions such as iam:PassRole, iam:CreatePolicyVersion, or sts:AssumeRole."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c134"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  },
+  {
+   "finding": 7,
+   "candidates": []
+  }
+ ]
+}

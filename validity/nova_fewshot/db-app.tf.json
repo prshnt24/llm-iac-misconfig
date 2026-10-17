@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 3,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "3": {
+   "resource": "aws_db_instance.default",
+   "issue": "Weak database credentials in user data",
+   "risk": "Database credentials are exposed in the EC2 user data, which is stored in plain text and can be accessed by anyone with EC2 instance access.",
+   "remediation": "Use AWS Secrets Manager or Parameter Store to securely manage and retrieve database credentials."
+  }
+ }
+}

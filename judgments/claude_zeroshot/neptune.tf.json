@@ -1,0 +1,87 @@
+{
+ "file": "neptune.tf",
+ "findings": [
+  {
+   "resource": "aws_neptune_cluster.default",
+   "issue": "Storage Encryption Disabled",
+   "risk": "Data at rest is stored in plaintext. If the underlying storage media is compromised or improperly accessed, sensitive graph data is exposed without any cryptographic protection.",
+   "remediation": "Set `storage_encrypted = true` and optionally specify a KMS key via `kms_key_arn` to use a customer-managed key instead of the default AWS-managed key."
+  },
+  {
+   "resource": "aws_neptune_cluster.default",
+   "issue": "IAM Database Authentication Disabled",
+   "risk": "Without IAM authentication, the cluster relies solely on username/password credentials. This increases the risk of credential theft, brute-force attacks, and makes it harder to enforce least-privilege access and centralised identity management.",
+   "remediation": "Set `iam_database_authentication_enabled = true` to enforce IAM-based authentication for all database connections."
+  },
+  {
+   "resource": "aws_neptune_cluster.default",
+   "issue": "Final Snapshot Skipped on Deletion",
+   "risk": "When the cluster is deleted, no final snapshot is taken. This means all data is permanently and irrecoverably lost upon accidental or malicious deletion, violating data retention and recovery requirements.",
+   "remediation": "Set `skip_final_snapshot = false` and provide a value for `final_snapshot_identifier` so a snapshot is automatically created before the cluster is destroyed."
+  },
+  {
+   "resource": "aws_neptune_cluster.default",
+   "issue": "Audit Logging Not Enabled",
+   "risk": "Without audit logs, there is no record of queries, connections, or administrative actions performed against the Neptune cluster. This prevents detection of unauthorised access, forensic investigation, and compliance reporting.",
+   "remediation": "Add an `enable_cloudwatch_logs_exports = [\"audit\"]` attribute to the `aws_neptune_cluster` resource to stream audit logs to Amazon CloudWatch Logs."
+  },
+  {
+   "resource": "aws_neptune_cluster.default",
+   "issue": "Deletion Protection Disabled",
+   "risk": "Without deletion protection, the cluster can be deleted by any principal with sufficient IAM permissions, either accidentally or maliciously, resulting in permanent data loss.",
+   "remediation": "Add `deletion_protection = true` to the `aws_neptune_cluster` resource to prevent the cluster from being deleted until the protection is explicitly disabled."
+  },
+  {
+   "resource": "aws_neptune_cluster.default",
+   "issue": "No KMS Customer-Managed Key (CMK) Specified for Encryption",
+   "risk": "Even if encryption is enabled, using the default AWS-managed key provides no customer control over key rotation, access policies, or key revocation. A CMK allows fine-grained access control and auditability via AWS KMS key policies and CloudTrail.",
+   "remediation": "Add `kms_key_arn = aws_kms_key.<your_key>.arn` alongside `storage_encrypted = true` to encrypt the cluster with a customer-managed KMS key."
+  },
+  {
+   "resource": "aws_neptune_cluster_instance.default",
+   "issue": "Auto Minor Version Upgrade Not Explicitly Enabled",
+   "risk": "Without automatic minor version upgrades, the Neptune instance may remain on older engine versions that contain known security vulnerabilities or unpatched CVEs, increasing the attack surface.",
+   "remediation": "Add `auto_minor_version_upgrade = true` to the `aws_neptune_cluster_instance` resource to ensure security patches and minor engine updates are applied automatically."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c104"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c101"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c99"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c98"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c100"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  }
+ ]
+}

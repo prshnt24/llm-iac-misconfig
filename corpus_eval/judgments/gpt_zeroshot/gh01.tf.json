@@ -1,0 +1,27 @@
+{
+ "file": "gh01.tf",
+ "findings": [
+  {
+   "resource": "aws_networkfirewall_rule_group.allow_icmp",
+   "issue": "Overly permissive ICMP allow rule",
+   "risk": "Allows ICMP traffic from any source to any destination, which can enable network reconnaissance, host discovery, and certain denial-of-service or tunneling techniques across the environment.",
+   "remediation": "Restrict the stateful rule in rule_group.rules_source.rules_string from `pass icmp any any -> any any` to only the required source and destination CIDRs, and if possible specific ICMP types/codes. For example, replace `any any -> any any` with defined internal network variables or IP sets representing approved monitoring or diagnostic endpoints."
+  },
+  {
+   "resource": "aws_networkfirewall_rule_group.allow_domains",
+   "issue": "Broad HTTPS allow rule bypasses domain restriction",
+   "risk": "The rule `pass tcp any any <> $EXTERNAL_NET 443` permits generic TCP traffic on port 443 to any external destination before the TLS SNI domain restriction is evaluated, allowing outbound encrypted connections to arbitrary hosts and defeating the intended `.amazon.com` restriction.",
+   "remediation": "Remove or tightly scope the broad TCP 443 pass rule in `rule_group.rules_source.rules_string`. Keep only domain-restricted TLS rules, or replace `pass tcp any any <> $EXTERNAL_NET 443` with rules limited to approved destination CIDRs or fully qualified domain-based controls that align with the intended access policy."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  }
+ ]
+}

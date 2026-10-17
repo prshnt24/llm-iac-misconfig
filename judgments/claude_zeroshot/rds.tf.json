@@ -1,0 +1,256 @@
+{
+ "file": "rds.tf",
+ "findings": [
+  {
+   "resource": "aws_rds_cluster.app1-rds-cluster",
+   "issue": "Backup Retention Disabled",
+   "risk": "A backup_retention_period of 0 disables automated backups entirely. In the event of data corruption, accidental deletion, or a ransomware attack, there are no automated snapshots available to restore from, leading to potential permanent data loss.",
+   "remediation": "Set backup_retention_period to a value between 7 and 35 days (e.g., backup_retention_period = 7) to ensure automated backups are retained for a meaningful recovery window."
+  },
+  {
+   "resource": "aws_rds_cluster.app1-rds-cluster",
+   "issue": "Storage Encryption Not Enabled",
+   "risk": "The storage_encrypted attribute is not set (defaults to false), meaning data at rest is stored in plaintext. If the underlying storage media is compromised or improperly decommissioned, sensitive data is exposed.",
+   "remediation": "Add storage_encrypted = true and specify a KMS key via kms_key_id = \"<your_kms_key_arn>\" to enforce encryption at rest for all cluster data."
+  },
+  {
+   "resource": "aws_rds_cluster.app1-rds-cluster",
+   "issue": "Deletion Protection Not Enabled",
+   "risk": "Without deletion_protection = true, the RDS cluster can be deleted accidentally or maliciously via the API, CLI, or console with no safeguard, resulting in permanent data loss.",
+   "remediation": "Add deletion_protection = true to the resource block to prevent accidental or unauthorised deletion of the cluster."
+  },
+  {
+   "resource": "aws_rds_cluster.app2-rds-cluster",
+   "issue": "Insufficient Backup Retention Period",
+   "risk": "A backup_retention_period of only 1 day provides an extremely narrow recovery window. Data corruption or incidents discovered after 24 hours cannot be recovered from automated backups, violating most compliance frameworks (PCI-DSS, HIPAA, SOC 2).",
+   "remediation": "Increase backup_retention_period to at least 7 days (e.g., backup_retention_period = 7) to provide an adequate recovery window."
+  },
+  {
+   "resource": "aws_rds_cluster.app2-rds-cluster",
+   "issue": "Storage Encryption Not Enabled",
+   "risk": "The storage_encrypted attribute is not set (defaults to false), meaning data at rest is stored in plaintext. If the underlying storage media is compromised or improperly decommissioned, sensitive data is exposed.",
+   "remediation": "Add storage_encrypted = true and specify a KMS key via kms_key_id = \"<your_kms_key_arn>\" to enforce encryption at rest for all cluster data."
+  },
+  {
+   "resource": "aws_rds_cluster.app2-rds-cluster",
+   "issue": "Deletion Protection Not Enabled",
+   "risk": "Without deletion_protection = true, the RDS cluster can be deleted accidentally or maliciously via the API, CLI, or console with no safeguard, resulting in permanent data loss.",
+   "remediation": "Add deletion_protection = true to the resource block to prevent accidental or unauthorised deletion of the cluster."
+  },
+  {
+   "resource": "aws_rds_cluster.app3-rds-cluster",
+   "issue": "Storage Encryption Not Enabled",
+   "risk": "The storage_encrypted attribute is not set (defaults to false), meaning data at rest is stored in plaintext. If the underlying storage media is compromised or improperly decommissioned, sensitive data is exposed.",
+   "remediation": "Add storage_encrypted = true and specify a KMS key via kms_key_id = \"<your_kms_key_arn>\" to enforce encryption at rest for all cluster data."
+  },
+  {
+   "resource": "aws_rds_cluster.app3-rds-cluster",
+   "issue": "Deletion Protection Not Enabled",
+   "risk": "Without deletion_protection = true, the RDS cluster can be deleted accidentally or maliciously via the API, CLI, or console with no safeguard, resulting in permanent data loss.",
+   "remediation": "Add deletion_protection = true to the resource block to prevent accidental or unauthorised deletion of the cluster."
+  },
+  {
+   "resource": "aws_rds_cluster.app4-rds-cluster",
+   "issue": "Storage Encryption Not Enabled",
+   "risk": "The storage_encrypted attribute is not set (defaults to false), meaning data at rest is stored in plaintext. If the underlying storage media is compromised or improperly decommissioned, sensitive data is exposed.",
+   "remediation": "Add storage_encrypted = true and specify a KMS key via kms_key_id = \"<your_kms_key_arn>\" to enforce encryption at rest for all cluster data."
+  },
+  {
+   "resource": "aws_rds_cluster.app4-rds-cluster",
+   "issue": "Deletion Protection Not Enabled",
+   "risk": "Without deletion_protection = true, the RDS cluster can be deleted accidentally or maliciously via the API, CLI, or console with no safeguard, resulting in permanent data loss.",
+   "remediation": "Add deletion_protection = true to the resource block to prevent accidental or unauthorised deletion of the cluster."
+  },
+  {
+   "resource": "aws_rds_cluster.app5-rds-cluster",
+   "issue": "Storage Encryption Not Enabled",
+   "risk": "The storage_encrypted attribute is not set (defaults to false), meaning data at rest is stored in plaintext. If the underlying storage media is compromised or improperly decommissioned, sensitive data is exposed.",
+   "remediation": "Add storage_encrypted = true and specify a KMS key via kms_key_id = \"<your_kms_key_arn>\" to enforce encryption at rest for all cluster data."
+  },
+  {
+   "resource": "aws_rds_cluster.app5-rds-cluster",
+   "issue": "Deletion Protection Not Enabled",
+   "risk": "Without deletion_protection = true, the RDS cluster can be deleted accidentally or maliciously via the API, CLI, or console with no safeguard, resulting in permanent data loss.",
+   "remediation": "Add deletion_protection = true to the resource block to prevent accidental or unauthorised deletion of the cluster."
+  },
+  {
+   "resource": "aws_rds_cluster.app6-rds-cluster",
+   "issue": "Storage Encryption Not Enabled",
+   "risk": "The storage_encrypted attribute is not set (defaults to false), meaning data at rest is stored in plaintext. If the underlying storage media is compromised or improperly decommissioned, sensitive data is exposed.",
+   "remediation": "Add storage_encrypted = true and specify a KMS key via kms_key_id = \"<your_kms_key_arn>\" to enforce encryption at rest for all cluster data."
+  },
+  {
+   "resource": "aws_rds_cluster.app6-rds-cluster",
+   "issue": "Deletion Protection Not Enabled",
+   "risk": "Without deletion_protection = true, the RDS cluster can be deleted accidentally or maliciously via the API, CLI, or console with no safeguard, resulting in permanent data loss.",
+   "remediation": "Add deletion_protection = true to the resource block to prevent accidental or unauthorised deletion of the cluster."
+  },
+  {
+   "resource": "aws_rds_cluster.app7-rds-cluster",
+   "issue": "Storage Encryption Not Enabled",
+   "risk": "The storage_encrypted attribute is not set (defaults to false), meaning data at rest is stored in plaintext. If the underlying storage media is compromised or improperly decommissioned, sensitive data is exposed.",
+   "remediation": "Add storage_encrypted = true and specify a KMS key via kms_key_id = \"<your_kms_key_arn>\" to enforce encryption at rest for all cluster data."
+  },
+  {
+   "resource": "aws_rds_cluster.app7-rds-cluster",
+   "issue": "Deletion Protection Not Enabled",
+   "risk": "Without deletion_protection = true, the RDS cluster can be deleted accidentally or maliciously via the API, CLI, or console with no safeguard, resulting in permanent data loss.",
+   "remediation": "Add deletion_protection = true to the resource block to prevent accidental or unauthorised deletion of the cluster."
+  },
+  {
+   "resource": "aws_rds_cluster.app8-rds-cluster",
+   "issue": "Storage Encryption Not Enabled",
+   "risk": "The storage_encrypted attribute is not set (defaults to false), meaning data at rest is stored in plaintext. If the underlying storage media is compromised or improperly decommissioned, sensitive data is exposed.",
+   "remediation": "Add storage_encrypted = true and specify a KMS key via kms_key_id = \"<your_kms_key_arn>\" to enforce encryption at rest for all cluster data."
+  },
+  {
+   "resource": "aws_rds_cluster.app8-rds-cluster",
+   "issue": "Deletion Protection Not Enabled",
+   "risk": "Without deletion_protection = true, the RDS cluster can be deleted accidentally or maliciously via the API, CLI, or console with no safeguard, resulting in permanent data loss.",
+   "remediation": "Add deletion_protection = true to the resource block to prevent accidental or unauthorised deletion of the cluster."
+  },
+  {
+   "resource": "aws_rds_cluster.app9-rds-cluster",
+   "issue": "Storage Encryption Not Enabled",
+   "risk": "The storage_encrypted attribute is not set (defaults to false), meaning data at rest is stored in plaintext. If the underlying storage media is compromised or improperly decommissioned, sensitive data is exposed.",
+   "remediation": "Add storage_encrypted = true and specify a KMS key via kms_key_id = \"<your_kms_key_arn>\" to enforce encryption at rest for all cluster data."
+  },
+  {
+   "resource": "aws_rds_cluster.app9-rds-cluster",
+   "issue": "Deletion Protection Not Enabled",
+   "risk": "Without deletion_protection = true, the RDS cluster can be deleted accidentally or maliciously via the API, CLI, or console with no safeguard, resulting in permanent data loss.",
+   "remediation": "Add deletion_protection = true to the resource block to prevent accidental or unauthorised deletion of the cluster."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c118"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c116",
+    "c117"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c110"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c128"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c126",
+    "c127"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c120"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": [
+    "c136",
+    "c137"
+   ]
+  },
+  {
+   "finding": 7,
+   "candidates": [
+    "c130"
+   ]
+  },
+  {
+   "finding": 8,
+   "candidates": [
+    "c145",
+    "c146"
+   ]
+  },
+  {
+   "finding": 9,
+   "candidates": [
+    "c139"
+   ]
+  },
+  {
+   "finding": 10,
+   "candidates": [
+    "c154",
+    "c155"
+   ]
+  },
+  {
+   "finding": 11,
+   "candidates": [
+    "c148"
+   ]
+  },
+  {
+   "finding": 12,
+   "candidates": [
+    "c163",
+    "c164"
+   ]
+  },
+  {
+   "finding": 13,
+   "candidates": [
+    "c157"
+   ]
+  },
+  {
+   "finding": 14,
+   "candidates": [
+    "c172",
+    "c173"
+   ]
+  },
+  {
+   "finding": 15,
+   "candidates": [
+    "c166"
+   ]
+  },
+  {
+   "finding": 16,
+   "candidates": [
+    "c181",
+    "c182"
+   ]
+  },
+  {
+   "finding": 17,
+   "candidates": [
+    "c175"
+   ]
+  },
+  {
+   "finding": 18,
+   "candidates": [
+    "c190",
+    "c191"
+   ]
+  },
+  {
+   "finding": 19,
+   "candidates": [
+    "c184"
+   ]
+  }
+ ]
+}

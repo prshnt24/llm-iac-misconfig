@@ -1,0 +1,36 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_iam_user.user",
+   "issue": "force_destroy set to true",
+   "risk": "If the IAM user is deleted, all associated resources will be deleted without warning, which can lead to data loss or unexpected behavior.",
+   "remediation": "Set `force_destroy` to `false` to prevent accidental deletion of associated resources."
+  },
+  "1": {
+   "resource": "aws_iam_access_key.user",
+   "issue": "Access key created without rotation policy",
+   "risk": "Long-lived access keys increase the risk of unauthorized access if the key is compromised.",
+   "remediation": "Implement a rotation policy for access keys using `aws_iam_access_key_rotation` or manage rotation manually."
+  },
+  "3": {
+   "resource": "output.secret",
+   "issue": "Exposure of sensitive information",
+   "risk": "Outputting the encrypted secret of the access key can lead to exposure of sensitive information if the output is not properly secured.",
+   "remediation": "Avoid outputting sensitive information like access keys. If necessary, ensure that outputs are securely managed and access is restricted."
+  }
+ }
+}

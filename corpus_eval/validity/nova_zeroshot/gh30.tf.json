@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "INVALID"
+  },
+  {
+   "finding": 2,
+   "label": "INVALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_security_group.loadtest",
+   "issue": "Unrestricted Ingress Rule",
+   "risk": "Allowing all inbound traffic (port 0, protocol -1) can expose the instance to unauthorized access.",
+   "remediation": "Remove or restrict the ingress block allowing all traffic:\n```hcl\n  ingress {\n    from_port = 0\n    to_port   = 0\n    protocol  = \"-1\"\n    self      = true\n  }\n```"
+  },
+  "2": {
+   "resource": "tls_private_key.loadtest",
+   "issue": "Weak Key Size",
+   "risk": "Using a 4096-bit RSA key may be considered weak depending on future cryptographic standards and should be reviewed for strength.",
+   "remediation": "Consider increasing the key size or using a more secure algorithm if necessary:\n```hcl\nresource \"tls_private_key\" \"loadtest\" {\n  algorithm = \"RSA\"\n  rsa_bits  = 8192 # or another appropriate size\n}\n```"
+  }
+ }
+}

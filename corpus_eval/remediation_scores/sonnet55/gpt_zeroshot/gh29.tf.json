@@ -1,0 +1,28 @@
+{
+ "items": [
+  {
+   "finding": 2,
+   "known": "CKV_AWS_24 Ensure no security groups allow ingress from 0.0.0.0:0 to port 22 (resource aws_security_group.ec2_security_group)",
+   "issue": "SSH exposed to the internet",
+   "remediation": "Restrict the SSH ingress rule by changing the `cidr_blocks` in the port 22 `ingress` block from `[\"0.0.0.0/0\"]` to a limited trusted IP range, or remove the rule and use AWS Systems Manager Session Manager instead."
+  },
+  {
+   "finding": 3,
+   "known": "CKV_AWS_382 Ensure no security groups allow egress from 0.0.0.0:0 to port -1 (resource aws_security_group.ec2_security_group)",
+   "issue": "Unrestricted outbound traffic",
+   "remediation": "Tighten the `egress` block by restricting `protocol`, `from_port`, `to_port`, and `cidr_blocks` to only required destinations and ports."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Names the port 22 ingress cidr_blocks attribute and says to replace 0.0.0.0/0 with a trusted range, or remove the rule. This satisfies CKV_AWS_24."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "Points to the egress block and says to restrict protocol, ports and cidr_blocks to required destinations. This fixes CKV_AWS_382, though it gives no concrete example values such as tcp/443 to specific CIDRs."
+  }
+ ]
+}

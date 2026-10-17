@@ -1,0 +1,28 @@
+{
+ "items": [
+  {
+   "finding": 2,
+   "known": "CKV_AWS_382 Ensure no security groups allow egress from 0.0.0.0:0 to port -1 (resource aws_security_group.terra_sg)",
+   "issue": "Unrestricted egress to all destinations (0.0.0.0/0 on all ports/protocols)",
+   "remediation": "Restrict egress rules to only the specific ports, protocols, and destination CIDRs required by the application. Replace the egress block's cidr_blocks = [\"0.0.0.0/0\"] and protocol = \"-1\" with explicit rules, e.g., allow only port 443 to specific CIDRs needed by the workload."
+  },
+  {
+   "finding": 4,
+   "known": "CKV2_AWS_11 Ensure VPC flow logging is enabled in all VPCs (resource aws_vpc.terra_vpc)",
+   "issue": "VPC Flow Logs not enabled",
+   "remediation": "Add an aws_flow_log resource referencing this VPC. For example: resource \"aws_flow_log\" \"terra_vpc_flow_log\" { vpc_id = aws_vpc.terra_vpc.id traffic_type = \"ALL\" iam_role_arn = aws_iam_role.flow_log_role.arn log_destination = aws_cloudwatch_log_group.flow_log.arn }"
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correctly targets aws_security_group.terra_sg egress and specifies replacing cidr_blocks 0.0.0.0/0 with restricted destinations and protocol/ports instead of -1."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "Correctly specifies adding an aws_flow_log for aws_vpc.terra_vpc with vpc_id and log configuration to enable VPC Flow Logs."
+  }
+ ]
+}

@@ -1,0 +1,83 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_17 Ensure all data stored in RDS is not publicly accessible (resource aws_db_instance.default)",
+   "issue": "RDS instance publicly accessible",
+   "remediation": "Set publicly_accessible = false so the RDS instance is only reachable from within the VPC."
+  },
+  {
+   "finding": 1,
+   "known": "CKV_AWS_16 Ensure all data stored in the RDS is securely encrypted at rest (resource aws_db_instance.default)",
+   "issue": "Storage encryption disabled",
+   "remediation": "Set storage_encrypted = true and specify a kms_key_id pointing to a customer-managed KMS key for full control over key rotation and access."
+  },
+  {
+   "finding": 8,
+   "known": "CKV_AWS_293 Ensure that AWS database instances have deletion protection enabled (resource aws_db_instance.default)",
+   "issue": "Deletion protection not enabled",
+   "remediation": "Add deletion_protection = true to the aws_db_instance resource block."
+  },
+  {
+   "finding": 9,
+   "known": "CKV_AWS_382 Ensure no security groups allow egress from 0.0.0.0:0 to port -1 (resource aws_security_group_rule.egress)",
+   "issue": "Unrestricted outbound access from RDS security group",
+   "remediation": "Restrict the egress rule to only the protocols and destinations the database legitimately needs, or remove the egress rule entirely if no outbound connectivity is required."
+  },
+  {
+   "finding": 10,
+   "known": "CKV_AWS_355 Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions (resource aws_iam_role_policy.ec2policy)",
+   "issue": "Overly broad IAM permissions (wildcard actions and resources)",
+   "remediation": "Replace the wildcard actions with only the specific actions the application requires (e.g. s3:GetObject, s3:PutObject) and replace Resource: * with the specific ARNs of the S3 bucket, EC2 resources, and RDS instance that the application needs to access."
+  },
+  {
+   "finding": 12,
+   "known": "CKV_AWS_79 Ensure Instance Metadata Service Version 1 is not enabled (resource aws_instance.db_app)",
+   "issue": "IMDSv2 not enforced on EC2 instance",
+   "remediation": "Add a metadata_options block to the aws_instance resource with http_tokens = \"required\" and http_endpoint = \"enabled\" to enforce IMDSv2 for all metadata requests."
+  },
+  {
+   "finding": 13,
+   "known": "CKV_AWS_8 Ensure all data stored in the Launch configuration or instance Elastic Blocks Store is securely encrypted (resource aws_instance.db_app)",
+   "issue": "No EBS volume encryption on EC2 instance",
+   "remediation": "Add a root_block_device block with encrypted = true and kms_key_id set to a customer-managed KMS key ARN, or enable default EBS encryption at the account level."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "publicly_accessible = false is the exact fix for CKV_AWS_17."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "storage_encrypted = true satisfies CKV_AWS_16. The kms_key_id is an optional extra and does not make the advice wrong."
+  },
+  {
+   "item": 2,
+   "score": 2,
+   "reason": "deletion_protection = true on aws_db_instance is the correct fix."
+  },
+  {
+   "item": 3,
+   "score": 1,
+   "reason": "Right direction (restrict or remove the egress rule), but vague. It does not name concrete values such as a specific protocol, port or CIDR instead of protocol -1 on 0.0.0.0/0."
+  },
+  {
+   "item": 4,
+   "score": 2,
+   "reason": "Replaces wildcard actions and Resource * with specific actions and ARNs, which addresses CKV_AWS_355."
+  },
+  {
+   "item": 5,
+   "score": 2,
+   "reason": "metadata_options with http_tokens = \"required\" is the correct fix for CKV_AWS_79."
+  },
+  {
+   "item": 6,
+   "score": 2,
+   "reason": "root_block_device with encrypted = true fixes CKV_AWS_8. The KMS key is optional, and the account-level default encryption alternative is acceptable."
+  }
+ ]
+}

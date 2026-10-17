@@ -1,0 +1,46 @@
+{
+ "labels": [
+  {
+   "finding": 3,
+   "label": "VALID"
+  },
+  {
+   "finding": 5,
+   "label": "VALID"
+  },
+  {
+   "finding": 7,
+   "label": "VALID"
+  },
+  {
+   "finding": 8,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "3": {
+   "resource": "aws_db_instance.default",
+   "issue": "Final snapshot is skipped on deletion",
+   "risk": "Deleting the database can cause irreversible data loss with no final recovery snapshot preserved.",
+   "remediation": "Set the aws_db_instance.default attribute skip_final_snapshot = false and configure final_snapshot_identifier."
+  },
+  "5": {
+   "resource": "aws_db_instance.default",
+   "issue": "Master username is hardcoded",
+   "risk": "Using a predictable administrative username makes brute-force and credential-stuffing attacks easier.",
+   "remediation": "Replace the aws_db_instance.default attribute username = \"admin\" with a less predictable value sourced from a variable or secret management workflow."
+  },
+  "7": {
+   "resource": "aws_instance.db_app",
+   "issue": "Plaintext database credentials in user data",
+   "risk": "Secrets in user_data can be exposed through Terraform state, instance metadata access paths, logs, or console retrieval, leading to database compromise.",
+   "remediation": "Remove DB_USERNAME and DB_PASSWORD values from aws_instance.db_app user_data and retrieve them at runtime from AWS Secrets Manager or SSM Parameter Store using an IAM role with least privilege."
+  },
+  "8": {
+   "resource": "aws_db_subnet_group.default",
+   "issue": "Database subnet group uses web/application subnets",
+   "risk": "Placing the database in web-facing subnets increases attack surface and weakens network segmentation between application and data tiers.",
+   "remediation": "Change aws_db_subnet_group.default subnet_ids to dedicated private database subnets instead of aws_subnet.web_subnet.id and aws_subnet.web_subnet2.id."
+  }
+ }
+}

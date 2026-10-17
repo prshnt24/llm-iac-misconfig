@@ -1,0 +1,64 @@
+{
+ "file": "iam.tf",
+ "findings": [
+  {
+   "resource": "aws_iam_user.user",
+   "issue": "Long-lived IAM user with programmatic access",
+   "risk": "Creating a dedicated IAM user with an access key introduces long-lived credentials that can be leaked, abused, or remain active indefinitely compared to temporary role-based credentials.",
+   "remediation": "Avoid creating aws_iam_user.user for application access and use an IAM role instead. Remove the aws_iam_access_key.user resource and assign permissions to an aws_iam_role assumed via STS."
+  },
+  {
+   "resource": "aws_iam_user.user",
+   "issue": "force_destroy enabled on IAM user",
+   "risk": "Setting force_destroy = true allows deletion of the IAM user even when access keys or other credentials exist, increasing the chance of accidental destructive changes and loss of auditability.",
+   "remediation": "In aws_iam_user.user, remove the force_destroy attribute or set force_destroy = false."
+  },
+  {
+   "resource": "aws_iam_access_key.user",
+   "issue": "IAM access key created for user",
+   "risk": "Access keys are long-lived secrets that can be exfiltrated from state, CI/CD logs, developer environments, or outputs and then used for persistent unauthorized access.",
+   "remediation": "Remove the aws_iam_access_key.user resource and use temporary credentials via an IAM role. If an access key is absolutely required, ensure secure rotation and do not expose it through outputs."
+  },
+  {
+   "resource": "aws_iam_user_policy.userpolicy",
+   "issue": "Overly broad IAM permissions",
+   "risk": "Wildcard actions ec2:*, s3:*, lambda:*, and cloudwatch:* on Resource=\"*\" grant near-unrestricted access across multiple services, enabling privilege abuse, data theft, resource tampering, and potential account-wide compromise if the user or key is compromised.",
+   "remediation": "In aws_iam_user_policy.userpolicy, replace the wildcard actions with only the specific required API actions and replace \"Resource\": \"*\" with the specific ARNs the user needs to access."
+  },
+  {
+   "resource": "output.secret",
+   "issue": "Sensitive credential exposed via output",
+   "risk": "Outputting credential material increases the likelihood of secret disclosure through Terraform CLI output, logs, pipelines, or remote state consumers.",
+   "remediation": "Remove the output.secret block entirely. If it must remain, mark it as sensitive by adding sensitive = true and avoid outputting access key secrets."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c80"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c84",
+    "c85",
+    "c86",
+    "c87"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  }
+ ]
+}

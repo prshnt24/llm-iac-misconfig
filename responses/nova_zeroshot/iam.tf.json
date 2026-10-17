@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "iam.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-16T23:05:02",
+  "response": "```json\n[\n  {\n    \"resource\": \"aws_iam_user.user\",\n    \"issue\": \"force_destroy set to true\",\n    \"risk\": \"If the IAM user is deleted, all associated resources will be deleted without warning, which can lead to data loss or unexpected behavior.\",\n    \"remediation\": \"Set `force_destroy` to `false` to prevent accidental deletion of associated resources.\"\n  },\n  {\n    \"resource\": \"aws_iam_access_key.user\",\n    \"issue\": \"Access key created without rotation policy\",\n    \"risk\": \"Long-lived access keys increase the risk of unauthorized access if the key is compromised.\",\n    \"remediation\": \"Implement a rotation policy for access keys using `aws_iam_access_key_rotation` or manage rotation manually.\"\n  },\n  {\n    \"resource\": \"aws_iam_user_policy.userpolicy\",\n    \"issue\": \"Overly permissive policy\",\n    \"risk\": \"The policy allows all actions on EC2, S3, Lambda, and CloudWatch, which can lead to unauthorized access and potential misuse of resources.\",\n    \"remediation\": \"Refine the policy to grant only the necessary permissions required for the user. Avoid using wildcard actions and resources.\"\n  },\n  {\n    \"resource\": \"output.secret\",\n    \"issue\": \"Exposure of sensitive information\",\n    \"risk\": \"Outputting the encrypted secret of the access key can lead to exposure of sensitive information if the output is not properly secured.\",\n    \"remediation\": \"Avoid outputting sensitive information like access keys. If necessary, ensure that outputs are securely managed and access is restricted.\"\n  }\n]\n```"
+}

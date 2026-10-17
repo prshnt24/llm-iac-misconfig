@@ -1,0 +1,7 @@
+run,findings,matched_any_tool_row,unmatched,valid,debatable,invalid,adjusted_precision_valid
+claude_fewshot,145,111,34,13,18,3,0.855
+claude_zeroshot,131,96,35,17,16,2,0.863
+gpt_fewshot,71,49,22,17,5,0,0.93
+gpt_zeroshot,68,46,22,16,6,0,0.912
+nova_fewshot,46,31,15,4,9,2,0.761
+nova_zeroshot,47,33,14,6,8,0,0.83

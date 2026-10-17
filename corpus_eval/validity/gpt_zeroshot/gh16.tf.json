@@ -1,0 +1,86 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 4,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 5,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 6,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 7,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "locals.userdata",
+   "issue": "Sensitive authentication secrets embedded in EC2 user data",
+   "risk": "The Tailscale OAuth client key or tailnet key is rendered directly into instance user data. EC2 user data can be retrieved by processes on the instance and may be exposed through instance metadata access, console access, Terraform state, logs, or debugging workflows, leading to credential theft and unauthorized tailnet access.",
+   "remediation": "Do not pass `one(tailscale_oauth_client.default[*].key)` or `one(tailscale_tailnet_key.default[*].key)` into `templatefile` for `local.userdata`. Store the secret in a secure secret store such as AWS Systems Manager Parameter Store `SecureString` or AWS Secrets Manager, and modify `module.tailscale_subnet_router.user_data`/the userdata template to fetch the secret at boot time using an instance role with least-privilege read access."
+  },
+  "1": {
+   "resource": "tailscale_oauth_client.default",
+   "issue": "Potentially over-privileged OAuth scopes",
+   "risk": "The `scopes` attribute is taken directly from input without restriction. Excessive OAuth scopes can grant broader control over the Tailscale tailnet than required, increasing the impact of key compromise.",
+   "remediation": "Restrict the `scopes` attribute in `tailscale_oauth_client.default` to the minimum required set for node registration and operation. Validate `var.authkey_config.tailscale_oauth_client.scopes` and remove any unnecessary permissions."
+  },
+  "2": {
+   "resource": "tailscale_tailnet_key.default",
+   "issue": "Reusable tailnet key may be enabled",
+   "risk": "If `reusable = true`, the same authentication key can be used repeatedly by multiple devices or after compromise, making unauthorized persistence and lateral enrollment into the tailnet easier.",
+   "remediation": "Set the `reusable` attribute in `tailscale_tailnet_key.default` to `false` and ensure `var.authkey_config.tailscale_tailnet_key.reusable` defaults to disabled."
+  },
+  "3": {
+   "resource": "tailscale_tailnet_key.default",
+   "issue": "Preauthorized tailnet key may be enabled",
+   "risk": "If `preauthorized = true`, devices authenticated with the key may bypass expected approval workflows, allowing unauthorized or insufficiently reviewed devices to join the tailnet if the key is exposed.",
+   "remediation": "Set the `preauthorized` attribute in `tailscale_tailnet_key.default` to `false` unless there is a strict operational need, and constrain `var.authkey_config.tailscale_tailnet_key.preauthorized` accordingly."
+  },
+  "4": {
+   "resource": "tailscale_tailnet_key.default",
+   "issue": "Non-ephemeral tailnet key may be used",
+   "risk": "If `ephemeral = false`, enrolled devices can remain registered beyond their intended lifecycle, increasing persistence risk for compromised or abandoned instances.",
+   "remediation": "Set the `ephemeral` attribute in `tailscale_tailnet_key.default` to `true` for transient compute such as autoscaled instances, and ensure `var.authkey_config.tailscale_tailnet_key.ephemeral` is configured securely."
+  },
+  "5": {
+   "resource": "tailscale_tailnet_key.default",
+   "issue": "Tailnet key expiry may be too long or unset",
+   "risk": "An excessively long-lived `expiry` increases the window in which a leaked key can be abused to enroll unauthorized devices.",
+   "remediation": "Set a short, explicit `expiry` value in `tailscale_tailnet_key.default` and validate `var.authkey_config.tailscale_tailnet_key.expiry` to enforce credential rotation."
+  },
+  "6": {
+   "resource": "module.ssm_policy",
+   "issue": "Instance role granted write access to SSM parameter without corresponding read restriction model",
+   "risk": "The instance can modify the stored Tailscale state in Parameter Store via `ssm:PutParameter`. If the instance is compromised, an attacker can tamper with state data, potentially disrupting service or persisting malicious configuration.",
+   "remediation": "Limit the policy in `module.ssm_policy` to the minimum required actions and consider adding conditions or redesigning the state flow so the instance does not need direct `ssm:PutParameter` access. Update the `iam_policy` statement under `module.ssm_policy` to reduce permissions as much as operationally possible."
+  },
+  "7": {
+   "resource": "aws_iam_role_policy_attachment.cw_agent",
+   "issue": "AWS managed policy attached instead of least-privilege custom policy",
+   "risk": "The managed policy `CloudWatchAgentServerPolicy` may grant broader CloudWatch and logging permissions than required for this workload. Over-privileged instance roles increase blast radius if the instance is compromised.",
+   "remediation": "Replace `aws_iam_role_policy_attachment.cw_agent` with a custom IAM policy granting only the specific CloudWatch Logs and metrics actions/resources required by the agent, then attach that custom policy instead of `arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy`."
+  }
+ }
+}

@@ -1,0 +1,105 @@
+{
+ "file": "gh29.tf",
+ "findings": [
+  {
+   "resource": "aws_security_group.ec2_security_group",
+   "issue": "Unrestricted SSH Access (Port 22) from the Internet",
+   "risk": "Allowing SSH access from 0.0.0.0/0 exposes the instance to brute-force attacks, credential stuffing, and exploitation of SSH vulnerabilities from any source on the internet. This is a critical attack vector for unauthorized remote access.",
+   "remediation": "Restrict the SSH ingress rule to known, trusted IP ranges (e.g., your corporate NAT gateway or VPN egress IP). Replace cidr_blocks = [\"0.0.0.0/0\"] with a specific CIDR such as cidr_blocks = [\"203.0.113.0/32\"]. Alternatively, remove SSH entirely and use AWS Systems Manager Session Manager (SSM) for shell access, eliminating the need for port 22 to be open at all."
+  },
+  {
+   "resource": "aws_instance.ec2",
+   "issue": "EC2 Instance Deployed in a Public Subnet with a Public IP Address",
+   "risk": "Placing the instance in a public subnet and assigning a public IP directly exposes it to the internet. Any vulnerability in running services (SSH, HTTP, HTTPS) is immediately reachable by external attackers without any intermediate network control layer.",
+   "remediation": "Deploy the EC2 instance in a private subnet (set subnet_id to a private subnet ID and set associate_public_ip_address = false). Place an Application Load Balancer (ALB) or NAT Gateway in the public subnet to handle inbound/outbound traffic. If public access is genuinely required, ensure security group rules are tightly scoped."
+  },
+  {
+   "resource": "aws_instance.ec2",
+   "issue": "EBS Root Volume Encryption Not Enabled",
+   "risk": "Without explicit EBS encryption, the root volume may be unencrypted (depending on the account-level default setting). Unencrypted volumes expose data at rest to unauthorized access if snapshots are shared, volumes are detached, or underlying hardware is compromised.",
+   "remediation": "Add a root_block_device block with encryption enabled: root_block_device { encrypted = true, kms_key_id = var.kms_key_id }. Alternatively, enable account-level EBS encryption by default via the aws_ebs_encryption_by_default resource, but explicit configuration is preferred for auditability."
+  },
+  {
+   "resource": "aws_instance.ec2",
+   "issue": "IMDSv2 (Instance Metadata Service v2) Not Enforced",
+   "risk": "Without enforcing IMDSv2, the instance accepts IMDSv1 requests, which are not session-oriented and are vulnerable to SSRF (Server-Side Request Forgery) attacks. An attacker exploiting an SSRF vulnerability in an application can retrieve IAM credentials and other sensitive metadata without any additional authentication.",
+   "remediation": "Add a metadata_options block to enforce IMDSv2: metadata_options { http_endpoint = \"enabled\", http_tokens = \"required\", http_put_response_hop_limit = 1 }. Setting http_tokens = \"required\" disables IMDSv1 entirely."
+  },
+  {
+   "resource": "aws_instance.ec2",
+   "issue": "No IAM Instance Profile Attached",
+   "risk": "Without an IAM instance profile, applications on the instance may resort to storing long-lived static AWS credentials (access keys) directly on the instance or in environment variables. Static credentials are a significant security risk as they do not rotate automatically and can be exfiltrated.",
+   "remediation": "Create an aws_iam_role and aws_iam_instance_profile with least-privilege policies and attach it to the instance using the iam_instance_profile attribute: iam_instance_profile = aws_iam_instance_profile.ec2_profile.name. This also enables SSM Session Manager as an alternative to SSH."
+  },
+  {
+   "resource": "aws_instance.ec2",
+   "issue": "Detailed Monitoring Not Enabled",
+   "risk": "Without detailed monitoring enabled, CloudWatch metrics are only available at 5-minute intervals. This reduces visibility into instance behaviour, making it harder to detect anomalous activity, performance issues, or security incidents in a timely manner.",
+   "remediation": "Enable detailed monitoring by adding monitoring = true to the aws_instance resource block. This provides 1-minute granularity CloudWatch metrics for improved observability and faster incident detection."
+  },
+  {
+   "resource": "aws_security_group.ec2_security_group",
+   "issue": "Unrestricted Outbound Egress to the Internet",
+   "risk": "Allowing all outbound traffic (protocol -1, 0.0.0.0/0) means a compromised instance can freely communicate with attacker-controlled infrastructure, exfiltrate data, download malware, participate in botnets, or pivot to other systems. There is no network-level control on outbound connections.",
+   "remediation": "Restrict egress rules to only the ports and destinations required by the application (principle of least privilege). For example, if the instance only needs to reach an RDS database and an S3 VPC endpoint, scope egress rules accordingly. Remove the catch-all egress rule and replace it with specific rules, e.g., port 443 to known CIDR ranges or VPC endpoint security groups."
+  },
+  {
+   "resource": "aws_security_group.ec2_security_group",
+   "issue": "HTTP (Port 80) Ingress Open to the Internet Without Redirect Enforcement",
+   "risk": "Allowing unencrypted HTTP traffic on port 80 from 0.0.0.0/0 means data in transit between clients and the server is not encrypted. This exposes sensitive data to interception via man-in-the-middle attacks. It also increases the attack surface unnecessarily if HTTPS (443) is already permitted.",
+   "remediation": "If HTTPS is available, remove the port 80 ingress rule and enforce HTTPS-only access. If HTTP must be accepted for redirect purposes, handle the redirect at the load balancer layer (ALB) rather than at the instance level, and remove port 80 from the instance security group entirely. Use an ALB listener rule to redirect HTTP to HTTPS."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c114"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c110"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c109",
+    "c112"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c108",
+    "c111"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c105"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c106"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": [
+    "c116"
+   ]
+  },
+  {
+   "finding": 7,
+   "candidates": [
+    "c115"
+   ]
+  }
+ ]
+}

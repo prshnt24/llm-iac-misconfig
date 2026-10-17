@@ -1,0 +1,46 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  },
+  {
+   "finding": 1,
+   "label": "VALID"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "data.aws_iam_policy_document.s3",
+   "issue": "Incorrect resource ARN for S3 object access",
+   "risk": "The policy uses \"${aws_s3_bucket.example.arn}*\" instead of the correct object ARN pattern. This does not properly scope GetObject access to objects in the bucket and can cause the intended protection to fail, potentially resulting in broken access control or unintended authorization behavior.",
+   "remediation": "Change the second entry in the resources attribute to \"${aws_s3_bucket.example.arn}/*\" so object-level permissions are correctly scoped."
+  },
+  "1": {
+   "resource": "data.aws_iam_policy_document.s3",
+   "issue": "Tag-based condition does not match actual S3 bucket tag",
+   "risk": "The IAM policy checks for aws:ResourceTag/allow-gh-action = true, but the bucket is tagged allow-gh-action-access = true. Because the condition key does not match the actual tag, the protection does not work as intended and access may be denied unexpectedly or policy logic may be bypassed if later changed incorrectly.",
+   "remediation": "Update the condition variable in the condition block from \"aws:ResourceTag/allow-gh-action\" to \"aws:ResourceTag/allow-gh-action-access\", or change the aws_s3_bucket.example tags key to match the policy."
+  },
+  "2": {
+   "resource": "data.aws_iam_policy_document.ecr",
+   "issue": "Wildcard resource in ECR IAM policy",
+   "risk": "Using resources = [\"*\"] grants the role access to all ECR repositories in the account that satisfy the condition, violating least privilege and increasing the impact of role misuse or compromise.",
+   "remediation": "Replace the resources attribute with the specific repository ARN: [aws_ecr_repository.example.arn]."
+  },
+  "3": {
+   "resource": "data.aws_iam_policy_document.ecr",
+   "issue": "Tag-based condition does not match actual ECR repository tag",
+   "risk": "The IAM policy checks for aws:ResourceTag/allow-gh-action = true, but the repository is tagged allow-gh-action-access = true. This mismatch breaks the intended authorization guard and can lead to unintended access behavior.",
+   "remediation": "Update the condition variable in the condition block from \"aws:ResourceTag/allow-gh-action\" to \"aws:ResourceTag/allow-gh-action-access\", or change the aws_ecr_repository.example tags key to match the policy."
+  }
+ }
+}

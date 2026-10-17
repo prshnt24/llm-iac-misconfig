@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "gh28.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:16:13",
+  "response": "[\n  {\n    \"resource\": \"data.aws_iam_policy_document.ssm_policy\",\n    \"issue\": \"Wildcard Resource in IAM Policy\",\n    \"risk\": \"Allows the SSM role to describe all EC2 instances, subnets, VPCs, and security groups, which can lead to unauthorized access and potential data breaches.\",\n    \"remediation\": \"Limit the resources to specific ARNs or use conditions to restrict the scope. Update the resources attribute to specify the exact resources needed.\"\n  }\n]"
+}

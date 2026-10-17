@@ -1,0 +1,19 @@
+run,category,gt_rows,covered,recall,findings,precision,f1
+claude_zeroshot,Encryption at Rest,1,1,1.0,56,0.018,0.035
+claude_zeroshot,Logging & Monitoring,1,1,1.0,33,0.03,0.059
+claude_zeroshot,Network Exposure,13,8,0.615,58,0.138,0.225
+claude_zeroshot,Other,2,2,1.0,180,0.011,0.022
+claude_zeroshot,Publicly Exposed Storage,1,1,1.0,1,1.0,1.0
+claude_zeroshot,Storage Configuration,3,3,1.0,3,1.0,1.0
+gpt_zeroshot,Encryption at Rest,1,0,0.0,25,0.0,0
+gpt_zeroshot,Logging & Monitoring,1,0,0.0,9,0.0,0
+gpt_zeroshot,Network Exposure,13,5,0.385,36,0.139,0.204
+gpt_zeroshot,Other,2,0,0.0,73,0.0,0
+gpt_zeroshot,Publicly Exposed Storage,1,0,0.0,0,0,0
+gpt_zeroshot,Storage Configuration,3,0,0.0,0,0,0
+nova_zeroshot,Encryption at Rest,1,0,0.0,14,0.0,0
+nova_zeroshot,Logging & Monitoring,1,0,0.0,6,0.0,0
+nova_zeroshot,Network Exposure,13,4,0.308,32,0.125,0.178
+nova_zeroshot,Other,2,0,0.0,82,0.0,0
+nova_zeroshot,Publicly Exposed Storage,1,0,0.0,0,0,0
+nova_zeroshot,Storage Configuration,3,0,0.0,0,0,0

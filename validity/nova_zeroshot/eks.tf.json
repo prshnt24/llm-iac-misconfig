@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_iam_role_policy_attachment.policy_attachment-AmazonEKSClusterPolicy",
+   "issue": "Use of overly permissive managed policy",
+   "risk": "The AmazonEKSClusterPolicy managed policy provides broad permissions that may not be required, increasing the attack surface.",
+   "remediation": "Replace the managed policy with a custom policy that follows the principle of least privilege. Create a new IAM policy resource with specific permissions needed for EKS and attach it to the role."
+  },
+  "1": {
+   "resource": "aws_iam_role_policy_attachment.policy_attachment-AmazonEKSServicePolicy",
+   "issue": "Use of overly permissive managed policy",
+   "risk": "The AmazonEKSServicePolicy managed policy provides broad permissions that may not be required, increasing the attack surface.",
+   "remediation": "Replace the managed policy with a custom policy that follows the principle of least privilege. Create a new IAM policy resource with specific permissions needed for EKS and attach it to the role."
+  }
+ }
+}

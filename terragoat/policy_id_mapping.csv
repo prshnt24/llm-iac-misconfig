@@ -1,0 +1,96 @@
+﻿check_id,common_name
+CKV2_AWS_11,Ensure VPC flow logging is enabled in all VPCs
+CKV2_AWS_12,Ensure the default security group of every VPC restricts all traffic
+CKV2_AWS_2,Ensure that only encrypted EBS volumes are attached to EC2 instances
+CKV2_AWS_41,Ensure an IAM role is attached to EC2 instance
+CKV2_AWS_52,Ensure AWS ElasticSearch/OpenSearch Fine-grained access control is enabled
+CKV2_AWS_58,Ensure AWS Neptune cluster deletion protection is enabled
+CKV2_AWS_59,Ensure ElasticSearch/OpenSearch has dedicated master node enabled
+CKV2_AWS_6,Ensure that S3 bucket has a Public Access block
+CKV2_AWS_60,Ensure RDS instance with copy tags to snapshots is enabled
+CKV2_AWS_61,Ensure that an S3 bucket has a lifecycle configuration
+CKV2_AWS_62,Ensure S3 buckets should have event notifications enabled
+CKV2_AWS_64,Ensure KMS key Policy is defined
+CKV2_AWS_69,Ensure AWS RDS database instance configured with encryption in transit
+CKV2_AWS_8,Ensure that RDS clusters has backup plan of AWS Backup
+CKV_AWS_101,Ensure Neptune logging is enabled
+CKV_AWS_109,Ensure IAM policies does not allow permissions management / resource exposure without constraints
+CKV_AWS_111,Ensure IAM policies does not allow write access without constraints
+CKV_AWS_115,Ensure that AWS Lambda function is configured for function-level concurrent execution limit
+CKV_AWS_116,Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ)
+CKV_AWS_117,Ensure that AWS Lambda function is configured inside a VPC
+CKV_AWS_118,Ensure that enhanced monitoring is enabled for Amazon RDS instances
+CKV_AWS_126,Ensure that detailed monitoring is enabled for EC2 instances
+CKV_AWS_127,Ensure that Elastic Load Balancer(s) uses SSL certificates provided by AWS Certificate Manager
+CKV_AWS_129,Ensure that respective logs of Amazon Relational Database Service (Amazon RDS) are enabled
+CKV_AWS_130,Ensure VPC subnets do not assign public IP by default
+CKV_AWS_133,Ensure that RDS instances has backup policy
+CKV_AWS_135,Ensure that EC2 is EBS optimized
+CKV_AWS_136,Ensure that ECR repositories are encrypted using KMS
+CKV_AWS_137,Ensure that Elasticsearch is configured inside a VPC
+CKV_AWS_139,Ensure that RDS clusters have deletion protection enabled
+CKV_AWS_144,Ensure that S3 bucket has cross-region replication enabled
+CKV_AWS_145,Ensure that S3 buckets are encrypted with KMS by default
+CKV_AWS_157,Ensure that RDS instances have Multi-AZ enabled
+CKV_AWS_16,Ensure all data stored in the RDS is securely encrypted at rest
+CKV_AWS_161,Ensure RDS database has IAM authentication enabled
+CKV_AWS_162,Ensure RDS cluster has IAM authentication enabled
+CKV_AWS_163,Ensure ECR image scanning on push is enabled
+CKV_AWS_17,Ensure all data stored in RDS is not publicly accessible
+CKV_AWS_173,Check encryption settings for Lambda environmental variable
+CKV_AWS_18,Ensure the S3 bucket has access logging enabled
+CKV_AWS_186,Ensure S3 bucket Object is encrypted by KMS using a customer managed Key (CMK)
+CKV_AWS_189,Ensure EBS Volume is encrypted by KMS using a customer managed Key (CMK)
+CKV_AWS_21,Ensure all data stored in the S3 bucket have versioning enabled
+CKV_AWS_226,Ensure DB instance gets all minor upgrades automatically
+CKV_AWS_228,Verify Elasticsearch domain is using an up to date TLS policy
+CKV_AWS_23,Ensure every security group and rule has a description
+CKV_AWS_24,Ensure no security groups allow ingress from 0.0.0.0:0 to port 22
+CKV_AWS_247,Ensure all data stored in the Elasticsearch is encrypted with a CMK
+CKV_AWS_248,Ensure that Elasticsearch is not using the default Security Group
+CKV_AWS_260,Ensure no security groups allow ingress from 0.0.0.0:0 to port 80
+CKV_AWS_272,Ensure AWS Lambda function is configured to validate code-signing
+CKV_AWS_273,Ensure access is controlled through SSO and not AWS IAM defined users
+CKV_AWS_279,Ensure Neptune snapshot is securely encrypted
+CKV_AWS_280,Ensure Neptune snapshot is encrypted by KMS using a customer managed Key (CMK)
+CKV_AWS_283,Ensure no IAM policies documents allow ALL or any AWS principal permissions to the resource
+CKV_AWS_286,Ensure IAM policies does not allow privilege escalation
+CKV_AWS_287,Ensure IAM policies does not allow credentials exposure
+CKV_AWS_288,Ensure IAM policies does not allow data exfiltration
+CKV_AWS_289,Ensure IAM policies does not allow permissions management / resource exposure without constraints
+CKV_AWS_290,Ensure IAM policies does not allow write access without constraints
+CKV_AWS_293,Ensure that AWS database instances have deletion protection enabled
+CKV_AWS_3,Ensure all data stored in the EBS is securely encrypted
+CKV_AWS_313,Ensure RDS cluster configured to copy tags to snapshots
+CKV_AWS_317,Ensure Elasticsearch Domain Audit Logging is enabled
+CKV_AWS_318,Ensure Elasticsearch domains are configured with at least three dedicated master nodes for HA
+CKV_AWS_324,Ensure that RDS Cluster log capture is enabled
+CKV_AWS_325,Ensure that RDS Cluster audit logging is enabled for MySQL engine
+CKV_AWS_326,Ensure that RDS Aurora Clusters have backtracking enabled
+CKV_AWS_327,Ensure RDS Clusters are encrypted using KMS CMKs
+CKV_AWS_347,Ensure Neptune is encrypted by KMS using a customer managed Key (CMK)
+CKV_AWS_355,"Ensure no IAM policies documents allow ""*"" as a statement's resource for restrictable actions"
+CKV_AWS_356,"Ensure no IAM policies documents allow ""*"" as a statement's resource for restrictable actions"
+CKV_AWS_359,Neptune DB clusters should have IAM database authentication enabled
+CKV_AWS_361,Ensure that Neptune DB cluster has automated backups enabled with adequate retention
+CKV_AWS_362,Neptune DB clusters should be configured to copy tags to snapshots
+CKV_AWS_363,Ensure Lambda Runtime is not deprecated
+CKV_AWS_37,Ensure Amazon EKS control plane logging is enabled for all log types
+CKV_AWS_376,Ensure AWS Elastic Load Balancer listener uses TLS/SSL
+CKV_AWS_38,Ensure Amazon EKS public endpoint not accessible to 0.0.0.0/0
+CKV_AWS_382,Ensure no security groups allow egress from 0.0.0.0:0 to port -1
+CKV_AWS_39,Ensure Amazon EKS public endpoint disabled
+CKV_AWS_41,Ensure no hard coded AWS access key and secret key exists in provider
+CKV_AWS_44,Ensure Neptune storage is securely encrypted
+CKV_AWS_45,Ensure no hard-coded secrets exist in lambda environment
+CKV_AWS_46,Ensure no hard-coded secrets exist in EC2 user data
+CKV_AWS_5,Ensure all data stored in the Elasticsearch is securely encrypted at rest
+CKV_AWS_50,X-Ray tracing is enabled for Lambda
+CKV_AWS_51,Ensure ECR Image Tags are immutable
+CKV_AWS_58,Ensure EKS Cluster has Secrets Encryption Enabled
+CKV_AWS_7,Ensure rotation for customer created CMKs is enabled
+CKV_AWS_79,Ensure Instance Metadata Service Version 1 is not enabled
+CKV_AWS_8,Ensure all data stored in the Launch configuration or instance Elastic Blocks Store is securely encrypted
+CKV_AWS_84,Ensure Elasticsearch Domain Logging is enabled
+CKV_AWS_92,Ensure the ELB has access logging enabled
+CKV_AWS_96,Ensure all data stored in Aurora is securely encrypted at rest

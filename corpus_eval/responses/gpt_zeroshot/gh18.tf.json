@@ -1,0 +1,8 @@
+{
+  "model": "global.openai.gpt-5.4",
+  "strategy": "zeroshot",
+  "file": "gh18.tf",
+  "temperature": null,
+  "timestamp": "2026-10-17T02:13:22",
+  "response": "[\n  {\n    \"resource\": \"aws_subnet.public_project102_subnet\",\n    \"issue\": \"Public subnet auto-assigns public IP addresses to instances\",\n    \"risk\": \"Instances launched in these subnets can receive public IP addresses automatically, increasing direct internet exposure and the attack surface for services that may not be intended to be publicly reachable.\",\n    \"remediation\": \"Set the attribute `map_public_ip_on_launch = false` in `aws_subnet.public_project102_subnet` and use explicit public IP assignment only for resources that require internet exposure.\"\n  },\n  {\n    \"resource\": \"aws_default_route_table.internal_project102_default\",\n    \"issue\": \"Default route table configured with unrestricted internet egress/ingress path\",\n    \"risk\": \"The route `0.0.0.0/0` to an Internet Gateway makes all associated subnets internet-routable. When combined with public IP assignment or permissive security groups, resources may become publicly accessible and exposed to scanning, exploitation, or data exfiltration.\",\n    \"remediation\": \"Avoid using the VPC default route table for internet-routable subnets. Replace `aws_default_route_table.internal_project102_default` with a dedicated `aws_route_table` for public subnets, and associate only intentionally public subnets to it. Keep private subnets associated with separate route tables that do not route `0.0.0.0/0` to `aws_internet_gateway.project102_gw`.\"\n  }\n]"
+}

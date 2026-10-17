@@ -1,0 +1,29 @@
+{
+ "file": "ecr.tf",
+ "findings": [
+  {
+   "resource": "aws_ecr_repository.repository",
+   "issue": "Image tag mutability set to MUTABLE",
+   "risk": "Allows image tags to be overwritten, which can lead to confusion and potential security risks if an attacker manages to push a malicious image with a tag that overwrites a legitimate one.",
+   "remediation": "Change image_tag_mutability from \"MUTABLE\" to \"IMMUTABLE\""
+  },
+  {
+   "resource": "null_resource.push_image",
+   "issue": "Use of local-exec provisioner with sensitive operations",
+   "risk": "Executing sensitive operations like docker login with AWS credentials in a local-exec provisioner can expose credentials and commands in plain text, increasing the risk of credential leakage.",
+   "remediation": "Consider using more secure methods for deploying Docker images, such as integrating with CI/CD pipelines that handle credentials securely."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c51"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  }
+ ]
+}

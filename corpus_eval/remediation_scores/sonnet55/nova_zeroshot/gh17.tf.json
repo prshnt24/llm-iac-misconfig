@@ -1,0 +1,17 @@
+{
+ "items": [
+  {
+   "finding": 1,
+   "known": "CKV_AWS_382 Ensure no security groups allow egress from 0.0.0.0:0 to port -1 (resource aws_security_group_rule.all_worker_mgmt_egress)",
+   "issue": "Overly permissive egress rule",
+   "remediation": "Restrict the egress traffic to only necessary destinations. For example, replace `cidr_blocks = [\"0.0.0.0/0\"]` with specific, required IP ranges or security groups."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 1,
+   "reason": "Right direction: replace 0.0.0.0/0 in cidr_blocks with specific ranges or SGs. But it never says to restrict protocol/from_port/to_port (-1/0) to specific ports like 443, and security groups can't be used via cidr_blocks (needs source_security_group_id). Too vague to earn full marks."
+  }
+ ]
+}

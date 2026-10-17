@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Outdated Elasticsearch engine version",
+   "risk": "Using Elasticsearch version 2.3 exposes the domain to known vulnerabilities and unsupported software risks, increasing the likelihood of compromise.",
+   "remediation": "Update the elasticsearch_version attribute to a currently supported and secure version, for example set elasticsearch_version = \"7.10\" or migrate to a modern OpenSearch version supported by the provider."
+  }
+ }
+}

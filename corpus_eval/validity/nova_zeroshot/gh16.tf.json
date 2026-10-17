@@ -1,0 +1,56 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "INVALID"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "INVALID"
+  },
+  {
+   "finding": 4,
+   "label": "INVALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "module.tailscale_subnet_router",
+   "issue": "Lack of versioning on S3 bucket",
+   "risk": "Data may be permanently deleted or overwritten without recovery",
+   "remediation": "Enable versioning on the S3 bucket to protect against deletion and overwriting of objects."
+  },
+  "1": {
+   "resource": "module.tailscale_subnet_router",
+   "issue": "Potentially insecure user data",
+   "risk": "User data may contain sensitive information or be vulnerable to injection attacks",
+   "remediation": "Ensure that user data is properly sanitized and does not contain sensitive information. Use secure methods for injecting variables into user data."
+  },
+  "2": {
+   "resource": "module.tailscale_subnet_router",
+   "issue": "Public IP association",
+   "risk": "Instances may be exposed to the internet, increasing attack surface",
+   "remediation": "Set `associate_public_ip_address` to `false` to prevent instances from receiving a public IP address."
+  },
+  "3": {
+   "resource": "module.ssm_state",
+   "issue": "Insecure SSM parameter storage",
+   "risk": "SSM parameters may be exposed if not properly secured",
+   "remediation": "Ensure that SSM parameters are encrypted and access is restricted to necessary roles and users."
+  },
+  "4": {
+   "resource": "module.ssm_policy",
+   "issue": "Overly permissive IAM policy",
+   "risk": "IAM policy allows unrestricted access to SSM actions",
+   "remediation": "Refine the IAM policy to only allow necessary SSM actions and restrict resource access to specific SSM parameters."
+  }
+ }
+}

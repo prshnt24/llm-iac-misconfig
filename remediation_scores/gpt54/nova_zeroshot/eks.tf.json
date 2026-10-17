@@ -1,0 +1,28 @@
+{
+ "items": [
+  {
+   "finding": 2,
+   "known": "CKV_AWS_130 Ensure VPC subnets do not assign public IP by default (resource aws_subnet.eks_subnet1)",
+   "issue": "Public IP assignment on launch",
+   "remediation": "Set `map_public_ip_on_launch` to `false` to prevent automatic assignment of public IPs."
+  },
+  {
+   "finding": 3,
+   "known": "CKV_AWS_130 Ensure VPC subnets do not assign public IP by default (resource aws_subnet.eks_subnet2)",
+   "issue": "Public IP assignment on launch",
+   "remediation": "Set `map_public_ip_on_launch` to `false` to prevent automatic assignment of public IPs."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correctly identifies aws_subnet.eks_subnet1 attribute map_public_ip_on_launch and sets it to false."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "Correctly identifies aws_subnet.eks_subnet2 attribute map_public_ip_on_launch and sets it to false."
+  }
+ ]
+}

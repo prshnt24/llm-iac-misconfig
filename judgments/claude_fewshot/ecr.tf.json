@@ -1,0 +1,83 @@
+{
+ "file": "ecr.tf",
+ "findings": [
+  {
+   "resource": "aws_ecr_repository.repository",
+   "issue": "Mutable image tags",
+   "risk": "MUTABLE tag mutability allows existing image tags to be overwritten, enabling tag poisoning attacks where a trusted tag (e.g. 'latest') is silently replaced with a malicious image, undermining supply-chain integrity",
+   "remediation": "Set image_tag_mutability = \"IMMUTABLE\" to prevent tags from being overwritten once pushed"
+  },
+  {
+   "resource": "aws_ecr_repository.repository",
+   "issue": "Image scanning on push not enabled",
+   "risk": "Without automated vulnerability scanning, container images with known CVEs can be pushed and deployed without any detection, increasing the attack surface of workloads that consume these images",
+   "remediation": "Add an image_scanning_configuration block with scan_on_push = true inside the aws_ecr_repository resource"
+  },
+  {
+   "resource": "aws_ecr_repository.repository",
+   "issue": "Encryption at rest not configured",
+   "risk": "By default ECR uses AES-256 managed by AWS, but no customer-managed KMS key is specified. This prevents fine-grained key rotation control, audit trails, and the ability to revoke access by disabling the key",
+   "remediation": "Add an encryption_configuration block with encryption_type = \"KMS\" and specify a kms_key referencing a customer-managed AWS KMS key"
+  },
+  {
+   "resource": "aws_ecr_repository.repository",
+   "issue": "No ECR lifecycle policy defined",
+   "risk": "Without a lifecycle policy, untagged and outdated images accumulate indefinitely. Stale images with unpatched vulnerabilities remain available for accidental deployment and increase storage costs",
+   "remediation": "Add an aws_ecr_lifecycle_policy resource linked to this repository that expires untagged images after a defined number of days and limits the number of tagged image generations retained"
+  },
+  {
+   "resource": "aws_ecr_repository.repository",
+   "issue": "No resource-based repository policy restricting access",
+   "risk": "Without an explicit ECR repository policy, access is governed solely by IAM identity policies. Any principal with broad ECR IAM permissions in the account can push or pull images, violating least-privilege for sensitive container images",
+   "remediation": "Add an aws_ecr_repository_policy resource that explicitly restricts ecr:GetDownloadUrlForLayer, ecr:BatchGetImage, ecr:PutImage, and related actions to only the specific IAM roles or accounts that require access"
+  },
+  {
+   "resource": "null_resource.push_image",
+   "issue": "Credentials handled via local-exec shell command",
+   "risk": "Running docker login and aws ecr get-login-password in a local-exec provisioner exposes authentication tokens in Terraform logs, shell history, and CI/CD pipeline output. Compromised logs can leak short-lived ECR tokens usable to pull or push images",
+   "remediation": "Remove the null_resource provisioner. Use a dedicated CI/CD pipeline step with masked secrets, or a purpose-built Terraform provider (e.g. kreuzwerker/docker) that handles credentials securely without exposing them in plan/apply output"
+  },
+  {
+   "resource": "null_resource.push_image",
+   "issue": "No explicit dependency or integrity check on the Docker build context",
+   "risk": "The local-exec provisioner builds and pushes whatever is present in the local resources/ directory at apply time with no checksum or provenance verification. A supply-chain compromise of local build files would silently push a malicious image to ECR",
+   "remediation": "Implement image signing (e.g. AWS Signer or Cosign) as part of the build pipeline and enforce signature verification via an ECR repository policy condition, removing the uncontrolled local-exec build step"
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c51"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c50"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c49"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  }
+ ]
+}

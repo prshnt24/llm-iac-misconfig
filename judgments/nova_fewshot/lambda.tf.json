@@ -1,0 +1,20 @@
+{
+ "file": "lambda.tf",
+ "findings": [
+  {
+   "resource": "aws_lambda_function.analysis_lambda",
+   "issue": "Plain text secrets in environment variables",
+   "risk": "Exposure of sensitive access keys which can lead to unauthorized access and potential compromise of AWS resources",
+   "remediation": "Use AWS Secrets Manager or AWS Systems Manager Parameter Store to store and retrieve secrets securely. Replace plain text secrets with references to these secure storage solutions."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c93",
+    "c96"
+   ]
+  }
+ ]
+}

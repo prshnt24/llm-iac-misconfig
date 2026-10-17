@@ -1,0 +1,111 @@
+{
+ "file": "reg08.tf",
+ "findings": [
+  {
+   "resource": "aws_apigatewayv2_stage.this",
+   "issue": "Access logging not enforced",
+   "risk": "Access logging is conditionally configured only when var.stage_access_log_settings is non-null. If the variable is not provided, no access logs are written, making it impossible to audit API calls, detect abuse, or investigate security incidents.",
+   "remediation": "Make access logging mandatory by always including the access_log_settings block with a required destination_arn. Remove the conditional for_each and enforce a default CloudWatch log group ARN, or add a validation rule on var.stage_access_log_settings to prevent it from being null."
+  },
+  {
+   "resource": "aws_apigatewayv2_stage.this",
+   "issue": "Detailed metrics not enforced",
+   "risk": "detailed_metrics_enabled inside default_route_settings is only set when var.stage_default_route_settings is provided. Without detailed metrics, anomalous traffic patterns, error spikes, and latency issues cannot be detected through CloudWatch, reducing observability for security monitoring.",
+   "remediation": "Set detailed_metrics_enabled = true unconditionally in the default_route_settings block, or add a variable default that always enables it: default_route_settings { detailed_metrics_enabled = true }."
+  },
+  {
+   "resource": "aws_apigatewayv2_route.this",
+   "issue": "Authorization type not enforced",
+   "risk": "authorization_type is sourced directly from each.value.authorization_type with no default or validation. Routes may be deployed with authorization_type = \"NONE\", exposing backend integrations to unauthenticated public access.",
+   "remediation": "Add a variable validation or local override to ensure authorization_type is never \"NONE\" for non-public routes. At minimum, add a Terraform validation block on the routes variable: condition = each.value.authorization_type != \"NONE\"."
+  },
+  {
+   "resource": "aws_apigatewayv2_integration.this",
+   "issue": "TLS server name verification not enforced for HTTP integrations",
+   "risk": "The tls_config block sets server_name_to_verify via try(..., null), meaning TLS hostname verification can be silently skipped. This allows man-in-the-middle attacks against backend HTTP integrations because the TLS certificate subject is not validated.",
+   "remediation": "Remove the try() fallback and require server_name_to_verify to be explicitly set: server_name_to_verify = tls_config.value.server_name_to_verify. Add a variable validation to ensure it is a non-empty string when tls_config is provided."
+  },
+  {
+   "resource": "aws_cloudwatch_log_group.this",
+   "issue": "CloudWatch log group retention period not enforced",
+   "risk": "retention_in_days is set from each.value.log_group_retention_in_days with no default value enforced. If the caller omits this value, logs are retained indefinitely, increasing storage costs and potentially retaining sensitive request data longer than required by data-minimisation or compliance policies.",
+   "remediation": "Set a sensible default retention period, for example: retention_in_days = coalesce(each.value.log_group_retention_in_days, 90). Add a variable validation to reject values outside an approved set (e.g., 30, 60, 90, 180, 365)."
+  },
+  {
+   "resource": "aws_cloudwatch_log_group.this",
+   "issue": "CloudWatch log group not encrypted with KMS",
+   "risk": "kms_key_id is sourced from each.value.log_group_kms_key_id with no default, so log groups are created without KMS encryption when the caller omits the key. API Gateway access logs may contain sensitive data such as source IPs, request paths, and authentication tokens that would be stored in plaintext.",
+   "remediation": "Require a KMS key ARN by adding a variable validation or setting a mandatory default: kms_key_id = each.value.log_group_kms_key_id. If a module-managed key is preferred, create an aws_kms_key resource and reference its ARN here."
+  },
+  {
+   "resource": "aws_route53_record.this",
+   "issue": "evaluate_target_health disabled on Route53 alias record",
+   "risk": "evaluate_target_health = false means Route53 will continue routing traffic to the API Gateway domain even if the endpoint becomes unhealthy. This can result in traffic being directed to a non-functional or potentially compromised endpoint without automatic failover.",
+   "remediation": "Set evaluate_target_health = true in the alias block so Route53 health checks are evaluated and traffic is not routed to unhealthy endpoints."
+  },
+  {
+   "resource": "aws_apigatewayv2_stage.this",
+   "issue": "Throttling limits not enforced",
+   "risk": "throttling_burst_limit and throttling_rate_limit inside default_route_settings and route_settings are sourced from variables with no enforced minimum or maximum. If left unset or set to very high values, the API is vulnerable to denial-of-service and abuse through unrestricted request rates.",
+   "remediation": "Add variable validations to enforce sensible upper bounds, for example: condition = var.stage_default_route_settings.throttling_rate_limit <= 10000. Set safe non-null defaults so throttling is always active."
+  },
+  {
+   "resource": "aws_apigatewayv2_authorizer.this",
+   "issue": "Authorizer result TTL may cache authorisation decisions too long",
+   "risk": "authorizer_result_ttl_in_seconds is passed directly from the caller with no upper-bound validation. A high TTL (up to the AWS maximum of 3600 seconds) means revoked tokens or changed permissions continue to grant access for up to an hour after revocation, creating a window for privilege escalation or continued access by compromised credentials.",
+   "remediation": "Add a variable validation to cap the TTL at an acceptable value, for example: condition = each.value.authorizer_result_ttl_in_seconds <= 300. Set a conservative default such as 0 (no caching) or 300 seconds."
+  },
+  {
+   "resource": "aws_apigatewayv2_api.this",
+   "issue": "disable_execute_api_endpoint not always enforced",
+   "risk": "When no custom domain is configured (local.create_domain_name is false), disable_execute_api_endpoint falls back to var.disable_execute_api_endpoint which may be false. The default execute-api endpoint bypasses any WAF, custom domain policies, or IP allowlists applied at the custom domain level, exposing the API directly.",
+   "remediation": "Set disable_execute_api_endpoint = true unconditionally, or add a variable validation that requires it to be true when a custom domain is not used: disable_execute_api_endpoint = true. Document that callers must use a custom domain with WAF attached."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c125"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c124"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  },
+  {
+   "finding": 7,
+   "candidates": []
+  },
+  {
+   "finding": 8,
+   "candidates": []
+  },
+  {
+   "finding": 9,
+   "candidates": []
+  }
+ ]
+}

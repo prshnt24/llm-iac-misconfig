@@ -1,0 +1,17 @@
+{
+ "file": "gh10.tf",
+ "findings": [
+  {
+   "resource": "aws_vpc_endpoint.interface",
+   "issue": "Private DNS disabled on interface VPC endpoints",
+   "risk": "Disabling private DNS can cause workloads to use custom private hosted zones and manual alias records for AWS service name resolution, increasing the chance of DNS misconfiguration or spoofing that could redirect traffic away from the intended AWS service endpoint.",
+   "remediation": "Set the attribute private_dns_enabled = true in the aws_vpc_endpoint.interface resource and remove the custom Route53 private hosted zone/record workaround unless there is a documented, necessary exception."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  }
+ ]
+}

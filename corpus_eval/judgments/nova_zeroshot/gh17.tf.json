@@ -1,0 +1,29 @@
+{
+ "file": "gh17.tf",
+ "findings": [
+  {
+   "resource": "aws_security_group_rule.all_worker_mgmt_ingress",
+   "issue": "Overly permissive ingress rule",
+   "risk": "Allows all inbound traffic from large CIDR blocks, potentially exposing the security group to unauthorized access.",
+   "remediation": "Narrow down the CIDR blocks to only include the necessary IP ranges or security groups. For example, replace `cidr_blocks = [\"10.0.0.0/8\", \"172.16.0.0/12\", \"192.168.0.0/16\"]` with specific, required IP ranges."
+  },
+  {
+   "resource": "aws_security_group_rule.all_worker_mgmt_egress",
+   "issue": "Overly permissive egress rule",
+   "risk": "Allows all outbound traffic to any destination, which can be a security risk if the instances are compromised.",
+   "remediation": "Restrict the egress traffic to only necessary destinations. For example, replace `cidr_blocks = [\"0.0.0.0/0\"]` with specific, required IP ranges or security groups."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c73"
+   ]
+  }
+ ]
+}

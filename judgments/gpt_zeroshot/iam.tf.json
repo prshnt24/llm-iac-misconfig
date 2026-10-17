@@ -1,0 +1,54 @@
+{
+ "file": "iam.tf",
+ "findings": [
+  {
+   "resource": "aws_iam_user.user",
+   "issue": "IAM user has force_destroy enabled",
+   "risk": "Setting force_destroy = true allows the IAM user to be deleted even if it still has access keys, login profile, or MFA devices, increasing the risk of accidental or malicious destructive changes and loss of auditability.",
+   "remediation": "Change the aws_iam_user.user attribute force_destroy from true to false or remove the attribute entirely."
+  },
+  {
+   "resource": "aws_iam_access_key.user",
+   "issue": "Long-lived IAM access key created for user",
+   "risk": "Creating a persistent IAM access key for a user increases the risk of credential theft and unauthorized access, especially compared to using temporary credentials via IAM roles.",
+   "remediation": "Remove the aws_iam_access_key.user resource and use an IAM role with temporary credentials instead. If a user key is absolutely required, enforce key rotation and avoid exposing the secret in outputs."
+  },
+  {
+   "resource": "aws_iam_user_policy.userpolicy",
+   "issue": "Overly permissive IAM policy with wildcard actions and resources",
+   "risk": "Granting ec2:*, s3:*, lambda:*, and cloudwatch:* on Resource \"*\" violates least privilege and can enable full compromise, data exposure, service abuse, privilege escalation, or destructive actions across the account.",
+   "remediation": "Replace the inline policy in aws_iam_user_policy.userpolicy with least-privilege permissions by restricting the Action list to only required API calls and scoping the Resource field to specific ARNs instead of \"*\"."
+  },
+  {
+   "resource": "output.secret",
+   "issue": "Access key secret exposed through Terraform output",
+   "risk": "Outputting the access key secret can expose sensitive credentials in Terraform state, CLI output, logs, or downstream systems that consume outputs, leading to credential compromise.",
+   "remediation": "Remove the output.secret block entirely. If the value must be output, mark it as sensitive with sensitive = true, but the preferred fix is to stop outputting credentials."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c82",
+    "c83",
+    "c84",
+    "c85",
+    "c86",
+    "c87"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  }
+ ]
+}

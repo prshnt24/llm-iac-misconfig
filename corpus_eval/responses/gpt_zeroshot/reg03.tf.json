@@ -1,0 +1,8 @@
+{
+  "model": "global.openai.gpt-5.4",
+  "strategy": "zeroshot",
+  "file": "reg03.tf",
+  "temperature": null,
+  "timestamp": "2026-10-17T02:14:15",
+  "response": "[\n  {\n    \"resource\": \"data.aws_iam_policy_document.this\",\n    \"issue\": \"Overly permissive SNS topic policy with wildcard principal\",\n    \"risk\": \"The default topic policy allows any AWS principal (\\\"*\\\") a broad set of SNS management and publishing actions if the condition is satisfied, increasing the risk of unauthorized topic access, message publishing, subscription changes, attribute modification, or topic deletion from principals that should not have access.\",\n    \"remediation\": \"In the dynamic statement under data.aws_iam_policy_document.this, replace principals.identifiers = [\\\"*\\\"] with explicit AWS principal ARNs or account roots that require access. Also restrict actions to the minimum necessary, removing management actions such as sns:DeleteTopic, sns:SetTopicAttributes, sns:RemovePermission, and sns:AddPermission unless explicitly required.\"\n  }\n]"
+}

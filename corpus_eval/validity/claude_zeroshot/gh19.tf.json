@@ -1,0 +1,56 @@
+{
+ "labels": [
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 4,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 5,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "1": {
+   "resource": "aws_default_security_group.default",
+   "issue": "Default Security Group Lockdown is Conditionally Applied",
+   "risk": "The default security group is only restricted when 'var.default_security_group_deny_all' is true. If this variable is false or not explicitly set, the AWS-managed default security group retains its default rules allowing all inbound and outbound traffic within the group, violating the principle of least privilege and CIS AWS Benchmark controls.",
+   "remediation": "Set 'var.default_security_group_deny_all = true' unconditionally, or change the local to 'default_security_group_deny_all = local.enabled' (removing the dependency on the variable) so the default security group is always locked down when the module is enabled. The resource should always be created with no ingress or egress rules defined."
+  },
+  "2": {
+   "resource": "aws_default_network_acl.default",
+   "issue": "Default Network ACL Lockdown is Conditionally Applied",
+   "risk": "The default Network ACL is only restricted when 'var.default_network_acl_deny_all' is true. If this variable is false or unset, the AWS default Network ACL allows all inbound and outbound traffic (0.0.0.0/0 and ::/0), meaning any subnet inadvertently associated with the default NACL will have unrestricted network access.",
+   "remediation": "Set 'var.default_network_acl_deny_all = true' unconditionally, or change the local to 'default_network_acl_deny_all = local.enabled' so the default NACL is always adopted and locked down (no ingress/egress rules) whenever the module is enabled, preventing accidental open access."
+  },
+  "3": {
+   "resource": "aws_default_route_table.default",
+   "issue": "Default Route Table Lockdown is Conditionally Applied",
+   "risk": "The default route table is only managed (emptied of routes) when 'var.default_route_table_no_routes' is true. If false, the default route table may accumulate routes or subnets may be inadvertently associated with it, potentially exposing resources to unintended network paths.",
+   "remediation": "Set 'var.default_route_table_no_routes = true' unconditionally, or change the local to 'default_route_table_no_routes = local.enabled' to ensure the default route table is always adopted and kept empty of routes when the module is enabled, forcing explicit route table associations for all subnets."
+  },
+  "4": {
+   "resource": "aws_vpc.default",
+   "issue": "Instance Tenancy Defaults to 'default' (Shared Hardware)",
+   "risk": "Using 'instance_tenancy = \"default\"' (shared tenancy) means EC2 instances run on shared physical hardware. For workloads with strict compliance requirements (PCI-DSS, HIPAA, etc.), shared tenancy may violate isolation requirements and expose workloads to noisy-neighbour or side-channel attack risks.",
+   "remediation": "For sensitive workloads, set 'var.instance_tenancy = \"dedicated\"' or '\"host\"' to ensure instances run on dedicated hardware. Add validation in the variable definition: 'validation { condition = contains([\"default\", \"dedicated\", \"host\"], var.instance_tenancy) }' and document the compliance requirement driving the choice."
+  },
+  "5": {
+   "resource": "aws_vpc.default",
+   "issue": "assign_generated_ipv6_cidr_block May Enable IPv6 Without Explicit Security Controls",
+   "risk": "If 'var.assign_generated_ipv6_cidr_block' is true, an IPv6 CIDR is automatically assigned to the VPC. Security groups and NACLs must explicitly account for IPv6 traffic rules. Failure to do so can result in IPv6 traffic bypassing intended IPv4-based security controls, allowing unintended inbound or outbound access.",
+   "remediation": "Ensure that whenever 'assign_generated_ipv6_cidr_block' is true, all associated security groups and Network ACLs include explicit IPv6 rules (e.g., '::/0' deny rules in the default NACL). Consider defaulting 'var.assign_generated_ipv6_cidr_block = false' and requiring explicit opt-in with documented security review."
+  }
+ }
+}

@@ -1,0 +1,86 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "VALID"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 4,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 5,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 6,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 7,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "data.aws_iam_policy_document.assume_role",
+   "issue": "Overly permissive trust policy from unvalidated dynamic principals",
+   "risk": "The assume role policy allows additional principals from var.trusted_entities and var.assume_role_policy_statements without any restriction in this configuration. If these inputs include broad principals such as '*' or unintended AWS accounts/services, unauthorized entities could assume the Lambda execution role and gain its permissions.",
+   "remediation": "Restrict the principals in data.aws_iam_policy_document.assume_role by limiting local.trusted_entities_services and local.trusted_entities_principals to only required services/accounts. Remove or tightly constrain dynamic statement/principals from var.assume_role_policy_statements, and add restrictive condition blocks such as aws:SourceArn or aws:SourceAccount where applicable."
+  },
+  "1": {
+   "resource": "data.aws_iam_policy_document.logs",
+   "issue": "CloudWatch Logs permissions can be broadened across all regions for Lambda@Edge",
+   "risk": "When var.lambda_at_edge_logs_all_regions is enabled, local.log_group_arn uses region '*', which grants log write permissions in every region. This expands the blast radius of the execution role and violates least privilege.",
+   "remediation": "Change local.log_group_arn so the region is a specific value instead of '*'. Set var.lambda_at_edge_logs_all_regions to false and keep the ARN region scoped to the required region in the local.log_group_arn expression."
+  },
+  "2": {
+   "resource": "resource.aws_iam_role_policy.vpc",
+   "issue": "Use of broad AWSLambdaENIManagementAccess permissions",
+   "risk": "Attaching the AWS managed policy AWSLambdaENIManagementAccess grants broad EC2 network interface management permissions that may exceed what the function actually needs, increasing impact if the role is abused.",
+   "remediation": "Replace resource.aws_iam_role_policy.vpc policy content derived from data.aws_iam_policy.vpc[0].policy with a custom aws_iam_policy_document granting only the minimum required EC2 actions and, where possible, scope them with conditions or resource constraints."
+  },
+  "3": {
+   "resource": "resource.aws_iam_role_policy.additional_json",
+   "issue": "Arbitrary inline IAM policy can be attached without guardrails",
+   "risk": "The policy from var.policy_json is attached directly to the Lambda role. If it contains wildcard actions/resources or administrative permissions, the function role may become excessively privileged.",
+   "remediation": "Review and restrict var.policy_json to least-privilege permissions. Prefer replacing broad statements with a defined aws_iam_policy_document and specific actions/resources before assigning it to the policy attribute of aws_iam_role_policy.additional_json."
+  },
+  "4": {
+   "resource": "resource.aws_iam_role_policy.additional_jsons",
+   "issue": "Arbitrary inline IAM policies list can grant excessive privileges",
+   "risk": "Each entry in var.policy_jsons is attached directly as an inline policy. Any overly broad statement in these inputs can lead to privilege escalation or excessive access from the Lambda execution role.",
+   "remediation": "Review each element of var.policy_jsons and reduce permissions to only required actions and resources. Replace broad JSON inputs with narrowly scoped aws_iam_policy_document definitions before assigning them to aws_iam_role_policy.additional_jsons.policy."
+  },
+  "5": {
+   "resource": "resource.aws_iam_role_policy_attachment.additional_one",
+   "issue": "Attachment of arbitrary IAM policy ARN",
+   "risk": "The role can attach any policy specified by var.policy. If a high-privilege managed policy is supplied, the Lambda execution role may gain excessive permissions far beyond operational need.",
+   "remediation": "Restrict var.policy to approved least-privilege policy ARNs only. Prefer replacing aws_iam_role_policy_attachment.additional_one with attachment of a vetted custom policy resource scoped to required permissions."
+  },
+  "6": {
+   "resource": "resource.aws_iam_role_policy_attachment.additional_many",
+   "issue": "Attachment of arbitrary multiple IAM policy ARNs",
+   "risk": "The role can attach multiple policies from var.policies. This can accumulate excessive privileges or administrative access if any supplied ARN is overly permissive.",
+   "remediation": "Restrict var.policies to an allowlist of approved least-privilege policy ARNs. Replace broad managed policy attachments with vetted custom policies and attach only those through aws_iam_role_policy_attachment.additional_many."
+  },
+  "7": {
+   "resource": "data.aws_iam_policy_document.additional_inline",
+   "issue": "Dynamic inline policy statements are unbounded and may allow wildcard access",
+   "risk": "Statements from var.policy_statements are rendered directly into an IAM policy without restrictions in this configuration. If inputs contain actions '*' or resources '*', the Lambda execution role could gain excessive or administrative permissions.",
+   "remediation": "Constrain var.policy_statements to approved actions and specific resources only. Update data.aws_iam_policy_document.additional_inline so statement.value.actions and statement.value.resources are narrowly scoped, and reject wildcard values."
+  }
+ }
+}

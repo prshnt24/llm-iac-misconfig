@@ -1,0 +1,46 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "VALID"
+  },
+  {
+   "finding": 4,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_security_group.loadtest",
+   "issue": "Unrestricted all-protocol self-referencing ingress",
+   "risk": "Allows all ports and protocols between any instances attached to the same security group, enabling unnecessary lateral movement and increasing blast radius if one instance is compromised.",
+   "remediation": "Restrict the self-referencing ingress rule to only the specific ports and protocols required, or remove the ingress block entirely if not needed. Change the ingress block with `protocol = \"-1\"`, `from_port = 0`, `to_port = 0`, and `self = true` to narrowly scoped ingress rules."
+  },
+  "1": {
+   "resource": "aws_security_group.loadtest",
+   "issue": "Potentially unrestricted SSH ingress",
+   "risk": "If `var.ssh_cidr_ingress_blocks` includes broad ranges such as `0.0.0.0/0`, SSH access would be exposed to the internet, increasing the risk of brute-force attacks and unauthorized administrative access.",
+   "remediation": "Limit the SSH ingress rule to trusted IP ranges only. Update the ingress block for port 22 by ensuring `cidr_blocks = var.ssh_cidr_ingress_blocks` contains only specific administrative IPs or replace SSH access with AWS Systems Manager Session Manager where possible."
+  },
+  "3": {
+   "resource": "tls_private_key.loadtest",
+   "issue": "Private key generated and stored in Terraform state",
+   "risk": "The generated private SSH key is stored in Terraform state, which can expose sensitive credentials to anyone with access to the state backend or logs, leading to unauthorized instance access.",
+   "remediation": "Avoid generating long-lived private keys in Terraform. Remove the `tls_private_key.loadtest` resource and use externally managed SSH keys, EC2 Instance Connect, or SSM Session Manager. If unavoidable, ensure the Terraform state backend is strongly encrypted and access-controlled."
+  },
+  "4": {
+   "resource": "null_resource.key_pair_exporter",
+   "issue": "Private key written to local disk via local-exec",
+   "risk": "Exports the private key to a PEM file on the operator machine, risking credential leakage through shell history, filesystem exposure, backups, CI/CD workspace artifacts, or improper file permissions.",
+   "remediation": "Remove the `null_resource.key_pair_exporter` and avoid writing private keys to disk. Specifically delete the `provisioner \"local-exec\"` block that runs `echo '${tls_private_key.loadtest.private_key_pem}' > ...`. Prefer secure secret delivery mechanisms or avoid SSH key usage entirely by using SSM Session Manager."
+  }
+ }
+}

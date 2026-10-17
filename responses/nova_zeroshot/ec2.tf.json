@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "ec2.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-16T23:04:46",
+  "response": "[\n  {\n    \"resource\": \"aws_instance.web_host\",\n    \"issue\": \"Plain text secrets in user data\",\n    \"risk\": \"Exposes sensitive AWS credentials which can be used to gain unauthorized access to AWS resources.\",\n    \"remediation\": \"Remove the AWS credentials from the user_data script and use AWS IAM roles for EC2 instances to grant necessary permissions.\"\n  },\n  {\n    \"resource\": \"aws_ebs_volume.web_host_storage\",\n    \"issue\": \"Unencrypted volume\",\n    \"risk\": \"Data at rest is not protected, which can lead to unauthorized access to sensitive data if the volume is compromised.\",\n    \"remediation\": \"Set the `encrypted` attribute to `true` and provide a `kms_key_id` for the encryption.\"\n  },\n  {\n    \"resource\": \"aws_ebs_snapshot.example_snapshot\",\n    \"issue\": \"EBS snapshot without encryption\",\n    \"risk\": \"Snapshots of unencrypted volumes are also unencrypted, leading to potential data breaches.\",\n    \"remediation\": \"Set the `encrypted` attribute to `true` and provide a `kms_key_id` for the encryption.\"\n  },\n  {\n    \"resource\": \"aws_security_group.web-node\",\n    \"issue\": \"Security group is open to the world on SSH port\",\n    \"risk\": \"Allows unrestricted access to the SSH port, potentially enabling unauthorized access to the instance.\",\n    \"remediation\": \"Restrict the ingress rule for port 22 to specific IP ranges or security groups that require access.\"\n  }\n]"
+}

@@ -1,0 +1,59 @@
+{
+ "file": "reg10.tf",
+ "findings": [
+  {
+   "resource": "aws_efs_file_system.this",
+   "issue": "Encryption at rest is not enforced",
+   "risk": "If var.encrypted is set to false, data stored in the EFS file system can be exposed in the event of unauthorized access to underlying storage or snapshots, leading to loss of confidentiality.",
+   "remediation": "Set the aws_efs_file_system.this attribute encrypted = true and configure kms_key_id with a customer-managed KMS key ARN if not already set."
+  },
+  {
+   "resource": "aws_efs_file_system_policy.this",
+   "issue": "Policy lockout safety check can be bypassed",
+   "risk": "If bypass_policy_lockout_safety_check is true, a misconfigured file system policy could block all future policy updates, potentially causing administrative lockout and preventing security remediation.",
+   "remediation": "Set aws_efs_file_system_policy.this attribute bypass_policy_lockout_safety_check = false."
+  },
+  {
+   "resource": "data.aws_iam_policy_document.policy",
+   "issue": "Non-secure transport protection is optional and not enforced by default",
+   "risk": "If var.deny_nonsecure_transport is false, clients may be allowed to access EFS without enforcing TLS, enabling interception or tampering of data in transit.",
+   "remediation": "Enable the deny statement by setting the input that drives this block so that the generated policy includes the statement with condition aws:SecureTransport = false (i.e. set var.deny_nonsecure_transport = true)."
+  },
+  {
+   "resource": "data.aws_iam_policy_document.policy",
+   "issue": "Overly permissive allow statement for any principal via mount target",
+   "risk": "The statement generated when var.deny_nonsecure_transport_via_mount_target is enabled grants elasticfilesystem:ClientRootAccess, elasticfilesystem:ClientWrite, and elasticfilesystem:ClientMount to principals { type = \"AWS\", identifiers = [\"*\"] }, which can allow any AWS principal to mount and access the file system if network access exists.",
+   "remediation": "Modify the statement in data.aws_iam_policy_document.policy to restrict principals.identifiers to only required IAM roles/accounts and avoid granting ClientRootAccess unless explicitly needed."
+  },
+  {
+   "resource": "aws_efs_backup_policy.this",
+   "issue": "Backups are optional and can be disabled",
+   "risk": "If var.enable_backup_policy is false or the backup policy resource is not created, the EFS file system may lack automated backups, increasing the impact of accidental deletion, ransomware, or data corruption.",
+   "remediation": "Ensure aws_efs_backup_policy.this is created and set backup_policy { status = \"ENABLED\" } by using var.create_backup_policy = true and var.enable_backup_policy = true."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c128"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  }
+ ]
+}

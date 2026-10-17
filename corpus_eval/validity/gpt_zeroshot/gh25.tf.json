@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_security_group.main",
+   "issue": "Unrestricted internal ingress on all ports and protocols",
+   "risk": "Allows any resource within the VPC CIDR to connect to the instance on any port and protocol, increasing lateral movement risk if another VPC resource is compromised.",
+   "remediation": "Restrict the `ingress` block by changing `from_port = 0`, `to_port = 0`, and `protocol = \"-1\"` to only the specific required ports/protocols, and narrow `cidr_blocks`/`ipv6_cidr_blocks` or replace them with specific `security_groups` sources where possible."
+  },
+  "1": {
+   "resource": "aws_security_group.main",
+   "issue": "Potentially broad SSH access from CIDR blocks",
+   "risk": "If `var.ssh_cidr_blocks.ipv4` or `var.ssh_cidr_blocks.ipv6` include overly broad ranges such as `0.0.0.0/0` or `::/0`, the instance may be exposed to internet-wide SSH brute-force and unauthorized access attempts.",
+   "remediation": "In the dynamic `ingress` block for SSH, restrict `cidr_blocks` and `ipv6_cidr_blocks` to trusted admin IP ranges only, or remove SSH access entirely by setting `var.use_ssh = false` and using AWS Systems Manager Session Manager instead."
+  }
+ }
+}

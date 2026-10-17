@@ -1,0 +1,94 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_16 Ensure all data stored in the RDS is securely encrypted at rest (resource aws_db_instance.default)",
+   "issue": "Storage Not Encrypted",
+   "remediation": "Set `storage_encrypted = true` and optionally specify `kms_key_id` to use a customer-managed KMS key for encryption at rest."
+  },
+  {
+   "finding": 1,
+   "known": "CKV_AWS_17 Ensure all data stored in RDS is not publicly accessible (resource aws_db_instance.default)",
+   "issue": "Publicly Accessible RDS Instance",
+   "remediation": "Set `publicly_accessible = false`. Place the RDS instance in private subnets and use a bastion host or VPN for administrative access."
+  },
+  {
+   "finding": 7,
+   "known": "CKV_AWS_293 Ensure that AWS database instances have deletion protection enabled (resource aws_db_instance.default)",
+   "issue": "No Deletion Protection",
+   "remediation": "Add `deletion_protection = true` to the `aws_db_instance` resource block."
+  },
+  {
+   "finding": 9,
+   "known": "CKV_AWS_161 Ensure RDS database has IAM authentication enabled (resource aws_db_instance.default)",
+   "issue": "IAM Database Authentication Not Enabled",
+   "remediation": "Add `iam_database_authentication_enabled = true` to the `aws_db_instance` resource block and update application code to use IAM auth tokens."
+  },
+  {
+   "finding": 10,
+   "known": "CKV_AWS_382 Ensure no security groups allow egress from 0.0.0.0:0 to port -1 (resource aws_security_group_rule.egress)",
+   "issue": "Unrestricted Outbound Access (0.0.0.0/0)",
+   "remediation": "Restrict `cidr_blocks` to only the specific IP ranges and ports required (e.g., limit egress to the application subnet on the MySQL port). Remove the catch-all `0.0.0.0/0` rule."
+  },
+  {
+   "finding": 11,
+   "known": "CKV_AWS_355 Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions (resource aws_iam_role_policy.ec2policy)",
+   "issue": "Overly Permissive IAM Policy (Wildcard Actions and Resources)",
+   "remediation": "Replace wildcard actions with only the specific actions the application requires (e.g., `s3:GetObject` on a specific bucket ARN, `rds:DescribeDBInstances` on the specific DB ARN). Never use `Resource: *` with broad service wildcards."
+  },
+  {
+   "finding": 13,
+   "known": "CKV_AWS_79 Ensure Instance Metadata Service Version 1 is not enabled (resource aws_instance.db_app)",
+   "issue": "IMDSv2 Not Enforced on EC2 Instance",
+   "remediation": "Add a `metadata_options` block to `aws_instance.db_app`: `metadata_options { http_endpoint = \"enabled\"; http_tokens = \"required\" }` to enforce IMDSv2."
+  },
+  {
+   "finding": 14,
+   "known": "CKV_AWS_8 Ensure all data stored in the Launch configuration or instance Elastic Blocks Store is securely encrypted (resource aws_instance.db_app)",
+   "issue": "EBS Root Volume Not Encrypted",
+   "remediation": "Add a `root_block_device` block with `encrypted = true` and optionally `kms_key_id` to `aws_instance.db_app`, or enable default EBS encryption for the account/region."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correctly identifies `storage_encrypted = true` on `aws_db_instance`; `kms_key_id` is an appropriate optional addition."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "Correctly specifies `publicly_accessible = false` on the RDS instance; private subnet guidance is relevant context."
+  },
+  {
+   "item": 2,
+   "score": 2,
+   "reason": "Correctly names the missing attribute `deletion_protection = true` in `aws_db_instance`."
+  },
+  {
+   "item": 3,
+   "score": 2,
+   "reason": "Correctly specifies `iam_database_authentication_enabled = true` on `aws_db_instance`."
+  },
+  {
+   "item": 4,
+   "score": 1,
+   "reason": "Right direction to remove `0.0.0.0/0` egress, but vague and not specific to the actual rule attributes/values needed for this resource."
+  },
+  {
+   "item": 5,
+   "score": 1,
+   "reason": "Correctly calls for removing broad wildcards, but does not provide a concrete replacement policy tied to exact actions/resources in the Terraform policy document."
+  },
+  {
+   "item": 6,
+   "score": 2,
+   "reason": "Correctly adds the `metadata_options` block with `http_tokens = \"required\"` to enforce IMDSv2 on `aws_instance.db_app`."
+  },
+  {
+   "item": 7,
+   "score": 2,
+   "reason": "Correctly specifies adding `root_block_device { encrypted = true }` on `aws_instance.db_app`; `kms_key_id`/default EBS encryption are valid optional improvements."
+  }
+ ]
+}

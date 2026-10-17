@@ -1,0 +1,36 @@
+{
+ "labels": [
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 4,
+   "label": "VALID"
+  },
+  {
+   "finding": 5,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "3": {
+   "resource": "aws_ecr_repository.repository",
+   "issue": "No ECR Repository Policy Restricting Access",
+   "risk": "Without an explicit repository policy, access control relies solely on IAM identity policies. This may allow unintended principals (e.g., other accounts or overly permissive roles) to pull or push images, risking data exfiltration or malicious image injection.",
+   "remediation": "Attach an `aws_ecr_repository_policy` resource with a least-privilege policy that explicitly denies cross-account access unless required and restricts push/pull to known principals:\n```hcl\nresource \"aws_ecr_repository_policy\" \"repository\" {\n  repository = aws_ecr_repository.repository.name\n  policy     = data.aws_iam_policy_document.ecr_policy.json\n}\n```"
+  },
+  "4": {
+   "resource": "null_resource.push_image",
+   "issue": "Use of null_resource with local-exec for Docker Operations",
+   "risk": "Executing shell commands via `local-exec` provisioners introduces several risks: credentials from `aws ecr get-login-password` may be exposed in Terraform logs or process lists; the provisioner runs with the permissions of the local machine or CI runner, which may be overly broad; and there is no idempotency guarantee, making the pipeline fragile and potentially re-running with stale or malicious local build context.",
+   "remediation": "Replace the `null_resource` with a dedicated CI/CD pipeline step (e.g., GitHub Actions, CodeBuild) for building and pushing images. If Terraform must manage this, use the `kreuzwerker/docker` Terraform provider which handles authentication and image pushing natively without shell injection risk:\n```hcl\nresource \"docker_registry_image\" \"app\" {\n  name = local.docker_image\n  build {\n    context = \"${path.module}/resources\"\n  }\n}\n```"
+  },
+  "5": {
+   "resource": "null_resource.push_image",
+   "issue": "Potential Credential Exposure in local-exec Provisioner Logs",
+   "risk": "The `aws ecr get-login-password` command output (a short-lived Docker password) is piped directly in a shell command. Terraform verbose logging (`TF_LOG=DEBUG`) or CI log capture could expose this token. Additionally, Docker login credentials may be written to `~/.docker/config.json` on the runner in plaintext.",
+   "remediation": "Ensure `TF_LOG` is never set to DEBUG in CI when this provisioner runs. Use a credential helper (e.g., `docker-credential-ecr-login`) instead of `docker login --password-stdin` to avoid storing credentials on disk. Mark any sensitive outputs with `sensitive = true` and restrict CI log access."
+  }
+ }
+}

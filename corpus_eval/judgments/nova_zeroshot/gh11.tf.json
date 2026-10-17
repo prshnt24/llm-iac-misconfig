@@ -1,0 +1,27 @@
+{
+ "file": "gh11.tf",
+ "findings": [
+  {
+   "resource": "aws_appautoscaling_scheduled_action.app_autoscale_time_down",
+   "issue": "Minimum and Maximum Capacity Set to Zero",
+   "risk": "Setting both minimum and maximum capacity to zero will completely shut down the service during the scale-down period, which may not be desirable and can lead to service unavailability.",
+   "remediation": "Set `scale_down_min_capacity` and `scale_down_max_capacity` to non-zero values to ensure the service remains available, even at reduced capacity. For example:\n```hcl\nvariable \"scale_down_min_capacity\" {\n  default = 1\n}\n\nvariable \"scale_down_max_capacity\" {\n  default = 1\n}\n```"
+  },
+  {
+   "resource": "aws_appautoscaling_scheduled_action.app_autoscale_time_up",
+   "issue": "Hardcoded Schedule",
+   "risk": "The schedule is hardcoded and does not adjust to daylight saving time, which may lead to incorrect scaling times depending on the time of year.",
+   "remediation": "Use a more dynamic approach to handle time zone changes, or clearly document the expectation that the schedule does not adjust for daylight saving time."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  }
+ ]
+}

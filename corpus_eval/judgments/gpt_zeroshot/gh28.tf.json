@@ -1,0 +1,27 @@
+{
+ "file": "gh28.tf",
+ "findings": [
+  {
+   "resource": "data.aws_iam_policy_document.ssm_policy",
+   "issue": "Overly broad read permissions using wildcard path for SSM Parameter Store",
+   "risk": "The policy allows reading any parameter under the entire project path, which can expose sensitive configuration or secrets beyond what the automation actually requires if the role is abused or the path contains unrelated secrets.",
+   "remediation": "Restrict the `resources` attribute in the `ssm:GetParameter` and `ssm:GetParameters` statement to the exact parameter ARNs required instead of `arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter/${local.project}/*`."
+  },
+  {
+   "resource": "data.aws_iam_policy_document.ssm_policy",
+   "issue": "Wildcard resource for EC2 Describe permissions",
+   "risk": "Using `resources = [\"*\"]` grants the role the ability to enumerate EC2 networking and instance metadata account-wide, increasing reconnaissance capability if the role is compromised.",
+   "remediation": "Remove unnecessary `ec2:DescribeInstances`, `ec2:DescribeSubnets`, `ec2:DescribeVpcs`, and `ec2:DescribeSecurityGroups` actions if not required. If they are required, constrain access using IAM conditions such as region or resource tags where supported, since the statement currently uses `resources = [\"*\"]`."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  }
+ ]
+}

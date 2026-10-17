@@ -1,0 +1,27 @@
+{
+ "file": "gh10.tf",
+ "findings": [
+  {
+   "resource": "aws_security_group_rule.local_cidr",
+   "issue": "Overly permissive CIDR block",
+   "risk": "Allowing traffic from the entire VPC CIDR block may expose the VPC endpoints to unnecessary risks from other resources within the VPC.",
+   "remediation": "Restrict the CIDR blocks to only the necessary subnets or specific IP addresses. Modify the `cidr_blocks` attribute to include only the required subnets."
+  },
+  {
+   "resource": "aws_vpc_endpoint.interface",
+   "issue": "Private DNS disabled",
+   "risk": "Disabling private DNS for VPC endpoints may require manual DNS configuration and can lead to complexity and potential misconfigurations.",
+   "remediation": "Enable private DNS by setting `private_dns_enabled` to `true`."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  }
+ ]
+}

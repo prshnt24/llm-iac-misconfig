@@ -1,0 +1,39 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_51 Ensure ECR Image Tags are immutable (resource aws_ecr_repository.repository)",
+   "issue": "Mutable image tags",
+   "remediation": "Set image_tag_mutability = \"IMMUTABLE\" to prevent tags from being overwritten once pushed"
+  },
+  {
+   "finding": 1,
+   "known": "CKV_AWS_163 Ensure ECR image scanning on push is enabled (resource aws_ecr_repository.repository)",
+   "issue": "Image scanning on push not enabled",
+   "remediation": "Add an image_scanning_configuration block with scan_on_push = true inside the aws_ecr_repository resource"
+  },
+  {
+   "finding": 2,
+   "known": "CKV_AWS_136 Ensure that ECR repositories are encrypted using KMS (resource aws_ecr_repository.repository)",
+   "issue": "Encryption at rest not configured",
+   "remediation": "Add an encryption_configuration block with encryption_type = \"KMS\" and specify a kms_key referencing a customer-managed AWS KMS key"
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Setting image_tag_mutability = \"IMMUTABLE\" is the standard fix."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "An image_scanning_configuration block with scan_on_push = true is the correct fix."
+  },
+  {
+   "item": 2,
+   "score": 2,
+   "reason": "An encryption_configuration block with encryption_type = \"KMS\" and kms_key set to a CMK is correct. The attribute name kms_key is right."
+  }
+ ]
+}

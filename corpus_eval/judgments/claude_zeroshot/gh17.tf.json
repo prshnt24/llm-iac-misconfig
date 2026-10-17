@@ -1,0 +1,51 @@
+{
+ "file": "gh17.tf",
+ "findings": [
+  {
+   "resource": "aws_security_group_rule.all_worker_mgmt_ingress",
+   "issue": "Unrestricted ingress on all ports and protocols",
+   "risk": "Setting protocol to '-1' with from_port and to_port both set to 0 allows all traffic on every port and every protocol (TCP, UDP, ICMP, etc.) from the specified CIDR ranges. If any host within those broad private ranges (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16) is compromised, an attacker has unrestricted lateral movement access to every port on every worker node, dramatically increasing the blast radius of an internal breach.",
+   "remediation": "Restrict ingress to only the specific ports and protocols required. For EKS worker management this is typically the Kubernetes API port (443) and optionally the kubelet port (10250). Replace the single catch-all rule with targeted rules, for example: set 'protocol = \"tcp\"', 'from_port = 443', 'to_port = 443' for API traffic, and a separate rule for 'from_port = 10250', 'to_port = 10250' if kubelet access is needed. Also tighten the CIDR blocks to the smallest possible ranges (e.g., only the VPC CIDR or the specific EKS control-plane subnet CIDRs) rather than all three RFC-1918 supernets."
+  },
+  {
+   "resource": "aws_security_group_rule.all_worker_mgmt_ingress",
+   "issue": "Overly broad ingress CIDR blocks covering all RFC-1918 private address space",
+   "risk": "Allowing inbound traffic from 10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16 simultaneously covers the entire private IP address space (~17.9 million addresses). Any workload, peered VPC, VPN-connected on-premises network, or compromised internal host anywhere in that space can reach the worker nodes. This violates the principle of least privilege and greatly expands the attack surface for lateral movement.",
+   "remediation": "Replace the three broad RFC-1918 CIDR blocks with only the specific CIDR(s) that legitimately need access, such as the VPC's own CIDR (e.g., 'cidr_blocks = [module.vpc.vpc_cidr_block]') or the precise EKS control-plane subnet CIDRs. Remove any ranges that are not directly routable within the environment."
+  },
+  {
+   "resource": "aws_security_group_rule.all_worker_mgmt_egress",
+   "issue": "Unrestricted egress to all destinations on all ports and protocols",
+   "risk": "Allowing all outbound traffic to 0.0.0.0/0 on every port and protocol means a compromised worker node can freely exfiltrate data, download malware, communicate with command-and-control infrastructure, or pivot to any internet-accessible target. It also makes it impossible to detect or block unexpected outbound connections at the network layer.",
+   "remediation": "Restrict egress to only the destinations, ports, and protocols that worker nodes legitimately require. At a minimum, scope 'cidr_blocks' to the VPC CIDR and known external endpoints (e.g., ECR, S3, the EKS API endpoint). Use specific protocol and port combinations instead of protocol '-1'. For example, allow TCP 443 to AWS service CIDRs or use VPC endpoints to eliminate the need for broad internet egress entirely. Consider using 'prefix_list_ids' to reference AWS-managed prefix lists for services like S3 and DynamoDB."
+  },
+  {
+   "resource": "aws_security_group.all_worker_mgmt",
+   "issue": "No description set on the security group",
+   "risk": "Without a meaningful description on the security group resource itself (the 'description' argument, distinct from the rule descriptions), it becomes difficult to audit, identify, and manage the resource over time. This is a governance and operational risk that can lead to orphaned or misunderstood security groups remaining open longer than intended.",
+   "remediation": "Add a 'description' attribute to the 'aws_security_group' resource block, for example: 'description = \"Security group for EKS worker node management traffic\"'. This is also required by some compliance frameworks and security scanning tools."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c73"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c72"
+   ]
+  }
+ ]
+}

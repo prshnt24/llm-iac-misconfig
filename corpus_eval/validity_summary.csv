@@ -1,0 +1,4 @@
+run,findings,matched_any_tool_row,unmatched,valid,debatable,invalid,adjusted_precision_valid
+claude_zeroshot,373,63,310,57,223,30,0.322
+gpt_zeroshot,177,31,146,37,108,1,0.384
+nova_zeroshot,152,14,138,7,95,36,0.138

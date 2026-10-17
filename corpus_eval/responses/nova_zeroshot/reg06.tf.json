@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "reg06.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:16:32",
+  "response": "```json\n[\n  {\n    \"resource\": \"aws_route53_zone.this\",\n    \"issue\": \"force_destroy\",\n    \"risk\": \"Allows the zone to be deleted even if it contains records, which can lead to unintended data loss.\",\n    \"remediation\": \"Remove the 'force_destroy' attribute or set it to 'false' to prevent accidental deletion.\"\n  },\n  {\n    \"resource\": \"aws_route53_zone.ignore_vpc\",\n    \"issue\": \"force_destroy\",\n    \"risk\": \"Allows the zone to be deleted even if it contains records, which can lead to unintended data loss.\",\n    \"remediation\": \"Remove the 'force_destroy' attribute or set it to 'false' to prevent accidental deletion.\"\n  },\n  {\n    \"resource\": \"aws_route53_key_signing_key.this\",\n    \"issue\": \"key_management_service_arn\",\n    \"risk\": \"Using a hardcoded KMS key ARN instead of a dynamic reference can lead to key management issues and potential security risks.\",\n    \"remediation\": \"Ensure that 'key_management_service_arn' is dynamically referenced from a secure and managed KMS key.\"\n  },\n  {\n    \"resource\": \"module.route53_dnssec_kms\",\n    \"issue\": \"enable_key_rotation\",\n    \"risk\": \"Disabling key rotation can lead to prolonged use of the same key, increasing the risk of compromise.\",\n    \"remediation\": \"Set 'enable_key_rotation' to 'true' to enable automatic key rotation.\"\n  }\n]\n```"
+}

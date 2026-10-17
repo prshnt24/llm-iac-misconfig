@@ -1,0 +1,93 @@
+{
+ "file": "db-app.tf",
+ "findings": [
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Publicly Accessible",
+   "risk": "Exposes the database to the internet, increasing the attack surface.",
+   "remediation": "Set `publicly_accessible = false` to restrict access to within the VPC."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Storage Not Encrypted",
+   "risk": "Data at rest is not encrypted, potentially exposing sensitive information if the storage is compromised.",
+   "remediation": "Set `storage_encrypted = true` to enable encryption of the database storage."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "No Backup Retention",
+   "risk": "Data may be lost in case of accidental deletion or corruption without backups.",
+   "remediation": "Set `backup_retention_period` to a value greater than 0, e.g., `backup_retention_period = 7`."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Monitoring Disabled",
+   "risk": "Unable to monitor the performance and health of the database.",
+   "remediation": "Set `monitoring_interval` to a value greater than 0, e.g., `monitoring_interval = 60`."
+  },
+  {
+   "resource": "aws_security_group_rule.egress",
+   "issue": "Overly Permissive Egress Rule",
+   "risk": "Allows all outbound traffic, which may enable data exfiltration.",
+   "remediation": "Restrict the egress rule to specific destinations and ports, e.g., `cidr_blocks = [\"10.0.0.0/16\"]`."
+  },
+  {
+   "resource": "aws_iam_role_policy.ec2policy",
+   "issue": "Overly Permissive IAM Policy",
+   "risk": "Grants excessive permissions, increasing the risk of privilege escalation.",
+   "remediation": "Restrict the policy to necessary actions and resources, e.g., remove `s3:*`, `ec2:*`, and `rds:*` and specify required actions and resources."
+  },
+  {
+   "resource": "aws_instance.db_app",
+   "issue": "Plain Text Secrets in User Data",
+   "risk": "Exposes sensitive information such as database credentials.",
+   "remediation": "Use AWS Systems Manager Parameter Store or AWS Secrets Manager to securely manage secrets instead of embedding them in user data."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c8"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c6"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c4",
+    "c11"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c2"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c24"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c14",
+    "c15",
+    "c16",
+    "c17"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  }
+ ]
+}

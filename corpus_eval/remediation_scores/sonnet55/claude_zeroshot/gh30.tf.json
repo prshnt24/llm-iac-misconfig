@@ -1,0 +1,17 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_382 Ensure no security groups allow egress from 0.0.0.0:0 to port -1 (resource aws_security_group.loadtest)",
+   "issue": "Unrestricted egress to all destinations",
+   "remediation": "Restrict the egress block to only the specific ports, protocols, and CIDR ranges required by the application. Remove or replace the egress rule with targeted rules, e.g. limit to port 443 for known endpoints instead of cidr_blocks = [\"0.0.0.0/0\"] with protocol \"-1\"."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correctly targets the egress block, replacing protocol -1 and 0.0.0.0/0 with specific ports and CIDRs (e.g. 443 to known endpoints). This would satisfy CKV_AWS_382. It is a little generic, but it names the attributes and gives a concrete example."
+  }
+ ]
+}

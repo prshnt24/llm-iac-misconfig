@@ -1,0 +1,17 @@
+{
+ "items": [
+  {
+   "finding": 1,
+   "known": "CKV_AWS_382 Ensure no security groups allow egress from 0.0.0.0:0 to port -1 (resource aws_security_group_rule.all_worker_mgmt_egress)",
+   "issue": "Overly permissive egress rule allows all protocols and all ports to the entire internet",
+   "remediation": "Restrict outbound access to only necessary destinations, protocols, and ports. In aws_security_group_rule.all_worker_mgmt_egress, replace cidr_blocks = [\"0.0.0.0/0\"] with only approved destination ranges and replace protocol = \"-1\", from_port = 0, and to_port = 0 with the minimum required values."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 1,
+   "reason": "Right direction: it restricts cidr_blocks and replaces protocol -1 with specific protocols and ports. But it gives no concrete values, such as protocol = \"tcp\", from_port/to_port = 443, or a narrower CIDR. It stays generic."
+  }
+ ]
+}

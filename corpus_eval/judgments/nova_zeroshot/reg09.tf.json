@@ -1,0 +1,27 @@
+{
+ "file": "reg09.tf",
+ "findings": [
+  {
+   "resource": "data.aws_iam_policy_document.repository",
+   "issue": "Public access to repository",
+   "risk": "Allows any AWS principal to read from the repository, which can lead to unauthorized access and potential data breaches.",
+   "remediation": "Restrict the principals to specific ARNs instead of using \"*\" for public repositories. Update the 'identifiers' attribute in the 'principals' block for the 'PublicReadOnly' statement."
+  },
+  {
+   "resource": "resource.aws_ecr_repository_policy.this",
+   "issue": "Unrestricted access to private repository",
+   "risk": "The policy allows the root account and specified ARNs full read access, which may not be necessary and increases the attack surface.",
+   "remediation": "Review and restrict the list of ARNs that have read access. Ensure that only necessary ARNs are included in the 'identifiers' attribute within the 'principals' block of the policy document."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  }
+ ]
+}

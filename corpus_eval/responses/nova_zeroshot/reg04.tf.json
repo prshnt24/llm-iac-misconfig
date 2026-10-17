@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "reg04.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:16:27",
+  "response": "[\n  {\n    \"resource\": \"aws_appautoscaling_target.table_read\",\n    \"issue\": \"Unrestricted Max Capacity\",\n    \"risk\": \"Allowing an unrestricted maximum capacity can lead to unexpected costs if the autoscaling policy scales up excessively.\",\n    \"remediation\": \"Set a reasonable maximum capacity limit using the `max_capacity` attribute.\"\n  },\n  {\n    \"resource\": \"aws_appautoscaling_target.table_write\",\n    \"issue\": \"Unrestricted Max Capacity\",\n    \"risk\": \"Allowing an unrestricted maximum capacity can lead to unexpected costs if the autoscaling policy scales up excessively.\",\n    \"remediation\": \"Set a reasonable maximum capacity limit using the `max_capacity` attribute.\"\n  },\n  {\n    \"resource\": \"aws_appautoscaling_target.index_read\",\n    \"issue\": \"Unrestricted Max Capacity\",\n    \"risk\": \"Allowing an unrestricted maximum capacity can lead to unexpected costs if the autoscaling policy scales up excessively.\",\n    \"remediation\": \"Set a reasonable maximum capacity limit using the `max_capacity` attribute.\"\n  },\n  {\n    \"resource\": \"aws_appautoscaling_target.index_write\",\n    \"issue\": \"Unrestricted Max Capacity\",\n    \"risk\": \"Allowing an unrestricted maximum capacity can lead to unexpected costs if the autoscaling policy scales up excessively.\",\n    \"remediation\": \"Set a reasonable maximum capacity limit using the `max_capacity` attribute.\"\n  }\n]"
+}

@@ -1,0 +1,91 @@
+{
+ "file": "reg11.tf",
+ "findings": [
+  {
+   "resource": "aws_elasticache_cluster.this",
+   "issue": "Missing Encryption at Rest",
+   "risk": "Data stored in the ElastiCache cluster is not encrypted at rest, which can lead to unauthorized access if the underlying storage is compromised.",
+   "remediation": "Set `at_rest_encryption_enabled` to `true` and provide a `kms_key_id` for encryption."
+  },
+  {
+   "resource": "aws_elasticache_cluster.this",
+   "issue": "Missing Transit Encryption",
+   "risk": "Data in transit to and from the ElastiCache cluster is not encrypted, which can lead to interception and tampering by malicious actors.",
+   "remediation": "Set `transit_encryption_enabled` to `true`."
+  },
+  {
+   "resource": "aws_elasticache_replication_group.this",
+   "issue": "Missing Encryption at Rest",
+   "risk": "Data stored in the ElastiCache replication group is not encrypted at rest, which can lead to unauthorized access if the underlying storage is compromised.",
+   "remediation": "Set `at_rest_encryption_enabled` to `true` and provide a `kms_key_id` for encryption."
+  },
+  {
+   "resource": "aws_elasticache_replication_group.this",
+   "issue": "Missing Transit Encryption",
+   "risk": "Data in transit to and from the ElastiCache replication group is not encrypted, which can lead to interception and tampering by malicious actors.",
+   "remediation": "Set `transit_encryption_enabled` to `true`."
+  },
+  {
+   "resource": "aws_elasticache_global_replication_group.this",
+   "issue": "Missing Encryption at Rest",
+   "risk": "Data stored in the ElastiCache global replication group is not encrypted at rest, which can lead to unauthorized access if the underlying storage is compromised.",
+   "remediation": "Ensure `at_rest_encryption_enabled` is `true` and provide a `kms_key_id` for encryption in the associated replication group."
+  },
+  {
+   "resource": "aws_elasticache_global_replication_group.this",
+   "issue": "Missing Transit Encryption",
+   "risk": "Data in transit to and from the ElastiCache global replication group is not encrypted, which can lead to interception and tampering by malicious actors.",
+   "remediation": "Ensure `transit_encryption_enabled` is `true` in the associated replication group."
+  },
+  {
+   "resource": "aws_security_group.this",
+   "issue": "Overly Permissive Ingress Rules",
+   "risk": "The security group allows ingress traffic from any source (`0.0.0.0/0`), which can expose the ElastiCache cluster to unauthorized access.",
+   "remediation": "Restrict the `cidr_blocks` in the ingress rules to only trusted sources."
+  },
+  {
+   "resource": "aws_vpc_security_group_ingress_rule.this",
+   "issue": "Overly Permissive Ingress Rules",
+   "risk": "The security group ingress rule allows traffic from any source (`0.0.0.0/0`), which can expose the ElastiCache cluster to unauthorized access.",
+   "remediation": "Restrict the `cidr_ipv4` and `cidr_ipv6` to only trusted sources."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c132"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c133"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  },
+  {
+   "finding": 7,
+   "candidates": []
+  }
+ ]
+}

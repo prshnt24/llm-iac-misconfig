@@ -1,0 +1,319 @@
+46 files x 3 models x 1 strategies
+saved responses\claude_zeroshot\gh01.tf.json
+saved responses\claude_zeroshot\gh02.tf.json
+saved responses\claude_zeroshot\gh03.tf.json
+saved responses\claude_zeroshot\gh04.tf.json
+saved responses\claude_zeroshot\gh05.tf.json
+saved responses\claude_zeroshot\gh06.tf.json
+saved responses\claude_zeroshot\gh07.tf.json
+saved responses\claude_zeroshot\gh08.tf.json
+saved responses\claude_zeroshot\gh09.tf.json
+saved responses\claude_zeroshot\gh10.tf.json
+saved responses\claude_zeroshot\gh11.tf.json
+saved responses\claude_zeroshot\gh12.tf.json
+saved responses\claude_zeroshot\gh13.tf.json
+saved responses\claude_zeroshot\gh14.tf.json
+saved responses\claude_zeroshot\gh15.tf.json
+saved responses\claude_zeroshot\gh16.tf.json
+saved responses\claude_zeroshot\gh17.tf.json
+saved responses\claude_zeroshot\gh18.tf.json
+saved responses\claude_zeroshot\gh19.tf.json
+saved responses\claude_zeroshot\gh20.tf.json
+saved responses\claude_zeroshot\gh21.tf.json
+saved responses\claude_zeroshot\gh22.tf.json
+saved responses\claude_zeroshot\gh23.tf.json
+saved responses\claude_zeroshot\gh24.tf.json
+saved responses\claude_zeroshot\gh25.tf.json
+saved responses\claude_zeroshot\gh26.tf.json
+saved responses\claude_zeroshot\gh27.tf.json
+saved responses\claude_zeroshot\gh28.tf.json
+saved responses\claude_zeroshot\gh29.tf.json
+saved responses\claude_zeroshot\gh30.tf.json
+saved responses\claude_zeroshot\reg01.tf.json
+saved responses\claude_zeroshot\reg02.tf.json
+saved responses\claude_zeroshot\reg03.tf.json
+saved responses\claude_zeroshot\reg04.tf.json
+saved responses\claude_zeroshot\reg05.tf.json
+saved responses\claude_zeroshot\reg06.tf.json
+saved responses\claude_zeroshot\reg07.tf.json
+saved responses\claude_zeroshot\reg08.tf.json
+saved responses\claude_zeroshot\reg09.tf.json
+saved responses\claude_zeroshot\reg10.tf.json
+saved responses\claude_zeroshot\reg11.tf.json
+saved responses\claude_zeroshot\reg12.tf.json
+saved responses\claude_zeroshot\reg13.tf.json
+saved responses\claude_zeroshot\reg14.tf.json
+saved responses\claude_zeroshot\reg15.tf.json
+saved responses\claude_zeroshot\reg16.tf.json
+saved responses\gpt_zeroshot\gh01.tf.json
+saved responses\gpt_zeroshot\gh02.tf.json
+saved responses\gpt_zeroshot\gh03.tf.json
+saved responses\gpt_zeroshot\gh04.tf.json
+saved responses\gpt_zeroshot\gh05.tf.json
+saved responses\gpt_zeroshot\gh06.tf.json
+saved responses\gpt_zeroshot\gh07.tf.json
+saved responses\gpt_zeroshot\gh08.tf.json
+saved responses\gpt_zeroshot\gh09.tf.json
+saved responses\gpt_zeroshot\gh10.tf.json
+saved responses\gpt_zeroshot\gh11.tf.json
+saved responses\gpt_zeroshot\gh12.tf.json
+saved responses\gpt_zeroshot\gh13.tf.json
+saved responses\gpt_zeroshot\gh14.tf.json
+saved responses\gpt_zeroshot\gh15.tf.json
+saved responses\gpt_zeroshot\gh16.tf.json
+saved responses\gpt_zeroshot\gh17.tf.json
+saved responses\gpt_zeroshot\gh18.tf.json
+saved responses\gpt_zeroshot\gh19.tf.json
+saved responses\gpt_zeroshot\gh20.tf.json
+saved responses\gpt_zeroshot\gh21.tf.json
+saved responses\gpt_zeroshot\gh22.tf.json
+saved responses\gpt_zeroshot\gh23.tf.json
+saved responses\gpt_zeroshot\gh24.tf.json
+saved responses\gpt_zeroshot\gh25.tf.json
+saved responses\gpt_zeroshot\gh26.tf.json
+saved responses\gpt_zeroshot\gh27.tf.json
+saved responses\gpt_zeroshot\gh28.tf.json
+saved responses\gpt_zeroshot\gh29.tf.json
+saved responses\gpt_zeroshot\gh30.tf.json
+saved responses\gpt_zeroshot\reg01.tf.json
+saved responses\gpt_zeroshot\reg02.tf.json
+saved responses\gpt_zeroshot\reg03.tf.json
+saved responses\gpt_zeroshot\reg04.tf.json
+saved responses\gpt_zeroshot\reg05.tf.json
+saved responses\gpt_zeroshot\reg06.tf.json
+saved responses\gpt_zeroshot\reg07.tf.json
+saved responses\gpt_zeroshot\reg08.tf.json
+saved responses\gpt_zeroshot\reg09.tf.json
+saved responses\gpt_zeroshot\reg10.tf.json
+saved responses\gpt_zeroshot\reg11.tf.json
+saved responses\gpt_zeroshot\reg12.tf.json
+saved responses\gpt_zeroshot\reg13.tf.json
+saved responses\gpt_zeroshot\reg14.tf.json
+saved responses\gpt_zeroshot\reg15.tf.json
+saved responses\gpt_zeroshot\reg16.tf.json
+saved responses\nova_zeroshot\gh01.tf.json
+saved responses\nova_zeroshot\gh02.tf.json
+saved responses\nova_zeroshot\gh03.tf.json
+saved responses\nova_zeroshot\gh04.tf.json
+saved responses\nova_zeroshot\gh05.tf.json
+saved responses\nova_zeroshot\gh06.tf.json
+saved responses\nova_zeroshot\gh07.tf.json
+saved responses\nova_zeroshot\gh08.tf.json
+saved responses\nova_zeroshot\gh09.tf.json
+saved responses\nova_zeroshot\gh10.tf.json
+saved responses\nova_zeroshot\gh11.tf.json
+saved responses\nova_zeroshot\gh12.tf.json
+saved responses\nova_zeroshot\gh13.tf.json
+saved responses\nova_zeroshot\gh14.tf.json
+saved responses\nova_zeroshot\gh15.tf.json
+saved responses\nova_zeroshot\gh16.tf.json
+saved responses\nova_zeroshot\gh17.tf.json
+saved responses\nova_zeroshot\gh18.tf.json
+saved responses\nova_zeroshot\gh19.tf.json
+saved responses\nova_zeroshot\gh20.tf.json
+saved responses\nova_zeroshot\gh21.tf.json
+saved responses\nova_zeroshot\gh22.tf.json
+saved responses\nova_zeroshot\gh23.tf.json
+saved responses\nova_zeroshot\gh24.tf.json
+saved responses\nova_zeroshot\gh25.tf.json
+saved responses\nova_zeroshot\gh26.tf.json
+saved responses\nova_zeroshot\gh27.tf.json
+saved responses\nova_zeroshot\gh28.tf.json
+saved responses\nova_zeroshot\gh29.tf.json
+saved responses\nova_zeroshot\gh30.tf.json
+saved responses\nova_zeroshot\reg01.tf.json
+saved responses\nova_zeroshot\reg02.tf.json
+saved responses\nova_zeroshot\reg03.tf.json
+saved responses\nova_zeroshot\reg04.tf.json
+saved responses\nova_zeroshot\reg05.tf.json
+saved responses\nova_zeroshot\reg06.tf.json
+saved responses\nova_zeroshot\reg07.tf.json
+saved responses\nova_zeroshot\reg08.tf.json
+saved responses\nova_zeroshot\reg09.tf.json
+saved responses\nova_zeroshot\reg10.tf.json
+saved responses\nova_zeroshot\reg11.tf.json
+saved responses\nova_zeroshot\reg12.tf.json
+saved responses\nova_zeroshot\reg13.tf.json
+saved responses\nova_zeroshot\reg14.tf.json
+saved responses\nova_zeroshot\reg15.tf.json
+saved responses\nova_zeroshot\reg16.tf.json
+judged claude_zeroshot gh04.tf.json
+judged claude_zeroshot gh03.tf.json
+judged claude_zeroshot gh05.tf.json
+judged claude_zeroshot gh01.tf.json
+judged claude_zeroshot gh06.tf.json
+judged claude_zeroshot gh02.tf.json
+judged claude_zeroshot gh07.tf.json
+judged claude_zeroshot gh08.tf.json
+judged claude_zeroshot gh13.tf.json
+judged claude_zeroshot gh09.tf.json
+judged claude_zeroshot gh12.tf.json
+judged claude_zeroshot gh10.tf.json
+judged claude_zeroshot gh14.tf.json
+judged claude_zeroshot gh15.tf.json
+judged claude_zeroshot gh17.tf.json
+judged claude_zeroshot gh18.tf.json
+judged claude_zeroshot gh20.tf.json
+judged claude_zeroshot gh21.tf.json
+judged claude_zeroshot gh16.tf.json
+judged claude_zeroshot gh19.tf.json
+judged claude_zeroshot gh22.tf.json
+judged claude_zeroshot gh26.tf.json
+judged claude_zeroshot gh23.tf.json
+judged claude_zeroshot gh27.tf.json
+judged claude_zeroshot gh28.tf.json
+judged claude_zeroshot gh25.tf.json
+judged claude_zeroshot reg01.tf.json
+judged claude_zeroshot reg03.tf.json
+judged claude_zeroshot gh29.tf.json
+judged claude_zeroshot reg02.tf.json
+judged claude_zeroshot gh30.tf.json
+judged claude_zeroshot reg05.tf.json
+judged claude_zeroshot reg06.tf.json
+judged claude_zeroshot reg09.tf.json
+judged claude_zeroshot reg10.tf.json
+judged claude_zeroshot reg11.tf.json
+judged claude_zeroshot reg07.tf.json
+judged claude_zeroshot reg08.tf.json
+judged claude_zeroshot reg12.tf.json
+judged claude_zeroshot reg14.tf.json
+judged claude_zeroshot reg13.tf.json
+judged claude_zeroshot reg15.tf.json
+judged gpt_zeroshot gh01.tf.json
+judged gpt_zeroshot gh03.tf.json
+judged claude_zeroshot reg16.tf.json
+judged gpt_zeroshot gh05.tf.json
+judged gpt_zeroshot gh04.tf.json
+judged gpt_zeroshot gh06.tf.json
+judged gpt_zeroshot gh08.tf.json
+judged gpt_zeroshot gh10.tf.json
+judged gpt_zeroshot gh09.tf.json
+judged gpt_zeroshot gh12.tf.json
+judged gpt_zeroshot gh14.tf.json
+judged gpt_zeroshot gh13.tf.json
+judged gpt_zeroshot gh16.tf.json
+judged gpt_zeroshot gh17.tf.json
+judged gpt_zeroshot gh15.tf.json
+judged gpt_zeroshot gh18.tf.json
+judged gpt_zeroshot gh19.tf.json
+judged gpt_zeroshot gh21.tf.json
+judged gpt_zeroshot gh20.tf.json
+judged gpt_zeroshot gh22.tf.json
+judged gpt_zeroshot gh23.tf.json
+judged gpt_zeroshot gh07.tf.json
+judged gpt_zeroshot gh28.tf.json
+judged gpt_zeroshot gh27.tf.json
+judged gpt_zeroshot gh26.tf.json
+judged gpt_zeroshot gh29.tf.json
+judged gpt_zeroshot gh30.tf.json
+judged gpt_zeroshot reg03.tf.json
+judged gpt_zeroshot reg05.tf.json
+judged gpt_zeroshot reg01.tf.json
+judged gpt_zeroshot reg06.tf.json
+judged gpt_zeroshot reg07.tf.json
+judged gpt_zeroshot reg08.tf.json
+judged gpt_zeroshot reg11.tf.json
+judged gpt_zeroshot reg09.tf.json
+judged gpt_zeroshot reg10.tf.json
+judged gpt_zeroshot reg12.tf.json
+judged gpt_zeroshot reg13.tf.json
+judged gpt_zeroshot reg14.tf.json
+judged gpt_zeroshot reg16.tf.json
+judged nova_zeroshot gh02.tf.json
+judged nova_zeroshot gh01.tf.json
+judged nova_zeroshot gh03.tf.json
+judged gpt_zeroshot gh25.tf.json
+judged nova_zeroshot gh04.tf.json
+judged nova_zeroshot gh07.tf.json
+judged nova_zeroshot gh05.tf.json
+judged nova_zeroshot gh06.tf.json
+judged nova_zeroshot gh08.tf.json
+judged nova_zeroshot gh09.tf.json
+judged nova_zeroshot gh10.tf.json
+judged nova_zeroshot gh11.tf.json
+judged nova_zeroshot gh12.tf.json
+judged nova_zeroshot gh14.tf.json
+judged nova_zeroshot gh13.tf.json
+judged nova_zeroshot gh15.tf.json
+judged nova_zeroshot gh16.tf.json
+judged nova_zeroshot gh17.tf.json
+judged nova_zeroshot gh20.tf.json
+judged nova_zeroshot gh18.tf.json
+judged nova_zeroshot gh19.tf.json
+judged nova_zeroshot gh22.tf.json
+judged nova_zeroshot gh23.tf.json
+judged nova_zeroshot gh25.tf.json
+judged nova_zeroshot gh21.tf.json
+judged nova_zeroshot gh26.tf.json
+judged nova_zeroshot gh27.tf.json
+judged nova_zeroshot gh28.tf.json
+judged nova_zeroshot gh29.tf.json
+judged nova_zeroshot gh30.tf.json
+judged nova_zeroshot gh24.tf.json
+judged nova_zeroshot reg03.tf.json
+judged nova_zeroshot reg01.tf.json
+judged nova_zeroshot reg04.tf.json
+judged nova_zeroshot reg05.tf.json
+judged nova_zeroshot reg02.tf.json
+judged nova_zeroshot reg06.tf.json
+judged nova_zeroshot reg07.tf.json
+judged nova_zeroshot reg09.tf.json
+judged nova_zeroshot reg10.tf.json
+judged nova_zeroshot reg08.tf.json
+judged nova_zeroshot reg12.tf.json
+judged nova_zeroshot reg11.tf.json
+judged nova_zeroshot reg13.tf.json
+judged nova_zeroshot reg15.tf.json
+judged nova_zeroshot reg14.tf.json
+judged nova_zeroshot reg16.tf.json
+['claude_zeroshot', 373, 16, 63, 16, 0.043, 0.169, 0.762, 0.081, 0.277]
+['gpt_zeroshot', 177, 5, 31, 5, 0.028, 0.175, 0.238, 0.051, 0.202]
+['nova_zeroshot', 152, 4, 14, 4, 0.026, 0.092, 0.19, 0.046, 0.124]
+['run', 'consensus_covered', 'all_tool_rows_covered', 'of_223', 'checkov_only_covered', 'trivy_only_covered']
+['claude_zeroshot', 16, 70, 0.519, 33, 21]
+['gpt_zeroshot', 5, 34, 0.252, 15, 14]
+['nova_zeroshot', 4, 19, 0.141, 10, 5]
+['claude_zeroshot', 'gpt_zeroshot', 11, 0, 0.001]
+['claude_zeroshot', 'nova_zeroshot', 12, 0, 0.0005]
+['gpt_zeroshot', 'nova_zeroshot', 2, 1, 1.0]
+scored gpt54 claude_zeroshot gh21.tf.json
+scored gpt54 claude_zeroshot gh22.tf.json
+scored gpt54 claude_zeroshot gh18.tf.json
+scored gpt54 claude_zeroshot gh17.tf.json
+scored gpt54 claude_zeroshot gh14.tf.json
+scored gpt54 claude_zeroshot gh30.tf.json
+scored gpt54 gpt_zeroshot gh14.tf.json
+scored gpt54 claude_zeroshot gh29.tf.json
+scored gpt54 gpt_zeroshot gh17.tf.json
+scored gpt54 gpt_zeroshot gh29.tf.json
+scored gpt54 gpt_zeroshot gh30.tf.json
+scored gpt54 nova_zeroshot gh17.tf.json
+scored gpt54 nova_zeroshot gh30.tf.json
+scored gpt54 nova_zeroshot gh18.tf.json
+scored gpt54 nova_zeroshot gh29.tf.json
+scored gpt54 claude_zeroshot gh08.tf.json
+scored sonnet55 claude_zeroshot gh21.tf.json
+scored sonnet55 claude_zeroshot gh18.tf.json
+scored sonnet55 claude_zeroshot gh14.tf.json
+scored sonnet55 claude_zeroshot gh17.tf.json
+scored sonnet55 claude_zeroshot gh08.tf.json
+scored sonnet55 claude_zeroshot gh22.tf.json
+scored sonnet55 claude_zeroshot gh30.tf.json
+scored sonnet55 claude_zeroshot gh29.tf.json
+scored sonnet55 gpt_zeroshot gh17.tf.json
+scored sonnet55 gpt_zeroshot gh14.tf.json
+scored sonnet55 gpt_zeroshot gh29.tf.json
+scored sonnet55 gpt_zeroshot gh30.tf.json
+scored sonnet55 nova_zeroshot gh29.tf.json
+scored sonnet55 nova_zeroshot gh17.tf.json
+scored sonnet55 nova_zeroshot gh18.tf.json
+scored sonnet55 nova_zeroshot gh30.tf.json
+['run', 'scored_findings', 'gpt54_mean', 'gpt54_share_2', 'sonnet55_mean', 'sonnet55_share_2', 'mean_of_judges']
+['claude_zeroshot', 16, 1.94, 0.938, 2.0, 1.0, 1.97]
+['gpt_zeroshot', 5, 1.8, 0.8, 1.4, 0.4, 1.6]
+['nova_zeroshot', 4, 1.25, 0.5, 1.25, 0.25, 1.25]
+judges=['gpt54', 'sonnet55'] n=25 exact=0.720 within1=1.000 weighted_kappa=0.340
+['claude_zeroshot', 373, 63, 310, 57, 223, 30, 0.322]
+['gpt_zeroshot', 177, 31, 146, 37, 108, 1, 0.384]
+['nova_zeroshot', 152, 14, 138, 7, 95, 36, 0.138]
+CORPUS_DONE

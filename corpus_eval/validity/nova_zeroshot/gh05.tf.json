@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_iam_user_policy.sending_emails",
+   "issue": "IAM policy directly attached to a user",
+   "risk": "Direct attachment of IAM policies to users can lead to management overhead and potential security risks if the user is compromised.",
+   "remediation": "Attach the IAM policy to a group instead of directly to the user. Update the resource block to use `aws_iam_group_policy` instead of `aws_iam_user_policy`."
+  },
+  "1": {
+   "resource": "module.ses_user",
+   "issue": "Creation of IAM access key without rotation policy",
+   "risk": "IAM access keys without a rotation policy can lead to long-lived credentials, increasing the risk of credential compromise.",
+   "remediation": "Enable access key rotation by setting `create_iam_access_key_rotation_policy` to `true` in the module configuration."
+  }
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "data.aws_iam_policy_document.replication_sts",
+   "issue": "Overly broad trust policy for S3 replication role",
+   "risk": "The IAM role trust policy allows the S3 service principal to assume the role without restricting the source bucket, source account, or replication context. This can increase the risk of unintended or unauthorized assumption of the role by S3 in other contexts.",
+   "remediation": "Restrict the assume role policy by adding conditions such as aws:SourceArn and aws:SourceAccount in the statement of data.aws_iam_policy_document.replication_sts, e.g. add a condition block limiting assumption to the specific source bucket ARN and owning AWS account."
+  }
+ }
+}

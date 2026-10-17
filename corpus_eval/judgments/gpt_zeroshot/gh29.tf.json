@@ -1,0 +1,53 @@
+{
+ "file": "gh29.tf",
+ "findings": [
+  {
+   "resource": "aws_instance.ec2",
+   "issue": "EC2 instance assigned a public IP address",
+   "risk": "Direct internet reachability increases the attack surface and exposes the instance to scanning, exploitation, and brute-force attacks.",
+   "remediation": "Set the instance to private-only networking by changing `associate_public_ip_address = false` and place it in a private subnet via `subnet_id`."
+  },
+  {
+   "resource": "aws_instance.ec2",
+   "issue": "EC2 instance placed in a public subnet",
+   "risk": "Hosting the instance in a public subnet makes it internet-routable, increasing exposure to unauthorized access and remote attacks.",
+   "remediation": "Change `subnet_id = var.public_subnet_id` to use a private subnet variable or ID, such as a private subnet resource/output."
+  },
+  {
+   "resource": "aws_security_group.ec2_security_group",
+   "issue": "SSH exposed to the internet",
+   "risk": "Allowing port 22 from `0.0.0.0/0` permits unrestricted SSH access attempts from anywhere, enabling brute-force attacks and unauthorized access.",
+   "remediation": "Restrict the SSH ingress rule by changing the `cidr_blocks` in the port 22 `ingress` block from `[\"0.0.0.0/0\"]` to a limited trusted IP range, or remove the rule and use AWS Systems Manager Session Manager instead."
+  },
+  {
+   "resource": "aws_security_group.ec2_security_group",
+   "issue": "Unrestricted outbound traffic",
+   "risk": "Allowing all egress traffic to `0.0.0.0/0` enables unrestricted data exfiltration and command-and-control communication if the instance is compromised.",
+   "remediation": "Tighten the `egress` block by restricting `protocol`, `from_port`, `to_port`, and `cidr_blocks` to only required destinations and ports."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c110"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c114"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c116"
+   ]
+  }
+ ]
+}

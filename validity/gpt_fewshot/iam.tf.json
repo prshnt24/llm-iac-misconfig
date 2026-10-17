@@ -1,0 +1,36 @@
+{
+ "labels": [
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "VALID"
+  },
+  {
+   "finding": 4,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "1": {
+   "resource": "aws_iam_user.user",
+   "issue": "force_destroy enabled on IAM user",
+   "risk": "Setting force_destroy = true allows deletion of the IAM user even when access keys or other credentials exist, increasing the chance of accidental destructive changes and loss of auditability.",
+   "remediation": "In aws_iam_user.user, remove the force_destroy attribute or set force_destroy = false."
+  },
+  "2": {
+   "resource": "aws_iam_access_key.user",
+   "issue": "IAM access key created for user",
+   "risk": "Access keys are long-lived secrets that can be exfiltrated from state, CI/CD logs, developer environments, or outputs and then used for persistent unauthorized access.",
+   "remediation": "Remove the aws_iam_access_key.user resource and use temporary credentials via an IAM role. If an access key is absolutely required, ensure secure rotation and do not expose it through outputs."
+  },
+  "4": {
+   "resource": "output.secret",
+   "issue": "Sensitive credential exposed via output",
+   "risk": "Outputting credential material increases the likelihood of secret disclosure through Terraform CLI output, logs, pipelines, or remote state consumers.",
+   "remediation": "Remove the output.secret block entirely. If it must remain, mark it as sensitive by adding sensitive = true and avoid outputting access key secrets."
+  }
+ }
+}

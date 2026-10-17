@@ -1,0 +1,46 @@
+{
+ "labels": [
+  {
+   "finding": 4,
+   "label": "VALID"
+  },
+  {
+   "finding": 5,
+   "label": "VALID"
+  },
+  {
+   "finding": 8,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 9,
+   "label": "INVALID"
+  }
+ ],
+ "findings": {
+  "4": {
+   "resource": "aws_s3_bucket.example",
+   "issue": "Incorrect Tag Key Used for IAM Condition",
+   "risk": "The bucket is tagged with 'allow-gh-action-access' but the IAM policy condition checks for 'allow-gh-action'. This mismatch means the condition will never match, either silently denying all access or, depending on policy logic, failing to enforce the intended tag-based access control.",
+   "remediation": "Align the tag key on the bucket with the condition variable in the IAM policy. Either change the bucket tag to: tags = { \"allow-gh-action\" = \"true\" } or update the IAM condition variable to match 'allow-gh-action-access'."
+  },
+  "5": {
+   "resource": "aws_ecr_repository.example",
+   "issue": "Incorrect Tag Key and Value Type Used for IAM Condition",
+   "risk": "The ECR repository is tagged with 'allow-gh-action-access' (boolean true) but the IAM policy condition checks for the tag key 'allow-gh-action' with string value 'true'. Both the key mismatch and the boolean vs string type mismatch mean the tag-based access control will never be enforced correctly.",
+   "remediation": "Update the ECR repository tags to match the IAM condition exactly: tags = { \"allow-gh-action\" = \"true\" } (string value, matching key)."
+  },
+  "8": {
+   "resource": "data.aws_iam_policy_document.ecr",
+   "issue": "Overly Broad ECR IAM Policy Resource Wildcard",
+   "risk": "Setting resources = [\"*\"] grants the GitHub Actions role the ability to push and pull images to and from every ECR repository in the account (subject only to the tag condition). If the tag condition is misconfigured or bypassed, this becomes a full account-wide ECR write permission, enabling supply chain attacks.",
+   "remediation": "Restrict the resources to the specific ECR repository ARN: resources = [aws_ecr_repository.example.arn]. The tag-based condition should be a defence-in-depth control, not the primary scope restriction."
+  },
+  "9": {
+   "resource": "data.aws_iam_policy_document.s3",
+   "issue": "S3 IAM Policy Allows Overly Broad Resource Glob",
+   "risk": "The resource pattern \"${aws_s3_bucket.example.arn}*\" without a path separator matches not only objects within the bucket but also any other bucket whose name starts with the same prefix, potentially granting unintended access to other buckets.",
+   "remediation": "Use a proper object path wildcard with a slash: resources = [aws_s3_bucket.example.arn, \"${aws_s3_bucket.example.arn}/*\"] to restrict access to objects within the specific bucket only."
+  }
+ }
+}

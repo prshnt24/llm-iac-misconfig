@@ -1,0 +1,49 @@
+{
+ "file": "reg07.tf",
+ "findings": [
+  {
+   "resource": "aws_secretsmanager_secret_policy.this",
+   "issue": "Public access to secret policy may be allowed",
+   "risk": "If the secret resource policy permits broad principals such as \"*\" and block_public_policy is false or unset, the secret could be exposed to unauthorized AWS principals, leading to disclosure or misuse of sensitive credentials.",
+   "remediation": "Set aws_secretsmanager_secret_policy.this attribute block_public_policy = true and ensure the policy built from data.aws_iam_policy_document.this does not include wildcard principals or overly broad access."
+  },
+  {
+   "resource": "aws_secretsmanager_secret.this",
+   "issue": "Customer-managed KMS key encryption is not enforced",
+   "risk": "If kms_key_id is not set, AWS Secrets Manager uses the default AWS-managed key, reducing control over key rotation, key policy restrictions, cross-account access controls, and auditability for highly sensitive secrets.",
+   "remediation": "Set aws_secretsmanager_secret.this attribute kms_key_id to a dedicated customer-managed AWS KMS key ARN or ID with a restrictive key policy."
+  },
+  {
+   "resource": "aws_secretsmanager_secret.this",
+   "issue": "Secret deletion recovery window may be insecurely short",
+   "risk": "If recovery_window_in_days is set to 0 or a very low value, secrets can be deleted with little or no recovery opportunity, increasing the chance of irreversible loss or malicious destruction impacting availability and incident recovery.",
+   "remediation": "Set aws_secretsmanager_secret.this attribute recovery_window_in_days to an appropriate non-zero retention period, commonly 7 to 30 days, to allow recovery after accidental or malicious deletion."
+  },
+  {
+   "resource": "aws_secretsmanager_secret_rotation.this",
+   "issue": "Secret rotation schedule is not guaranteed",
+   "risk": "If enable_rotation is false, or if rotation_rules are absent or weakly configured, secrets may remain static for long periods, increasing the likelihood of compromise through credential leakage, reuse, or undetected exposure.",
+   "remediation": "Enable rotation by creating aws_secretsmanager_secret_rotation.this with a valid rotation_lambda_arn and define rotation_rules using automatically_after_days or schedule_expression with an appropriate frequency."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c122"
+   ]
+  }
+ ]
+}

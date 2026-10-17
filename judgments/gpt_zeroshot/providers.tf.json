@@ -1,0 +1,29 @@
+{
+ "file": "providers.tf",
+ "findings": [
+  {
+   "resource": "provider.aws.plain_text_access_keys_provider",
+   "issue": "Hardcoded AWS access keys in provider configuration",
+   "risk": "Embedding long-term AWS credentials directly in Terraform code can expose secrets through source control, CI logs, state usage patterns, and team sharing, leading to unauthorized access to the AWS account.",
+   "remediation": "Remove the `access_key` and `secret_key` attributes from `provider \"aws\" { alias = \"plain_text_access_keys_provider\" ... }` and use a secure credential source such as AWS profiles, environment variables, or an IAM role."
+  },
+  {
+   "resource": "terraform.backend.s3",
+   "issue": "S3 backend encryption enabled without explicit KMS key configuration",
+   "risk": "Although backend encryption is enabled, not specifying a customer-managed KMS key may result in reliance on default encryption controls that provide less granular key management, auditing, and access control for sensitive Terraform state.",
+   "remediation": "In the `backend \"s3\"` block, add the `kms_key_id` attribute to use a customer-managed KMS key, for example: `kms_key_id = \"arn:aws:kms:...\"`."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c107"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  }
+ ]
+}

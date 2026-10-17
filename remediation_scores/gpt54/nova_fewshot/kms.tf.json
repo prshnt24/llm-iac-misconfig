@@ -1,0 +1,17 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_7 Ensure rotation for customer created CMKs is enabled (resource aws_kms_key.logs_key)",
+   "issue": "Key rotation is not enabled",
+   "remediation": "Add `enable_key_rotation = true` to the `aws_kms_key` resource block."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correct resource and exact fix: set `enable_key_rotation = true` on `aws_kms_key.logs_key`."
+  }
+ ]
+}

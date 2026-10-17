@@ -1,0 +1,39 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_44 Ensure Neptune storage is securely encrypted (resource aws_neptune_cluster.default)",
+   "issue": "Storage Encryption Disabled",
+   "remediation": "Set `storage_encrypted = true` and optionally specify a KMS key via `kms_key_arn` to use a customer-managed key instead of the default AWS-managed key."
+  },
+  {
+   "finding": 3,
+   "known": "CKV_AWS_101 Ensure Neptune logging is enabled (resource aws_neptune_cluster.default)",
+   "issue": "Audit Logging Not Enabled",
+   "remediation": "Add an `enable_cloudwatch_logs_exports = [\"audit\"]` attribute to the `aws_neptune_cluster` resource to stream audit logs to Amazon CloudWatch Logs."
+  },
+  {
+   "finding": 5,
+   "known": "CKV_AWS_347 Ensure Neptune is encrypted by KMS using a customer managed Key (CMK) (resource aws_neptune_cluster.default)",
+   "issue": "No KMS Customer-Managed Key (CMK) Specified for Encryption",
+   "remediation": "Add `kms_key_arn = aws_kms_key.<your_key>.arn` alongside `storage_encrypted = true` to encrypt the cluster with a customer-managed KMS key."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correct fix: set aws_neptune_cluster.storage_encrypted = true; KMS key mention is optional."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "Correct and specific: add enable_cloudwatch_logs_exports = [\"audit\"] on aws_neptune_cluster."
+  },
+  {
+   "item": 2,
+   "score": 2,
+   "reason": "Correct fix for CMK encryption: specify customer-managed KMS key ARN and enable storage_encrypted."
+  }
+ ]
+}

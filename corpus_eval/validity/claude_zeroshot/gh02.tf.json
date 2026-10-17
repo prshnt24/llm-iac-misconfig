@@ -1,0 +1,106 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "INVALID"
+  },
+  {
+   "finding": 1,
+   "label": "INVALID"
+  },
+  {
+   "finding": 2,
+   "label": "INVALID"
+  },
+  {
+   "finding": 3,
+   "label": "INVALID"
+  },
+  {
+   "finding": 4,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 5,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 6,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 7,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 8,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 9,
+   "label": "INVALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_subnet.public",
+   "issue": "Auto-assign Public IP Not Explicitly Disabled",
+   "risk": "Without explicitly setting map_public_ip_on_launch = false, instances launched in this subnet may automatically receive public IP addresses, increasing the attack surface and exposing resources directly to the internet.",
+   "remediation": "Add 'map_public_ip_on_launch = false' to the aws_subnet.public resource block. If public IPs are required for this subnet, ensure strict security groups and NACLs are in place, and explicitly set 'map_public_ip_on_launch = true' only after deliberate review."
+  },
+  "1": {
+   "resource": "aws_subnet.admin",
+   "issue": "Missing map_public_ip_on_launch = false",
+   "risk": "Admin subnets should never auto-assign public IPs. Without explicitly setting map_public_ip_on_launch = false, instances in the admin subnet could inadvertently receive public IP addresses, exposing administrative interfaces to the internet.",
+   "remediation": "Explicitly add 'map_public_ip_on_launch = false' to the aws_subnet.admin resource block to ensure no instance in the admin subnet is accidentally assigned a public IP."
+  },
+  "2": {
+   "resource": "aws_subnet.private_prod",
+   "issue": "Missing map_public_ip_on_launch = false",
+   "risk": "Production private subnets should never auto-assign public IPs. Without explicitly disabling this, instances in the private production subnet could inadvertently receive public IP addresses, bypassing the intended private network isolation.",
+   "remediation": "Explicitly add 'map_public_ip_on_launch = false' to the aws_subnet.private_prod resource block to enforce private subnet behaviour."
+  },
+  "3": {
+   "resource": "aws_subnet.private_working",
+   "issue": "Missing map_public_ip_on_launch = false",
+   "risk": "Private working subnets should never auto-assign public IPs. Without explicitly disabling this, instances could inadvertently receive public IP addresses, undermining network segmentation and exposing workloads to the internet.",
+   "remediation": "Explicitly add 'map_public_ip_on_launch = false' to the aws_subnet.private_working resource block to enforce private subnet behaviour."
+  },
+  "4": {
+   "resource": "aws_subnet.admin",
+   "issue": "No Network ACL (NACL) Association Defined",
+   "risk": "Without an explicit NACL association, the admin subnet relies solely on the default VPC NACL, which allows all inbound and outbound traffic. This provides no additional network-layer defence for the most sensitive subnet in the configuration.",
+   "remediation": "Create a dedicated 'aws_network_acl' resource with restrictive inbound and outbound rules for the admin subnet, and associate it using an 'aws_network_acl_association' resource referencing aws_subnet.admin.*.id."
+  },
+  "5": {
+   "resource": "aws_subnet.public",
+   "issue": "No Network ACL (NACL) Association Defined",
+   "risk": "Without an explicit NACL association, the public subnet uses the default VPC NACL which permits all traffic. Public subnets are directly internet-facing and require strict NACL rules to limit exposure to only necessary ports and protocols.",
+   "remediation": "Create a dedicated 'aws_network_acl' resource with restrictive inbound rules (e.g., allow only ports 80/443 inbound) and associate it with aws_subnet.public.*.id using 'aws_network_acl_association'."
+  },
+  "6": {
+   "resource": "aws_subnet.private_prod",
+   "issue": "No Network ACL (NACL) Association Defined",
+   "risk": "Without an explicit NACL association, the private production subnet relies on the permissive default NACL. This provides no defence-in-depth at the network layer for production workloads, increasing the blast radius of a compromised resource.",
+   "remediation": "Create a dedicated 'aws_network_acl' resource with least-privilege inbound and outbound rules for production traffic and associate it with aws_subnet.private_prod.*.id using 'aws_network_acl_association'."
+  },
+  "7": {
+   "resource": "aws_subnet.private_working",
+   "issue": "No Network ACL (NACL) Association Defined",
+   "risk": "Without an explicit NACL association, the private working subnet relies on the permissive default NACL, providing no additional network-layer access control for developer or working environment workloads.",
+   "remediation": "Create a dedicated 'aws_network_acl' resource with appropriate least-privilege rules and associate it with aws_subnet.private_working.*.id using 'aws_network_acl_association'."
+  },
+  "8": {
+   "resource": "aws_subnet.admin",
+   "issue": "No VPC Flow Logs Configured for Subnet Traffic Monitoring",
+   "risk": "Without VPC Flow Logs enabled on the VPC or subnet level, there is no visibility into network traffic flowing through the admin subnet. This prevents detection of unauthorised access attempts, lateral movement, or data exfiltration.",
+   "remediation": "Ensure an 'aws_flow_log' resource is defined targeting the VPC (aws_vpc.default.id) with traffic_type = 'ALL' and logs delivered to CloudWatch Logs or S3 for monitoring and forensic analysis."
+  },
+  "9": {
+   "resource": "aws_subnet.public",
+   "issue": "Public Subnet Lacks Explicit Egress Restriction",
+   "risk": "Public subnets with unrestricted egress allow any compromised instance to communicate outbound to arbitrary internet destinations, facilitating data exfiltration, C2 communication, or participation in botnets.",
+   "remediation": "Associate a NACL with the public subnet that restricts outbound traffic to only required ports and destinations. Additionally, ensure security groups attached to instances in this subnet enforce least-privilege egress rules."
+  }
+ }
+}

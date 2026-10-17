@@ -1,0 +1,77 @@
+{
+ "file": "consts.tf",
+ "findings": [
+  {
+   "resource": "variable.password",
+   "issue": "Hardcoded database password in plain text",
+   "risk": "Sensitive credentials stored in source code can be exposed via version control, logs, or state files, leading to unauthorized database access.",
+   "remediation": "Remove the default value from the 'password' variable. Use a secrets manager such as AWS Secrets Manager or HashiCorp Vault, or pass the value via environment variable TF_VAR_password at runtime. Add 'sensitive = true' to the variable definition to prevent it appearing in logs."
+  },
+  {
+   "resource": "variable.ami",
+   "issue": "Hardcoded AMI ID",
+   "risk": "Using a hardcoded, potentially outdated AMI may include unpatched vulnerabilities. The AMI may not be the latest hardened or approved image, increasing the attack surface.",
+   "remediation": "Use an 'aws_ami' data source to dynamically resolve the latest approved/hardened AMI rather than hardcoding the ID. For example, use a data source filtered by owner and name pattern to always retrieve a current, patched image."
+  },
+  {
+   "resource": "variable.environment",
+   "issue": "Default environment set to 'dev' with no enforcement",
+   "risk": "If this configuration is accidentally applied to a production environment without overriding the variable, resources may be misconfigured or under-protected due to dev-tier settings propagating to production.",
+   "remediation": "Remove the default value and require the environment to be explicitly set. Add a validation block to restrict allowed values: validation { condition = contains([\"dev\",\"staging\",\"prod\"], var.environment) error_message = \"Environment must be dev, staging, or prod.\" }"
+  },
+  {
+   "resource": "variable.password",
+   "issue": "Missing sensitive flag on password variable",
+   "risk": "Without 'sensitive = true', the password value will appear in plain text in Terraform plan and apply output, as well as in CI/CD logs, exposing credentials to anyone with log access.",
+   "remediation": "Add 'sensitive = true' to the variable block: variable \"password\" { type = string description = \"Database password\" sensitive = true }. Also remove the hardcoded default value."
+  },
+  {
+   "resource": "locals.resource_prefix",
+   "issue": "AWS Account ID exposed in resource names",
+   "risk": "Embedding the AWS account ID in resource names (e.g., S3 bucket names, log groups) can leak account identifiers into publicly visible or shared contexts, aiding reconnaissance by attackers.",
+   "remediation": "Avoid including the account ID in externally visible resource names. If unique naming is required, use a random suffix via the 'random' provider instead: resource \"random_id\" \"suffix\" { byte_length = 4 } and reference random_id.suffix.hex in the prefix."
+  },
+  {
+   "resource": "variable.profile",
+   "issue": "AWS CLI named profile used for authentication",
+   "risk": "Relying on a local AWS CLI profile ('default') for authentication is not suitable for automated pipelines and may use long-lived static credentials stored on disk, which can be exfiltrated if the host is compromised.",
+   "remediation": "Remove the profile variable and use IAM roles with short-lived credentials instead. For CI/CD, use OIDC-based authentication (e.g., GitHub Actions OIDC with aws-actions/configure-aws-credentials). For EC2/ECS workloads, use instance/task IAM roles."
+  },
+  {
+   "resource": "variable.region",
+   "issue": "AWS region hardcoded as a default with no validation",
+   "risk": "A fixed default region with no validation could result in resources being deployed to an unintended or non-compliant region if the variable is not explicitly overridden, violating data residency or compliance requirements.",
+   "remediation": "Add a validation block to restrict deployments to approved regions: validation { condition = contains([\"us-east-1\",\"us-west-2\",\"eu-west-1\"], var.region) error_message = \"Deployment region is not in the approved list.\" } and enforce region selection explicitly in your pipeline."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  }
+ ]
+}

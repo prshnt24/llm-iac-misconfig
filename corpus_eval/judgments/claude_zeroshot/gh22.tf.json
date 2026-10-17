@@ -1,0 +1,136 @@
+{
+ "file": "gh22.tf",
+ "findings": [
+  {
+   "resource": "aws_security_group.postgresql",
+   "issue": "No ingress or egress rules defined in the security group",
+   "risk": "Without explicit ingress/egress rules the security group may rely on default permissive rules or, conversely, block all traffic unexpectedly. More critically, there is no restriction on which sources can reach the database port, and no explicit egress restriction, potentially allowing unrestricted outbound traffic or leaving the database access control undefined.",
+   "remediation": "Add an explicit ingress rule restricted to the database port (e.g. 5432) and limited to trusted CIDR blocks or source security groups, and an explicit egress rule. Example: add an `ingress` block with `from_port = var.database_port`, `to_port = var.database_port`, `protocol = \"tcp\"`, `cidr_blocks = [var.allowed_cidr]` and an `egress` block with `from_port = 0`, `to_port = 0`, `protocol = \"-1\"`, `cidr_blocks = [\"0.0.0.0/0\"]` (or restrict egress further)."
+  },
+  {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "Storage encryption not enforced (storage_encrypted delegated to variable)",
+   "risk": "If `var.storage_encrypted` is set to `false` (which is the Terraform default for this attribute), data at rest in the RDS instance is unencrypted, exposing sensitive data if the underlying storage media is compromised.",
+   "remediation": "Hard-code `storage_encrypted = true` in the resource block, or ensure the variable default is `true` and add a validation block: `validation { condition = var.storage_encrypted == true; error_message = \"Storage must be encrypted.\" }`. Additionally, specify `kms_key_id` to use a customer-managed KMS key rather than the AWS-managed default."
+  },
+  {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "No KMS key specified for storage encryption",
+   "risk": "Even when `storage_encrypted = true`, omitting `kms_key_id` causes RDS to use the AWS-managed default key (`aws/rds`). This prevents fine-grained key rotation control, key policy management, and cross-account sharing restrictions that a customer-managed KMS key (CMK) provides.",
+   "remediation": "Add `kms_key_id = var.kms_key_arn` (or a direct `aws_kms_key` resource ARN) to the `aws_db_instance.postgresql` resource block to enforce use of a customer-managed KMS key."
+  },
+  {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "Publicly accessible attribute not explicitly set to false",
+   "risk": "The `publicly_accessible` attribute defaults to `false` in Terraform, but without explicitly setting it, a future change to the default or a misconfigured variable could expose the RDS instance directly to the internet, allowing unauthorised access attempts against the database endpoint.",
+   "remediation": "Explicitly add `publicly_accessible = false` to the `aws_db_instance.postgresql` resource block to ensure the instance is never reachable from the public internet regardless of default changes."
+  },
+  {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "Database password stored as plain-text variable",
+   "risk": "Passing the database password via `var.database_password` means it is stored in Terraform state in plain text and may appear in CI/CD logs or version-controlled variable files, leading to credential exposure.",
+   "remediation": "Remove the `password` attribute from the resource and instead use AWS Secrets Manager or SSM Parameter Store. Reference the secret with a `data \"aws_secretsmanager_secret_version\"` data source, or use `manage_master_user_password = true` (available in newer AWS provider versions) to let RDS manage the password in Secrets Manager automatically. Mark the variable as `sensitive = true` as a minimum interim measure."
+  },
+  {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "Deletion protection delegated to variable without enforced default",
+   "risk": "If `var.deletion_protection` defaults to `false`, the RDS instance can be accidentally or maliciously deleted without any safeguard, causing data loss.",
+   "remediation": "Hard-code `deletion_protection = true` or ensure the variable has `default = true` with a validation block: `validation { condition = var.deletion_protection == true; error_message = \"Deletion protection must be enabled.\" }`."
+  },
+  {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "Backup retention period not enforced to a minimum value",
+   "risk": "If `var.backup_retention_period` is set to `0`, automated backups are disabled entirely. This eliminates the ability to perform point-in-time recovery after data corruption, accidental deletion, or a ransomware attack.",
+   "remediation": "Add a variable validation to enforce a minimum retention period: `validation { condition = var.backup_retention_period >= 7; error_message = \"Backup retention must be at least 7 days.\" }`. For production workloads, 7\u201335 days is recommended."
+  },
+  {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "Auto minor version upgrade delegated to variable without enforced default",
+   "risk": "If `var.auto_minor_version_upgrade` is `false`, the instance will not automatically receive minor engine patches that include security fixes, leaving the database vulnerable to known CVEs.",
+   "remediation": "Hard-code `auto_minor_version_upgrade = true` or ensure the variable defaults to `true` with a validation block enforcing it."
+  },
+  {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "skip_final_snapshot delegated to variable without enforced default",
+   "risk": "If `var.skip_final_snapshot` is `true`, destroying the Terraform resource will delete the RDS instance without creating a final snapshot, resulting in permanent, unrecoverable data loss.",
+   "remediation": "Hard-code `skip_final_snapshot = false` or enforce `default = false` with a validation block. Ensure `final_snapshot_identifier` is always set to a meaningful, unique name."
+  },
+  {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "CloudWatch logs exports not enforced",
+   "risk": "If `var.cloudwatch_logs_exports` is empty, no database logs (e.g. postgresql, upgrade) are shipped to CloudWatch Logs. This eliminates audit trails needed to detect unauthorised queries, privilege escalation, or connection anomalies.",
+   "remediation": "Set a default for the variable: `default = [\"postgresql\", \"upgrade\"]` and add a validation block ensuring the list is non-empty. For compliance workloads, also enable `pgaudit` via a custom parameter group."
+  },
+  {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "Performance Insights not enabled",
+   "risk": "Without Performance Insights, there is limited visibility into database query performance and potential abuse patterns (e.g. unusually long-running queries that may indicate SQL injection or data exfiltration).",
+   "remediation": "Add `performance_insights_enabled = true` and `performance_insights_kms_key_id = var.kms_key_arn` to the `aws_db_instance.postgresql` resource block. Also set `performance_insights_retention_period` to at least `7` (free tier) or `731` for long-term retention."
+  },
+  {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "IAM database authentication not enabled",
+   "risk": "Without `iam_database_authentication_enabled = true`, the database relies solely on static username/password credentials. IAM authentication provides short-lived tokens, reducing the risk of credential theft and enabling centralised access control via IAM policies.",
+   "remediation": "Add `iam_database_authentication_enabled = true` to the `aws_db_instance.postgresql` resource block and update application connection strings to use IAM token-based authentication."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c90"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  },
+  {
+   "finding": 7,
+   "candidates": []
+  },
+  {
+   "finding": 8,
+   "candidates": []
+  },
+  {
+   "finding": 9,
+   "candidates": [
+    "c88"
+   ]
+  },
+  {
+   "finding": 10,
+   "candidates": [
+    "c91",
+    "c92"
+   ]
+  },
+  {
+   "finding": 11,
+   "candidates": [
+    "c89"
+   ]
+  }
+ ]
+}

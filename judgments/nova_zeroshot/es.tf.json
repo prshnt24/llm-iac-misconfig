@@ -1,0 +1,55 @@
+{
+ "file": "es.tf",
+ "findings": [
+  {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Outdated Elasticsearch Version",
+   "risk": "Using an outdated version of Elasticsearch may expose the domain to known vulnerabilities.",
+   "remediation": "Update the Elasticsearch version to the latest supported version. Change the `elasticsearch_version` attribute to a current version, e.g., `elasticsearch_version = \"7.10\"`."
+  },
+  {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Insecure Cluster Configuration",
+   "risk": "Running Elasticsearch with a single instance and no dedicated master nodes can lead to instability and security risks.",
+   "remediation": "Increase the instance count and enable dedicated master nodes. Update the `cluster_config` block to include `instance_count = 3` and `dedicated_master_enabled = true`."
+  },
+  {
+   "resource": "data.aws_iam_policy_document.policy",
+   "issue": "Overly Permissive IAM Policy",
+   "risk": "Allowing all actions (`es:*`) for all principals (`*`) can lead to unauthorized access and potential data breaches.",
+   "remediation": "Restrict the IAM policy to only necessary actions and specific principals. Modify the `statement` block to specify allowed actions and principals, e.g., `actions = [\"es:ESHttpGet\", \"es:ESHttpPost\"]` and `identifiers = [\"arn:aws:iam::123456789012:user/specific-user\"]`."
+  },
+  {
+   "resource": "aws_elasticsearch_domain_policy.monitoring-framework-policy",
+   "issue": "Overly Permissive Elasticsearch Domain Policy",
+   "risk": "Applying an overly permissive policy to the Elasticsearch domain can allow unauthorized access.",
+   "remediation": "Apply a more restrictive policy to the Elasticsearch domain. Update the `access_policies` to include specific actions and principals as defined in the corrected IAM policy document."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c65",
+    "c71"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c76",
+    "c77",
+    "c78",
+    "c79"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  }
+ ]
+}

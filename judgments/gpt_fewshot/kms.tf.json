@@ -1,0 +1,19 @@
+{
+ "file": "kms.tf",
+ "findings": [
+  {
+   "resource": "aws_kms_key.logs_key",
+   "issue": "KMS key rotation disabled",
+   "risk": "Without automatic key rotation, the same cryptographic key material is used indefinitely, increasing the impact of key compromise and reducing compliance with common security requirements.",
+   "remediation": "Set the aws_kms_key.logs_key attribute `enable_key_rotation = true`."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c89"
+   ]
+  }
+ ]
+}

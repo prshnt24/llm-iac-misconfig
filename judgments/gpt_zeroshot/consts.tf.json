@@ -1,0 +1,17 @@
+{
+ "file": "consts.tf",
+ "findings": [
+  {
+   "resource": "variable.password",
+   "issue": "Hardcoded default database password in Terraform variable",
+   "risk": "Embedding a plaintext password in Terraform code can expose credentials through version control, code review systems, Terraform plans/state, and developer workstations, increasing the risk of unauthorized database access.",
+   "remediation": "Remove the `default` attribute from `variable \"password\"`, mark the variable as sensitive with `sensitive = true`, and supply the value securely at runtime via a protected mechanism such as environment variables, a `.tfvars` file excluded from version control, or a secrets manager."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  }
+ ]
+}

@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 5,
+   "label": "VALID"
+  },
+  {
+   "finding": 14,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "5": {
+   "resource": "aws_ebs_snapshot.example_snapshot",
+   "issue": "EBS snapshot created from an unencrypted volume",
+   "risk": "Because the source EBS volume is unencrypted, the resulting snapshot is also unencrypted. Unencrypted snapshots can be copied or shared, exposing data at rest without any cryptographic protection.",
+   "remediation": "First encrypt the source volume (aws_ebs_volume.web_host_storage) by setting encrypted = true. Snapshots of encrypted volumes are automatically encrypted. Alternatively, use the aws_ebs_snapshot_copy resource with encrypted = true and a kms_key_id to create an encrypted copy."
+  },
+  "14": {
+   "resource": "aws_s3_bucket.flowbucket",
+   "issue": "S3 bucket force_destroy enabled",
+   "risk": "Setting force_destroy = true allows Terraform to delete the bucket and all its contents (including flow logs) in a single destroy operation. This can lead to accidental or malicious permanent deletion of audit logs required for compliance and forensic investigation.",
+   "remediation": "Set force_destroy = false on aws_s3_bucket.flowbucket to prevent accidental deletion of flow log data. Implement S3 Object Lock or a bucket policy to enforce retention if compliance requires it."
+  }
+ }
+}

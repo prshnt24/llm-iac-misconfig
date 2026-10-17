@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 2,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "2": {
+   "resource": "aws_ebs_snapshot.example_snapshot",
+   "issue": "EBS snapshot without encryption",
+   "risk": "Snapshots of unencrypted volumes are also unencrypted, leading to potential data breaches.",
+   "remediation": "Set the `encrypted` attribute to `true` and provide a `kms_key_id` for the encryption."
+  }
+ }
+}

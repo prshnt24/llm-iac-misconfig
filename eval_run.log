@@ -1,0 +1,70 @@
+14 files x 3 models x 2 strategies
+saved responses\claude_zeroshot\consts.tf.json
+saved responses\claude_zeroshot\db-app.tf.json
+saved responses\claude_zeroshot\ec2.tf.json
+saved responses\claude_zeroshot\ecr.tf.json
+saved responses\claude_zeroshot\eks.tf.json
+saved responses\claude_zeroshot\elb.tf.json
+saved responses\claude_zeroshot\es.tf.json
+saved responses\claude_zeroshot\iam.tf.json
+saved responses\claude_zeroshot\kms.tf.json
+saved responses\claude_zeroshot\lambda.tf.json
+saved responses\claude_zeroshot\neptune.tf.json
+saved responses\claude_zeroshot\providers.tf.json
+saved responses\claude_zeroshot\rds.tf.json
+saved responses\claude_zeroshot\s3.tf.json
+saved responses\claude_fewshot\consts.tf.json
+saved responses\claude_fewshot\db-app.tf.json
+saved responses\claude_fewshot\ec2.tf.json
+saved responses\claude_fewshot\ecr.tf.json
+saved responses\claude_fewshot\eks.tf.json
+saved responses\claude_fewshot\elb.tf.json
+saved responses\claude_fewshot\es.tf.json
+saved responses\claude_fewshot\iam.tf.json
+saved responses\claude_fewshot\kms.tf.json
+saved responses\claude_fewshot\lambda.tf.json
+saved responses\claude_fewshot\neptune.tf.json
+saved responses\claude_fewshot\providers.tf.json
+saved responses\claude_fewshot\rds.tf.json
+saved responses\claude_fewshot\s3.tf.json
+saved responses\gpt_fewshot\consts.tf.json
+saved responses\gpt_fewshot\db-app.tf.json
+saved responses\gpt_fewshot\ec2.tf.json
+saved responses\gpt_fewshot\ecr.tf.json
+saved responses\gpt_fewshot\eks.tf.json
+saved responses\gpt_fewshot\elb.tf.json
+saved responses\gpt_fewshot\es.tf.json
+saved responses\gpt_fewshot\iam.tf.json
+saved responses\gpt_fewshot\kms.tf.json
+saved responses\gpt_fewshot\lambda.tf.json
+saved responses\gpt_fewshot\neptune.tf.json
+saved responses\gpt_fewshot\providers.tf.json
+saved responses\gpt_fewshot\rds.tf.json
+saved responses\gpt_fewshot\s3.tf.json
+retry nova zeroshot consts.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot consts.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot consts.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot db-app.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot db-app.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot db-app.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot ec2.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot ec2.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot ec2.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot ecr.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot ecr.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot ecr.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot eks.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot eks.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot eks.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot elb.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot elb.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot elb.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot es.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot es.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot es.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot iam.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot iam.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot iam.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot kms.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot kms.tf An error occurred (ValidationException) when calling the Converse operation: The maximum tokens you requested exceeds the model limit of 10000. Try again with a maximum tokens value that is lower than 10000.
+retry nova zeroshot kms.tf 

@@ -1,0 +1,37 @@
+{
+ "file": "reg02.tf",
+ "findings": [
+  {
+   "resource": "aws_security_group.this",
+   "issue": "Unrestricted Ingress and Egress Rules",
+   "risk": "Allowing unrestricted access to and from the security group can lead to unauthorized access and data breaches.",
+   "remediation": "Define specific CIDR blocks, ports, and protocols for ingress and egress rules instead of using null or broad ranges. Example:\n```hcl\nresource \"aws_vpc_security_group_ingress_rule\" \"this\" {\n  cidr_ipv4 = \"10.0.0.0/16\"\n  from_port = 22\n  to_port   = 22\n  ip_protocol = \"tcp\"\n  // other attributes\n}\n```"
+  },
+  {
+   "resource": "aws_vpc_security_group_ingress_rule.this",
+   "issue": "Potential Misconfiguration in Ingress Rules",
+   "risk": "Using `try` and `coalesce` functions may lead to unintended rule configurations if `from_port` or `to_port` are not properly set.",
+   "remediation": "Ensure `from_port` and `to_port` are explicitly defined. Example:\n```hcl\nresource \"aws_vpc_security_group_ingress_rule\" \"this\" {\n  from_port = each.value.from_port\n  to_port   = each.value.to_port\n  // other attributes\n}\n```"
+  },
+  {
+   "resource": "aws_vpc_security_group_egress_rule.this",
+   "issue": "Potential Misconfiguration in Egress Rules",
+   "risk": "Using `try` and `coalesce` functions may lead to unintended rule configurations if `from_port` or `to_port` are not properly set.",
+   "remediation": "Ensure `from_port` and `to_port` are explicitly defined. Example:\n```hcl\nresource \"aws_vpc_security_group_egress_rule\" \"this\" {\n  from_port = each.value.from_port\n  to_port   = each.value.to_port\n  // other attributes\n}\n```"
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  }
+ ]
+}

@@ -1,0 +1,8 @@
+{
+  "model": "global.openai.gpt-5.4",
+  "strategy": "zeroshot",
+  "file": "providers.tf",
+  "temperature": null,
+  "timestamp": "2026-10-16T21:40:25",
+  "response": "[\n  {\n    \"resource\": \"provider.aws.plain_text_access_keys_provider\",\n    \"issue\": \"Hardcoded AWS access keys in provider configuration\",\n    \"risk\": \"Embedding long-term AWS credentials directly in Terraform code can expose secrets through source control, CI logs, state usage patterns, and team sharing, leading to unauthorized access to the AWS account.\",\n    \"remediation\": \"Remove the `access_key` and `secret_key` attributes from `provider \\\"aws\\\" { alias = \\\"plain_text_access_keys_provider\\\" ... }` and use a secure credential source such as AWS profiles, environment variables, or an IAM role.\"\n  },\n  {\n    \"resource\": \"terraform.backend.s3\",\n    \"issue\": \"S3 backend encryption enabled without explicit KMS key configuration\",\n    \"risk\": \"Although backend encryption is enabled, not specifying a customer-managed KMS key may result in reliance on default encryption controls that provide less granular key management, auditing, and access control for sensitive Terraform state.\",\n    \"remediation\": \"In the `backend \\\"s3\\\"` block, add the `kms_key_id` attribute to use a customer-managed KMS key, for example: `kms_key_id = \\\"arn:aws:kms:...\\\"`.\"\n  }\n]"
+}

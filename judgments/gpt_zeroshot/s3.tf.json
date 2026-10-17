@@ -1,0 +1,189 @@
+{
+ "file": "s3.tf",
+ "findings": [
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "Public access exposure due to missing private ACL and public access block",
+   "risk": "The bucket may be publicly accessible, allowing unauthorized users to read, list, or potentially write sensitive data.",
+   "remediation": "Set the bucket ACL to private with `acl = \"private\"` and add an `aws_s3_bucket_public_access_block` resource for this bucket with `block_public_acls = true`, `ignore_public_acls = true`, `block_public_policy = true`, and `restrict_public_buckets = true`."
+  },
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "Server-side encryption not enabled",
+   "risk": "Objects stored in the bucket may be unencrypted at rest, increasing the impact of unauthorized access or data disclosure.",
+   "remediation": "Add a `server_side_encryption_configuration` block to `aws_s3_bucket.data` with `rule { apply_server_side_encryption_by_default { sse_algorithm = \"aws:kms\" } }` or `sse_algorithm = \"AES256\"`."
+  },
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "Access logging not enabled",
+   "risk": "Object and bucket access events may not be captured in S3 server access logs, reducing visibility and hindering forensic investigations.",
+   "remediation": "Add a `logging` block to `aws_s3_bucket.data` such as `logging { target_bucket = aws_s3_bucket.logs.id target_prefix = \"data/\" }`."
+  },
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "Versioning not enabled",
+   "risk": "Accidental deletion, overwrites, or ransomware-style object changes may be harder to recover from.",
+   "remediation": "Add a `versioning` block to `aws_s3_bucket.data` with `enabled = true`."
+  },
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "Force destroy enabled",
+   "risk": "The bucket and all contained objects can be deleted without manual cleanup, increasing the risk of accidental or malicious data destruction.",
+   "remediation": "Change `force_destroy = true` to `force_destroy = false` in `aws_s3_bucket.data`."
+  },
+  {
+   "resource": "aws_s3_bucket_object.data_object",
+   "issue": "Sensitive object uploaded without explicit server-side encryption",
+   "risk": "The uploaded object may not be explicitly protected with object-level encryption settings, which is especially risky for a file named like sensitive customer data.",
+   "remediation": "Add encryption attributes to `aws_s3_bucket_object.data_object`, for example `server_side_encryption = \"aws:kms\"` and `kms_key_id = aws_kms_key.logs_key.arn`, or ensure the destination bucket enforces default encryption."
+  },
+  {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "Server-side encryption not enabled",
+   "risk": "Objects stored in the bucket may be unencrypted at rest, increasing the impact of unauthorized access or data disclosure.",
+   "remediation": "Add a `server_side_encryption_configuration` block to `aws_s3_bucket.financials` with `rule { apply_server_side_encryption_by_default { sse_algorithm = \"aws:kms\" } }` or `sse_algorithm = \"AES256\"`."
+  },
+  {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "Access logging not enabled",
+   "risk": "Object and bucket access events may not be captured in S3 server access logs, reducing visibility and hindering forensic investigations.",
+   "remediation": "Add a `logging` block to `aws_s3_bucket.financials` such as `logging { target_bucket = aws_s3_bucket.logs.id target_prefix = \"financials/\" }`."
+  },
+  {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "Versioning not enabled",
+   "risk": "Accidental deletion, overwrites, or ransomware-style object changes may be harder to recover from.",
+   "remediation": "Add a `versioning` block to `aws_s3_bucket.financials` with `enabled = true`."
+  },
+  {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "Force destroy enabled",
+   "risk": "The bucket and all contained objects can be deleted without manual cleanup, increasing the risk of accidental or malicious data destruction.",
+   "remediation": "Change `force_destroy = true` to `force_destroy = false` in `aws_s3_bucket.financials`."
+  },
+  {
+   "resource": "aws_s3_bucket.operations",
+   "issue": "Server-side encryption not enabled",
+   "risk": "Objects stored in the bucket may be unencrypted at rest, increasing the impact of unauthorized access or data disclosure.",
+   "remediation": "Add a `server_side_encryption_configuration` block to `aws_s3_bucket.operations` with `rule { apply_server_side_encryption_by_default { sse_algorithm = \"aws:kms\" } }` or `sse_algorithm = \"AES256\"`."
+  },
+  {
+   "resource": "aws_s3_bucket.operations",
+   "issue": "Access logging not enabled",
+   "risk": "Object and bucket access events may not be captured in S3 server access logs, reducing visibility and hindering forensic investigations.",
+   "remediation": "Add a `logging` block to `aws_s3_bucket.operations` such as `logging { target_bucket = aws_s3_bucket.logs.id target_prefix = \"operations/\" }`."
+  },
+  {
+   "resource": "aws_s3_bucket.operations",
+   "issue": "Force destroy enabled",
+   "risk": "The bucket and all contained objects can be deleted without manual cleanup, increasing the risk of accidental or malicious data destruction.",
+   "remediation": "Change `force_destroy = true` to `force_destroy = false` in `aws_s3_bucket.operations`."
+  },
+  {
+   "resource": "aws_s3_bucket.data_science",
+   "issue": "Server-side encryption not enabled",
+   "risk": "Objects stored in the bucket may be unencrypted at rest, increasing the impact of unauthorized access or data disclosure.",
+   "remediation": "Add a `server_side_encryption_configuration` block to `aws_s3_bucket.data_science` with `rule { apply_server_side_encryption_by_default { sse_algorithm = \"aws:kms\" } }` or `sse_algorithm = \"AES256\"`."
+  },
+  {
+   "resource": "aws_s3_bucket.data_science",
+   "issue": "Force destroy enabled",
+   "risk": "The bucket and all contained objects can be deleted without manual cleanup, increasing the risk of accidental or malicious data destruction.",
+   "remediation": "Change `force_destroy = true` to `force_destroy = false` in `aws_s3_bucket.data_science`."
+  },
+  {
+   "resource": "aws_s3_bucket.logs",
+   "issue": "Force destroy enabled",
+   "risk": "The log bucket and all retained audit logs can be deleted without manual cleanup, undermining retention and forensic evidence preservation.",
+   "remediation": "Change `force_destroy = true` to `force_destroy = false` in `aws_s3_bucket.logs`."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c192"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c196"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c197"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c198"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c222"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": [
+    "c208"
+   ]
+  },
+  {
+   "finding": 7,
+   "candidates": [
+    "c209"
+   ]
+  },
+  {
+   "finding": 8,
+   "candidates": [
+    "c210"
+   ]
+  },
+  {
+   "finding": 9,
+   "candidates": []
+  },
+  {
+   "finding": 10,
+   "candidates": [
+    "c220"
+   ]
+  },
+  {
+   "finding": 11,
+   "candidates": [
+    "c221"
+   ]
+  },
+  {
+   "finding": 12,
+   "candidates": []
+  },
+  {
+   "finding": 13,
+   "candidates": [
+    "c203"
+   ]
+  },
+  {
+   "finding": 14,
+   "candidates": []
+  },
+  {
+   "finding": 15,
+   "candidates": []
+  }
+ ]
+}

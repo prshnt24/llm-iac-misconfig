@@ -1,0 +1,69 @@
+{
+ "file": "gh25.tf",
+ "findings": [
+  {
+   "resource": "aws_security_group.main",
+   "issue": "Unrestricted Ingress from Entire VPC CIDR on All Ports and Protocols",
+   "risk": "Allowing all traffic (-1 protocol, port 0-0) from the entire VPC CIDR means any compromised resource within the VPC can reach this NAT instance on any port, significantly expanding the blast radius of a lateral movement attack.",
+   "remediation": "Restrict the ingress rule to only the ports and protocols required for NAT functionality (e.g., TCP/UDP on ports needed by private subnets). Change 'from_port', 'to_port', and 'protocol' to specific values, and narrow 'cidr_blocks' to only the private subnet CIDRs that need NAT, rather than the entire VPC CIDR block associations."
+  },
+  {
+   "resource": "aws_security_group.main",
+   "issue": "Unrestricted IPv6 Egress to All Destinations",
+   "risk": "The egress rule allows all outbound IPv6 traffic ('::/0') on all ports and protocols. While partially intentional for a NAT instance, combined with the broad ingress rule, a compromised instance could be used to exfiltrate data or communicate with attacker-controlled IPv6 infrastructure without restriction.",
+   "remediation": "If IPv6 egress is required only for NAT64, restrict the egress IPv6 CIDR to '64:ff9b::/96' (the NAT64 well-known prefix) rather than '::/0'. Update the 'ipv6_cidr_blocks' in the egress block to '[\"64:ff9b::/96\"]' and conditionally include it only when 'var.use_nat64' is true."
+  },
+  {
+   "resource": "aws_security_group.main",
+   "issue": "SSH Access Potentially Exposed Based on Variable Input",
+   "risk": "When 'var.use_ssh' is true and CIDR blocks are provided, SSH (port 22) is opened. If 'var.ssh_cidr_blocks.ipv4' or 'var.ssh_cidr_blocks.ipv6' contain overly permissive ranges (e.g., '0.0.0.0/0' or '::/0'), the instance is exposed to brute-force and exploitation attacks on SSH from the internet. There is no validation enforcing restrictive CIDRs.",
+   "remediation": "Add a Terraform variable validation block on 'var.ssh_cidr_blocks' to reject '0.0.0.0/0' and '::/0'. Additionally, consider enforcing the use of AWS Systems Manager Session Manager instead of SSH, setting 'var.use_ssh' to false by default and removing the dynamic ingress block entirely in favour of SSM-based access."
+  },
+  {
+   "resource": "aws_ssm_parameter.cloudwatch_agent_config",
+   "issue": "SSM SecureString Parameter Without Explicit KMS Key Enforcement",
+   "risk": "The 'key_id' attribute is set from 'var.kms_key_id', which may be null. When 'key_id' is null, AWS falls back to the default SSM-managed key (aws/ssm), which does not allow key policy customisation, key rotation control, or cross-account access restrictions. This weakens the encryption posture of the stored CloudWatch agent configuration.",
+   "remediation": "Require a customer-managed KMS key by adding a validation rule to 'var.kms_key_id' ensuring it is never null when 'var.use_cloudwatch_agent' is true. Set 'key_id' to a mandatory CMK ARN. Example variable validation: 'condition = var.use_cloudwatch_agent ? var.kms_key_id != null : true'. This ensures the SecureString is always encrypted with a CMK."
+  },
+  {
+   "resource": "aws_network_interface.main",
+   "issue": "Network Interface Not Associated with Multiple Security Groups for Defence in Depth",
+   "risk": "The ENI is associated with only the single broad security group ('aws_security_group.main'), which permits all inbound VPC traffic. There is no secondary restrictive security group to provide layered filtering. A misconfiguration or overly permissive change to the primary group leaves no fallback control.",
+   "remediation": "Associate the ENI with an additional, more restrictive security group that explicitly denies or limits traffic to only required flows. Update the 'security_groups' attribute in 'aws_network_interface.main' to include a second security group resource that enforces least-privilege rules, providing defence-in-depth."
+  },
+  {
+   "resource": "aws_route.main",
+   "issue": "Default Route (0.0.0.0/0) Pointing to Unvalidated Network Interface",
+   "risk": "Adding a default IPv4 route pointing to this NAT instance's ENI across multiple route tables means all internet-bound traffic from associated subnets flows through this instance. If the instance is compromised or misconfigured, all outbound traffic from those subnets can be intercepted or manipulated. There is no integrity check or failover mechanism.",
+   "remediation": "Implement monitoring and alerting (e.g., via AWS Config rule or CloudWatch alarm) to detect unexpected changes to these routes. Ensure the IAM permissions that allow 'ec2:ReplaceRoute' and 'ec2:CreateRoute' are tightly scoped. Consider adding a 'lifecycle { prevent_destroy = true }' block to prevent accidental route deletion, and validate 'var.route_tables_ids' entries to ensure only intended private subnet route tables are modified."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c95"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  }
+ ]
+}

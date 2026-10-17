@@ -1,0 +1,36 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  },
+  {
+   "finding": 6,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 8,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Outdated Elasticsearch Version",
+   "risk": "Elasticsearch 2.3 is end-of-life and contains numerous known CVEs including remote code execution and privilege escalation vulnerabilities. It no longer receives security patches.",
+   "remediation": "Upgrade to a supported version (7.x or later, or use OpenSearch 2.x). Change `elasticsearch_version = \"2.3\"` to `elasticsearch_version = \"7.10\"` or higher."
+  },
+  "6": {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Single Availability Zone / Single Instance",
+   "risk": "A single-instance cluster with no zone awareness provides no high availability. A failure of the single node results in complete data loss and service outage.",
+   "remediation": "Increase `instance_count` to at least 2 (preferably 3) and enable zone awareness: add `zone_awareness_enabled = true` and a `zone_awareness_config { availability_zone_count = 3 }` block inside `cluster_config`."
+  },
+  "8": {
+   "resource": "aws_elasticsearch_domain_policy.monitoring-framework-policy",
+   "issue": "Overly Permissive Access Policy \u2013 Wildcard Principal and Actions",
+   "risk": "The access policy grants `es:*` (all Elasticsearch actions) to `AWS: *` (every AWS principal in the world) on all resources. This effectively makes the domain publicly writable and readable by any AWS account, enabling data exfiltration, deletion, or injection by any unauthenticated or authenticated AWS user.",
+   "remediation": "Replace the wildcard principal with specific, least-privilege IAM principals (e.g., specific IAM role ARNs). Restrict `actions` to only those required and scope `resources` to the specific domain ARN. Example: `principals { type = \"AWS\" identifiers = [\"arn:aws:iam::123456789012:role/es-consumer-role\"] }` with `actions = [\"es:ESHttpGet\"]` and `resources = [\"${aws_elasticsearch_domain.monitoring-framework.arn}/*\"]`."
+  }
+ }
+}

@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "reg12.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:16:47",
+  "response": "```json\n[\n  {\n    \"resource\": \"aws_iam_role.eventbridge\",\n    \"issue\": \"Wildcard Action in IAM Role Policy\",\n    \"risk\": \"Allows the role to perform any action, which can lead to unauthorized access and potential security breaches.\",\n    \"remediation\": \"Remove the wildcard action and specify only the necessary actions required for the role.\"\n  },\n  {\n    \"resource\": \"data.aws_iam_policy_document.ecs\",\n    \"issue\": \"Wildcard Resource in IAM Policy Document\",\n    \"risk\": \"Allows the role to access any ECS resource, which can lead to unauthorized access and potential security breaches.\",\n    \"remediation\": \"Specify the exact ECS resources that the role needs to access instead of using a wildcard.\"\n  },\n  {\n    \"resource\": \"resource.aws_iam_policy.ecs\",\n    \"issue\": \"Wildcard Resource in IAM Policy\",\n    \"risk\": \"Allows the role to access any ECS resource, which can lead to unauthorized access and potential security breaches.\",\n    \"remediation\": \"Specify the exact ECS resources that the role needs to access instead of using a wildcard.\"\n  }\n]\n```"
+}

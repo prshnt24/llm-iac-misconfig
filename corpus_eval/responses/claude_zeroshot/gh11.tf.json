@@ -1,0 +1,8 @@
+{
+  "model": "au.anthropic.claude-sonnet-4-6",
+  "strategy": "zeroshot",
+  "file": "gh11.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:03:10",
+  "response": "```json\n[]\n```"
+}

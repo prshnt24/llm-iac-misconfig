@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "gh23.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:16:05",
+  "response": "```json\n[\n  {\n    \"resource\": \"aws_iam_role_policy_attachment.ab_managed_policies\",\n    \"issue\": \"Overly permissive managed policy attachments\",\n    \"risk\": \"Allows the IAM role to assume excessive permissions which can lead to unauthorized access and potential misuse of resources.\",\n    \"remediation\": \"Review and limit the managed policies attached to the IAM role to only those necessary for its function.\"\n  },\n  {\n    \"resource\": \"aws_iam_policy.ab_tag_policy\",\n    \"issue\": \"Overly permissive policy\",\n    \"risk\": \"The policy allows tagging and untagging of all resources, which can lead to unauthorized changes to resource metadata.\",\n    \"remediation\": \"Limit the resources and actions allowed in the policy to only those required for the role's function.\"\n  },\n  {\n    \"resource\": \"aws_iam_policy.restore_testing_policy\",\n    \"issue\": \"Overly permissive custom policy\",\n    \"risk\": \"The policy allows a wide range of actions across multiple services, which can lead to unauthorized access and potential data breaches.\",\n    \"remediation\": \"Review and limit the actions and resources allowed in the policy to only those necessary for restore testing operations.\"\n  }\n]\n```"
+}

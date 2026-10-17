@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "lambda.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-16T23:05:06",
+  "response": "[\n  {\n    \"resource\": \"aws_lambda_function.analysis_lambda\",\n    \"issue\": \"Plain text secrets in environment variables\",\n    \"risk\": \"Exposure of sensitive information such as AWS access keys can lead to unauthorized access and potential compromise of AWS resources.\",\n    \"remediation\": \"Use AWS Secrets Manager or AWS Systems Manager Parameter Store to store and retrieve secrets. Update the environment block to reference the secret from the secure store. Example:\\n```hcl\\nenvironment {\\n  variables = {\\n    access_key = aws_secretsmanager_secret_version.my_secret.data[\\\"access_key\\\"]\\n    secret_key = aws_secretsmanager_secret_version.my_secret.data[\\\"secret_key\\\"]\\n  }\\n}\\n```\\nEnsure to create the corresponding `aws_secretsmanager_secret` and `aws_secretsmanager_secret_version` resources.\"\n  }\n]"
+}

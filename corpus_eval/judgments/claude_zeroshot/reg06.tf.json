@@ -1,0 +1,87 @@
+{
+ "file": "reg06.tf",
+ "findings": [
+  {
+   "resource": "module.route53_dnssec_kms",
+   "issue": "KMS Key Rotation Disabled",
+   "risk": "With key rotation disabled, the KMS key used for DNSSEC signing is never automatically rotated. If the key material is compromised, it remains in use indefinitely, increasing the window of exposure and violating cryptographic best-practice and many compliance frameworks (PCI-DSS, NIST).",
+   "remediation": "Set `enable_key_rotation = true` in the module block. Note: AWS KMS does support automatic rotation for asymmetric SIGN_VERIFY keys as of 2023; if the module version or AWS API does not support it for ECC keys, implement a manual rotation schedule and document the exception. At minimum, remove the explicit `false` so the module default (or a future-safe value) applies."
+  },
+  {
+   "resource": "aws_route53_zone.this",
+   "issue": "force_destroy Enabled by Variable Default Risk",
+   "risk": "If `var.force_destroy` is set to `true`, Terraform will delete all records inside the hosted zone before destroying it. This can cause accidental, irreversible deletion of all DNS records (including production records) during a `terraform destroy` or accidental resource replacement, leading to full DNS outage.",
+   "remediation": "Ensure `var.force_destroy` defaults to `false` in the variable definition and is never set to `true` in production workspaces. Consider hardcoding `force_destroy = false` in the resource block rather than exposing it as a variable, or add a lifecycle `prevent_destroy = true` block to protect production zones."
+  },
+  {
+   "resource": "aws_route53_zone.ignore_vpc",
+   "issue": "force_destroy Enabled by Variable Default Risk",
+   "risk": "Same as `aws_route53_zone.this` \u2014 if `var.force_destroy` resolves to `true`, all DNS records in this zone are silently deleted before zone destruction, risking a complete DNS outage.",
+   "remediation": "Ensure `var.force_destroy` defaults to `false`. Consider hardcoding `force_destroy = false` or adding a `lifecycle { prevent_destroy = true }` block for production environments."
+  },
+  {
+   "resource": "aws_route53_record.this",
+   "issue": "allow_overwrite Controlled by Caller Input",
+   "risk": "When `allow_overwrite = true`, Terraform will silently overwrite DNS records that were not originally created by this Terraform state. This can lead to unintended overwriting of existing critical DNS records (e.g., MX, SPF, CAA records), potentially disrupting mail delivery, breaking domain ownership verification, or removing security-relevant records.",
+   "remediation": "Default `var.records[*].allow_overwrite` to `false` in the variable definition. Only set it to `true` explicitly for records where overwrite behaviour is intentional and documented. Consider removing the attribute from the resource block entirely so it defaults to `false` unless a specific override is required."
+  },
+  {
+   "resource": "aws_route53_zone.this",
+   "issue": "Missing Query Logging Configuration",
+   "risk": "Without DNS query logging enabled, there is no audit trail of DNS queries made against the hosted zone. This prevents detection of DNS-based attacks (e.g., DNS exfiltration, subdomain takeover probing, DGA traffic) and makes incident response and forensic investigation significantly harder.",
+   "remediation": "Add an `aws_route53_query_log` resource referencing this zone and a CloudWatch Logs log group. Example: create `aws_cloudwatch_log_group.route53` and `aws_route53_query_log.this` with `zone_id = aws_route53_zone.this[0].id` and `cloudwatch_log_group_arn = aws_cloudwatch_log_group.route53.arn`. Ensure the log group has a retention policy and is encrypted with a KMS key."
+  },
+  {
+   "resource": "aws_route53_zone.ignore_vpc",
+   "issue": "Missing Query Logging Configuration",
+   "risk": "Same as `aws_route53_zone.this` \u2014 absence of query logging removes visibility into DNS activity for this zone, hindering threat detection and compliance auditing.",
+   "remediation": "Add an `aws_route53_query_log` resource for this zone identical to the recommendation for `aws_route53_zone.this`."
+  },
+  {
+   "resource": "module.route53_dnssec_kms",
+   "issue": "No KMS Key Policy / Least-Privilege Access Control Specified",
+   "risk": "Without an explicit key policy, the KMS key defaults to allowing the AWS account root full access and relies on IAM policies alone for access control. This broadens the blast radius if any IAM principal is compromised and does not enforce least-privilege access to the DNSSEC signing key.",
+   "remediation": "Pass a restrictive `key_policy` (or `key_administrators`, `key_users` inputs if the module supports them) to the `route53_dnssec_kms` module. The policy should restrict `kms:Sign` and `kms:GetPublicKey` to only the Route 53 service principal (`dnssec-route53.amazonaws.com`) and limit administrative actions to specific IAM roles."
+  },
+  {
+   "resource": "module.route53_dnssec_kms",
+   "issue": "No KMS Key Deletion Window Configured",
+   "risk": "Without specifying a `deletion_window_in_days`, the module or AWS default (typically 30 days) applies. If a shorter window is inadvertently used, accidental key deletion could permanently destroy the ability to validate DNSSEC signatures, causing DNS resolution failures for all DNSSEC-validating resolvers.",
+   "remediation": "Explicitly set `deletion_window_in_days = 30` (the maximum) in the module block to maximise the recovery window in case of accidental key scheduling for deletion."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  },
+  {
+   "finding": 7,
+   "candidates": []
+  }
+ ]
+}

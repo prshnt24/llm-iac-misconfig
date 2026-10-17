@@ -1,0 +1,76 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "INVALID"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 4,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 5,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 6,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 7,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "data.aws_iam_policy_document.ab_tag_policy_document",
+   "issue": "Overly Permissive Resource Wildcard in Tag Policy",
+   "risk": "The tag policy allows backup:TagResource, backup:UntagResource, backup:ListTags, and tag:GetResources on all resources ('*'). This means the backup role can tag or untag any AWS resource in the account, not just backup-related ones, enabling potential privilege escalation or resource manipulation.",
+   "remediation": "Restrict the resources field to specific backup vault and recovery point ARN patterns, e.g. ['arn:aws:backup:*:*:backup-vault:*', 'arn:aws:backup:*:*:recovery-point:*'] instead of ['*']."
+  },
+  "2": {
+   "resource": "data.aws_iam_policy_document.restore_testing_policy_document",
+   "issue": "Wildcard Resources for Backup Restore and Job Actions",
+   "risk": "The first statement grants backup:StartRestoreJob, backup:StartRestoreTestingJob, and related actions on all resources ('*'). This allows the restore testing role to initiate restore jobs against any backup vault or recovery point in the account, not just those designated for restore testing.",
+   "remediation": "Restrict the resources to specific backup vault and recovery point ARNs relevant to restore testing, e.g. ['arn:${data.aws_partition.current.partition}:backup:*:${data.aws_caller_identity.current.account_id}:backup-vault:*', 'arn:${data.aws_partition.current.partition}:backup:*:${data.aws_caller_identity.current.account_id}:recovery-point:*']."
+  },
+  "3": {
+   "resource": "data.aws_iam_policy_document.restore_testing_policy_document",
+   "issue": "Wildcard Resources for EC2 Describe and CreateTags Actions",
+   "risk": "EC2 permissions including ec2:CreateTags are granted on all resources ('*'). ec2:CreateTags on '*' allows the role to tag any EC2 resource in the account, which can be abused to manipulate resource ownership, bypass tag-based access controls, or affect billing and cost allocation.",
+   "remediation": "Restrict ec2:CreateTags to specific resource types and ARNs relevant to restore testing (e.g., newly created instances and volumes). Separate read-only Describe actions (which inherently require '*') from mutating actions and apply conditions such as aws:RequestedRegion or resource tag conditions to limit scope."
+  },
+  "4": {
+   "resource": "data.aws_iam_policy_document.restore_testing_policy_document",
+   "issue": "Wildcard Resources for RDS Describe Actions",
+   "risk": "RDS describe permissions are granted on all resources ('*'). While these are read-only, they allow the restore testing role to enumerate all RDS instances, clusters, snapshots, subnet groups, and parameter groups across the entire account, which could expose sensitive configuration information.",
+   "remediation": "Where possible, restrict RDS describe actions to specific DB instance or cluster ARNs. For actions that require '*' (e.g., DescribeDBSubnetGroups), consider using resource-based conditions or accept the limitation and document it. At minimum, scope to the specific region using aws:RequestedRegion condition keys."
+  },
+  "5": {
+   "resource": "data.aws_iam_policy_document.restore_testing_policy_document",
+   "issue": "CloudWatch Logs Wildcard Region and Account in Resource ARN",
+   "risk": "The logs resource ARN uses wildcards for both region ('*') and account ('*'), meaning the role can create log groups and write log events to CloudWatch Logs in any region and any account matching the path pattern. This could allow log injection into unintended accounts or regions.",
+   "remediation": "Restrict the log group ARN to the specific account ID and relevant region(s), e.g. 'arn:${data.aws_partition.current.partition}:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/backup/*'."
+  },
+  "6": {
+   "resource": "aws_iam_role.ab_role",
+   "issue": "No IAM Role Permissions Boundary",
+   "risk": "The backup IAM role is created without a permissions boundary. If the role or its attached policies are ever modified (e.g., through misconfiguration or compromise), there is no guardrail to prevent privilege escalation beyond the intended backup scope.",
+   "remediation": "Add a permissions_boundary attribute to the aws_iam_role resource pointing to a managed policy that defines the maximum allowable permissions for backup roles, e.g. permissions_boundary = 'arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/BackupRolePermissionsBoundary'."
+  },
+  "7": {
+   "resource": "aws_iam_role.restore_testing_role",
+   "issue": "No IAM Role Permissions Boundary",
+   "risk": "The restore testing IAM role is created without a permissions boundary. Combined with the broad permissions granted (iam:PassRole, ec2:CreateTags, backup:StartRestoreJob on '*'), the absence of a boundary means there is no enforced ceiling on what this role can do if policies are later expanded.",
+   "remediation": "Add a permissions_boundary attribute to the aws_iam_role.restore_testing_role resource referencing a restrictive boundary policy, e.g. permissions_boundary = 'arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/RestoreTestingRolePermissionsBoundary'."
+  }
+ }
+}

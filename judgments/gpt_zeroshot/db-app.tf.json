@@ -1,0 +1,113 @@
+{
+ "file": "db-app.tf",
+ "findings": [
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "RDS instance is publicly accessible",
+   "risk": "The database can be reached from the public internet if network paths allow it, increasing the likelihood of unauthorized access, brute-force attacks, and exposure of sensitive data.",
+   "remediation": "Set the attribute `publicly_accessible = false` in `aws_db_instance.default`."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "RDS storage encryption is disabled",
+   "risk": "Data at rest, snapshots, and automated backups are not encrypted, increasing impact if underlying storage or backups are accessed by unauthorized parties.",
+   "remediation": "Set `storage_encrypted = true` in `aws_db_instance.default` and preferably add `kms_key_id = <KMS key ARN>` to use a customer-managed KMS key."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Backups are disabled",
+   "risk": "With `backup_retention_period = 0`, there are no automated backups, increasing risk of permanent data loss after ransomware, accidental deletion, corruption, or operational failure.",
+   "remediation": "Set `backup_retention_period` to a value greater than `0` in `aws_db_instance.default`, for example `backup_retention_period = 7` or higher per retention requirements."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Final snapshot is skipped on deletion",
+   "risk": "Deleting the database will permanently remove data without creating a final recovery snapshot, increasing risk of irreversible data loss.",
+   "remediation": "Set `skip_final_snapshot = false` in `aws_db_instance.default` and provide `final_snapshot_identifier = \"<snapshot-name>\"`."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Enhanced monitoring is disabled",
+   "risk": "With `monitoring_interval = 0`, security-relevant database activity and operational anomalies are harder to detect and investigate.",
+   "remediation": "Set `monitoring_interval` to a supported non-zero value such as `60` in `aws_db_instance.default` and configure the required monitoring role if needed."
+  },
+  {
+   "resource": "aws_db_subnet_group.default",
+   "issue": "Database subnet group uses web/application subnets",
+   "risk": "Placing the database in web-facing subnets increases exposure and weakens network segmentation, making lateral movement and unintended access more likely.",
+   "remediation": "Change `subnet_ids` in `aws_db_subnet_group.default` to use dedicated private database subnets instead of `aws_subnet.web_subnet.id` and `aws_subnet.web_subnet2.id`."
+  },
+  {
+   "resource": "aws_security_group_rule.egress",
+   "issue": "Unrestricted outbound access from database security group",
+   "risk": "Allowing all egress to `0.0.0.0/0` permits unnecessary outbound connectivity, which can enable data exfiltration or command-and-control traffic if the database is compromised.",
+   "remediation": "Restrict the `cidr_blocks`, `protocol`, and port range in `aws_security_group_rule.egress` to only required destinations, or remove the rule if outbound access is not needed."
+  },
+  {
+   "resource": "aws_iam_role_policy.ec2policy",
+   "issue": "Overly permissive IAM policy with wildcard actions and resources",
+   "risk": "Granting `s3:*`, `ec2:*`, and `rds:*` on `*` violates least privilege and enables full compromise or destructive actions across storage, compute, and database services if the instance or credentials are compromised.",
+   "remediation": "Replace the inline policy in `aws_iam_role_policy.ec2policy` with least-privilege permissions by narrowing the `Action` list to only required API calls and scoping `Resource` to specific ARNs."
+  },
+  {
+   "resource": "aws_instance.db_app",
+   "issue": "Plaintext database credentials embedded in user data",
+   "risk": "Secrets in `user_data` can be exposed through Terraform state, instance metadata access paths, console/API retrieval, logs, or backups, leading to database credential compromise.",
+   "remediation": "Remove the plaintext values from `user_data` in `aws_instance.db_app`; store the password in AWS Secrets Manager or SSM Parameter Store and retrieve it securely at runtime using the instance role."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c8"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c6"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c4",
+    "c11"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c2"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": [
+    "c24"
+   ]
+  },
+  {
+   "finding": 7,
+   "candidates": [
+    "c14",
+    "c15",
+    "c16",
+    "c17"
+   ]
+  },
+  {
+   "finding": 8,
+   "candidates": []
+  }
+ ]
+}

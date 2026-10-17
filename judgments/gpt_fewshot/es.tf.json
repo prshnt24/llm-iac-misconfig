@@ -1,0 +1,89 @@
+{
+ "file": "es.tf",
+ "findings": [
+  {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Outdated Elasticsearch version",
+   "risk": "Elasticsearch 2.3 is end-of-life and contains known security vulnerabilities that could be exploited to compromise the domain or its data.",
+   "remediation": "Change the elasticsearch_version attribute from \"2.3\" to a currently supported and secure version supported by Amazon OpenSearch Service."
+  },
+  {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Encryption at rest not enabled",
+   "risk": "Data stored on the domain's EBS volumes may be exposed if the underlying storage is accessed or compromised.",
+   "remediation": "Add an encrypt_at_rest block to aws_elasticsearch_domain.monitoring-framework with enabled = true."
+  },
+  {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Node-to-node encryption not enabled",
+   "risk": "Traffic between cluster nodes may be intercepted or read if the internal network path is compromised.",
+   "remediation": "Add a node_to_node_encryption block to aws_elasticsearch_domain.monitoring-framework with enabled = true."
+  },
+  {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Encryption in transit not enforced",
+   "risk": "Client connections to the Elasticsearch domain may use insecure transport, allowing interception of sensitive data in transit.",
+   "remediation": "Add a domain_endpoint_options block to aws_elasticsearch_domain.monitoring-framework with enforce_https = true and preferably tls_security_policy set to a modern minimum such as \"Policy-Min-TLS-1-2-2019-07\"."
+  },
+  {
+   "resource": "data.aws_iam_policy_document.policy",
+   "issue": "Overly broad Elasticsearch permissions",
+   "risk": "The policy grants es:* on all resources, enabling full administrative and data access if abused.",
+   "remediation": "Replace actions = [\"es:*\"] with only the required Elasticsearch actions and replace resources = [\"*\"] with the specific ARN of aws_elasticsearch_domain.monitoring-framework."
+  },
+  {
+   "resource": "data.aws_iam_policy_document.policy",
+   "issue": "Public wildcard principal in Elasticsearch access policy",
+   "risk": "identifiers = [\"*\"] allows any AWS principal to access the domain, which can expose the cluster and its data to unauthorized users.",
+   "remediation": "In the principals block, replace identifiers = [\"*\"] with only the specific AWS account, IAM role, or IAM user ARNs that require access."
+  },
+  {
+   "resource": "aws_elasticsearch_domain_policy.monitoring-framework-policy",
+   "issue": "Publicly permissive domain access policy",
+   "risk": "Applying a policy that allows any principal es:* access can make the Elasticsearch domain broadly accessible and fully controllable by unauthorized parties.",
+   "remediation": "Update access_policies to use a least-privilege policy: restrict principals to approved IAM ARNs, limit actions to required es: permissions, and scope resources to the specific domain ARN instead of \"*\"."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c72"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c74"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c75"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c76",
+    "c77",
+    "c79"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c78"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  }
+ ]
+}

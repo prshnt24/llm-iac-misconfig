@@ -1,0 +1,136 @@
+{
+ "file": "ec2.tf",
+ "findings": [
+  {
+   "resource": "aws_instance.web_host",
+   "issue": "Hardcoded AWS credentials in user_data",
+   "risk": "Plaintext access keys in instance user data can be retrieved by anyone with access to the instance metadata, console, logs, or state/history, leading to credential compromise and unauthorized access to AWS resources.",
+   "remediation": "Remove the hardcoded `export AWS_ACCESS_KEY_ID`, `export AWS_SECRET_ACCESS_KEY`, and `export AWS_DEFAULT_REGION` lines from the `user_data` attribute. Attach an IAM role to the instance using an `iam_instance_profile` attribute and manage secrets with AWS Secrets Manager or SSM Parameter Store instead of embedding them in `user_data`."
+  },
+  {
+   "resource": "aws_ebs_volume.web_host_storage",
+   "issue": "EBS volume encryption not enabled",
+   "risk": "Data stored on the volume may be exposed if the underlying storage is accessed improperly or snapshots/copies are shared, increasing the risk of sensitive data disclosure.",
+   "remediation": "Set the `encrypted = true` attribute on `aws_ebs_volume.web_host_storage`. Optionally add `kms_key_id` to use a customer-managed KMS key."
+  },
+  {
+   "resource": "aws_ebs_snapshot.example_snapshot",
+   "issue": "Snapshot created from unencrypted volume",
+   "risk": "The snapshot inherits the lack of encryption from the source volume, which can expose backed-up data if accessed or shared improperly.",
+   "remediation": "Encrypt the source volume by setting `aws_ebs_volume.web_host_storage.encrypted = true` and recreate the snapshot. If creating a separate encrypted copy, use an encrypted snapshot/copy workflow with a KMS key."
+  },
+  {
+   "resource": "aws_security_group.web-node",
+   "issue": "SSH ingress open to the internet",
+   "risk": "Allowing `0.0.0.0/0` access to port 22 exposes the instance to brute-force attacks, credential stuffing, and unauthorized remote access attempts.",
+   "remediation": "In the `ingress` block for port 22, replace `cidr_blocks = [\"0.0.0.0/0\"]` with a restricted trusted IP range such as your administrative CIDR, or remove the rule and use AWS Systems Manager Session Manager instead."
+  },
+  {
+   "resource": "aws_security_group.web-node",
+   "issue": "Unrestricted all-ports outbound access",
+   "risk": "Allowing all outbound traffic to `0.0.0.0/0` can enable data exfiltration and unrestricted communication to malicious external endpoints if the instance is compromised.",
+   "remediation": "Restrict the `egress` block by limiting `from_port`, `to_port`, `protocol`, and `cidr_blocks` to only required destinations and ports instead of `protocol = \"-1\"` with `cidr_blocks = [\"0.0.0.0/0\"]`."
+  },
+  {
+   "resource": "aws_subnet.web_subnet",
+   "issue": "Automatic public IP assignment enabled",
+   "risk": "Instances launched in the subnet automatically receive public IPs, increasing internet exposure and attack surface.",
+   "remediation": "Set `map_public_ip_on_launch = false` on `aws_subnet.web_subnet` and place internet-facing resources behind controlled entry points such as a load balancer or bastion architecture."
+  },
+  {
+   "resource": "aws_subnet.web_subnet2",
+   "issue": "Automatic public IP assignment enabled",
+   "risk": "Instances launched in the subnet automatically receive public IPs, increasing internet exposure and attack surface.",
+   "remediation": "Set `map_public_ip_on_launch = false` on `aws_subnet.web_subnet2` and place internet-facing resources behind controlled entry points such as a load balancer or bastion architecture."
+  },
+  {
+   "resource": "aws_s3_bucket.flowbucket",
+   "issue": "S3 bucket encryption not configured",
+   "risk": "VPC Flow Logs stored in the bucket may be readable if underlying storage access is compromised or if organizational encryption requirements are not met, increasing the risk of log data exposure.",
+   "remediation": "Add server-side encryption configuration to the bucket using an `aws_s3_bucket_server_side_encryption_configuration` resource for `aws_s3_bucket.flowbucket`, setting SSE-S3 or SSE-KMS as the default."
+  },
+  {
+   "resource": "aws_s3_bucket.flowbucket",
+   "issue": "S3 bucket versioning not enabled",
+   "risk": "Accidental or malicious deletion/overwrite of log objects cannot be recovered easily, reducing integrity and availability of audit logs.",
+   "remediation": "Enable versioning by adding an `aws_s3_bucket_versioning` resource for `aws_s3_bucket.flowbucket` with `versioning_configuration { status = \"Enabled\" }`."
+  },
+  {
+   "resource": "aws_s3_bucket.flowbucket",
+   "issue": "force_destroy enabled on log bucket",
+   "risk": "The bucket and all contained flow logs can be deleted during Terraform destroy or misconfiguration, causing loss of audit evidence and weakening forensic capabilities.",
+   "remediation": "Set `force_destroy = false` on `aws_s3_bucket.flowbucket` to prevent automatic deletion of non-empty log buckets."
+  },
+  {
+   "resource": "aws_s3_bucket.flowbucket",
+   "issue": "No public access block configured",
+   "risk": "Without an explicit public access block, future bucket policies or ACL changes could accidentally expose sensitive flow logs publicly.",
+   "remediation": "Add an `aws_s3_bucket_public_access_block` resource for `aws_s3_bucket.flowbucket` with `block_public_acls = true`, `ignore_public_acls = true`, `block_public_policy = true`, and `restrict_public_buckets = true`."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c32"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c26",
+    "c28"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c43"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c45"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c46"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": [
+    "c47"
+   ]
+  },
+  {
+   "finding": 7,
+   "candidates": [
+    "c39"
+   ]
+  },
+  {
+   "finding": 8,
+   "candidates": [
+    "c41"
+   ]
+  },
+  {
+   "finding": 9,
+   "candidates": []
+  },
+  {
+   "finding": 10,
+   "candidates": [
+    "c35"
+   ]
+  }
+ ]
+}

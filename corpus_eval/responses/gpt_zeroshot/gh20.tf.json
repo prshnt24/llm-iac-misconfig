@@ -1,0 +1,8 @@
+{
+  "model": "global.openai.gpt-5.4",
+  "strategy": "zeroshot",
+  "file": "gh20.tf",
+  "temperature": null,
+  "timestamp": "2026-10-17T02:13:29",
+  "response": "[\n  {\n    \"resource\": \"aws_wafregional_web_acl.wafacl\",\n    \"issue\": \"Default action allows all requests\",\n    \"risk\": \"Any request that does not match a blocking rule is permitted, which weakens protection and can allow malicious traffic through if it is not explicitly covered by the configured rules.\",\n    \"remediation\": \"Change the `default_action` block from `type = \\\"ALLOW\\\"` to `type = \\\"BLOCK\\\"` and explicitly add allow rules for trusted traffic patterns.\"\n  }\n]"
+}

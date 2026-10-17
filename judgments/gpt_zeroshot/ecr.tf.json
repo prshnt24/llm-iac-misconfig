@@ -1,0 +1,31 @@
+{
+ "file": "ecr.tf",
+ "findings": [
+  {
+   "resource": "aws_ecr_repository.repository",
+   "issue": "ECR image tags are mutable",
+   "risk": "Mutable tags allow an existing image tag to be overwritten with different image contents, which can enable supply chain attacks, rollback confusion, and deployment of unverified images under trusted tags such as latest or release tags.",
+   "remediation": "Set the repository to use immutable tags by changing the attribute `image_tag_mutability = \"IMMUTABLE\"` in `aws_ecr_repository.repository`."
+  },
+  {
+   "resource": "aws_ecr_repository.repository",
+   "issue": "ECR image scanning on push is not enabled",
+   "risk": "Without image scanning on push, vulnerable container images may be stored and deployed without automatic detection of known CVEs, increasing the likelihood of running exploitable software in production.",
+   "remediation": "Add an image scanning configuration block to `aws_ecr_repository.repository`: `image_scanning_configuration { scan_on_push = true }`."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c51"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c50"
+   ]
+  }
+ ]
+}

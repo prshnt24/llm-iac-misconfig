@@ -1,0 +1,36 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_efs_file_system_policy.this",
+   "issue": "bypass_policy_lockout_safety_check",
+   "risk": "Allows bypassing the safety check that prevents accidental policy lockouts, which can result in unauthorized access.",
+   "remediation": "Set `bypass_policy_lockout_safety_check` to `false` to enforce the safety check."
+  },
+  "1": {
+   "resource": "aws_vpc_security_group_ingress_rule.this",
+   "issue": "Unrestricted ingress rule",
+   "risk": "Allows unrestricted access to the security group, which can expose the EFS to unauthorized access.",
+   "remediation": "Restrict the `cidr_ipv4` and `cidr_ipv6` attributes to specific, trusted IP ranges."
+  },
+  "2": {
+   "resource": "aws_vpc_security_group_egress_rule.this",
+   "issue": "Unrestricted egress rule",
+   "risk": "Allows unrestricted outbound traffic from the security group, which can be used for data exfiltration.",
+   "remediation": "Restrict the `cidr_ipv4` and `cidr_ipv6` attributes to specific, trusted IP ranges."
+  }
+ }
+}

@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "gh27.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:16:12",
+  "response": "```json\n[\n  {\n    \"resource\": \"aws_sns_topic_policy.billing_alert_policy\",\n    \"issue\": \"Wildcard Principal in SNS Topic Policy\",\n    \"risk\": \"Allows any AWS account to subscribe to the SNS topic, potentially leading to unauthorized access to sensitive notifications.\",\n    \"remediation\": \"Replace \\\"*\\\" with specific AWS account IDs or use more restrictive conditions to limit who can subscribe.\"\n  },\n  {\n    \"resource\": \"aws_sns_topic_subscription.email_alerts\",\n    \"issue\": \"Lack of Subscription Confirmation\",\n    \"risk\": \"Email subscriptions to the SNS topic are not automatically confirmed, which may result in missed alerts if the recipient does not manually confirm the subscription.\",\n    \"remediation\": \"Set `confirm_subscription` to `true` to automatically confirm subscriptions, or ensure a process is in place for manual confirmation.\"\n  }\n]\n```"
+}

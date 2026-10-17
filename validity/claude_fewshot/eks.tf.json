@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 6,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "6": {
+   "resource": "output.kubeconfig-certificate-authority-data",
+   "issue": "Sensitive cluster certificate authority data exposed as a plain Terraform output",
+   "risk": "The cluster's certificate authority data is written to Terraform state and any output consumer in plaintext, which could allow an attacker who gains access to state files or CI/CD logs to impersonate the cluster or craft malicious kubeconfig files",
+   "remediation": "Add sensitive = true to the output block so Terraform masks the value in logs and plan output, and ensure the state backend is encrypted and access-controlled"
+  }
+ }
+}

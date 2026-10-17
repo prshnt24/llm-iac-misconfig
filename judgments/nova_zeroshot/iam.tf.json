@@ -1,0 +1,52 @@
+{
+ "file": "iam.tf",
+ "findings": [
+  {
+   "resource": "aws_iam_user.user",
+   "issue": "force_destroy set to true",
+   "risk": "If the IAM user is deleted, all associated resources will be deleted without warning, which can lead to data loss or unexpected behavior.",
+   "remediation": "Set `force_destroy` to `false` to prevent accidental deletion of associated resources."
+  },
+  {
+   "resource": "aws_iam_access_key.user",
+   "issue": "Access key created without rotation policy",
+   "risk": "Long-lived access keys increase the risk of unauthorized access if the key is compromised.",
+   "remediation": "Implement a rotation policy for access keys using `aws_iam_access_key_rotation` or manage rotation manually."
+  },
+  {
+   "resource": "aws_iam_user_policy.userpolicy",
+   "issue": "Overly permissive policy",
+   "risk": "The policy allows all actions on EC2, S3, Lambda, and CloudWatch, which can lead to unauthorized access and potential misuse of resources.",
+   "remediation": "Refine the policy to grant only the necessary permissions required for the user. Avoid using wildcard actions and resources."
+  },
+  {
+   "resource": "output.secret",
+   "issue": "Exposure of sensitive information",
+   "risk": "Outputting the encrypted secret of the access key can lead to exposure of sensitive information if the output is not properly secured.",
+   "remediation": "Avoid outputting sensitive information like access keys. If necessary, ensure that outputs are securely managed and access is restricted."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c84",
+    "c85",
+    "c86",
+    "c87"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  }
+ ]
+}

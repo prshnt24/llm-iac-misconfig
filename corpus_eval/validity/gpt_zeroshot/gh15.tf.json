@@ -1,0 +1,46 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "VALID"
+  },
+  {
+   "finding": 2,
+   "label": "VALID"
+  },
+  {
+   "finding": 3,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "module.vpc",
+   "issue": "VPC configured with only public subnets",
+   "risk": "Workloads placed in these subnets are directly exposed to the internet, increasing the attack surface and making accidental public exposure more likely.",
+   "remediation": "Add private subnets and place ECS tasks in them instead of public subnets. Update the module arguments to include `private_subnets = [...]` and use those subnet IDs for compute resources."
+  },
+  "1": {
+   "resource": "module.ecs-service",
+   "issue": "ECS tasks deployed into public subnets",
+   "risk": "Running ECS tasks in public subnets increases exposure to internet-based attacks and makes network isolation weaker than using private subnets.",
+   "remediation": "Change `ecs_subnet_ids = module.vpc.public_subnets` to use private subnets, for example `ecs_subnet_ids = module.vpc.private_subnets` after defining private subnets in the VPC module."
+  },
+  "2": {
+   "resource": "module.ecs-service",
+   "issue": "Public IP assignment enabled for ECS tasks",
+   "risk": "Assigning public IPs allows direct internet reachability to tasks, increasing the likelihood of unauthorized access or exploitation.",
+   "remediation": "Set `assign_public_ip = false` and place the tasks in private subnets with controlled ingress through a load balancer or other restricted entry point."
+  },
+  "3": {
+   "resource": "aws_security_group_rule.ecs_allow_http",
+   "issue": "Ingress allowed from all IPv4 addresses",
+   "risk": "Opening application ports to `0.0.0.0/0` exposes the service to the entire internet, enabling scanning, brute force attempts, and exploitation of application vulnerabilities.",
+   "remediation": "Replace `cidr_blocks = [\"0.0.0.0/0\"]` with a restricted set of trusted CIDRs, or reference a load balancer security group using `source_security_group_id`."
+  }
+ }
+}

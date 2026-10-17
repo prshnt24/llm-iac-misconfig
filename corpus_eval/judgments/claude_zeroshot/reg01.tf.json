@@ -1,0 +1,67 @@
+{
+ "file": "reg01.tf",
+ "findings": [
+  {
+   "resource": "aws_cloudwatch_log_group.flow_log",
+   "issue": "CloudWatch Log Group KMS Encryption Not Enforced",
+   "risk": "The KMS key ID for the CloudWatch Log Group is sourced entirely from the variable `var.flow_log_cloudwatch_log_group_kms_key_id` with no default or enforcement. If the variable is left empty or null, VPC Flow Log data at rest in CloudWatch Logs will be unencrypted, exposing potentially sensitive network traffic metadata to anyone with access to the log group.",
+   "remediation": "Ensure `var.flow_log_cloudwatch_log_group_kms_key_id` is always provided and non-null, or create a dedicated KMS key resource and reference it directly. Add a validation rule to the variable: `validation { condition = var.flow_log_cloudwatch_log_group_kms_key_id != \"\" && var.flow_log_cloudwatch_log_group_kms_key_id != null error_message = \"A KMS key must be provided for CloudWatch Log Group encryption.\" }`. Alternatively, add `aws_kms_key.flow_log_key` and set `kms_key_id = aws_kms_key.flow_log_key.arn` directly in the resource."
+  },
+  {
+   "resource": "aws_cloudwatch_log_group.flow_log",
+   "issue": "CloudWatch Log Group Retention Period Not Enforced",
+   "risk": "The retention period is driven entirely by `var.flow_log_cloudwatch_log_group_retention_in_days`. If the variable defaults to `0` (the Terraform/AWS default meaning never expire), log data is retained indefinitely. This increases storage costs and the blast radius of a log group compromise, as historical network flow data accumulates without bound.",
+   "remediation": "Set a sensible default and add a validation constraint on the variable, for example: `default = 90` and `validation { condition = var.flow_log_cloudwatch_log_group_retention_in_days > 0 error_message = \"Retention period must be greater than 0 days.\" }`. Recommended values are 30, 60, 90, or 365 days depending on compliance requirements."
+  },
+  {
+   "resource": "aws_flow_log.this",
+   "issue": "Flow Log Traffic Type May Not Capture All Traffic",
+   "risk": "The `traffic_type` attribute is controlled by `var.flow_log_traffic_type`. If this variable defaults to `ACCEPT` or `REJECT` rather than `ALL`, security-relevant traffic (e.g., rejected connection attempts indicating reconnaissance, or accepted traffic for forensic analysis) will be silently omitted from logs, reducing the effectiveness of threat detection and incident response.",
+   "remediation": "Set the default value of `var.flow_log_traffic_type` to `\"ALL\"` and add a validation: `validation { condition = var.flow_log_traffic_type == \"ALL\" error_message = \"Flow log traffic type must be ALL to capture complete network visibility.\" }`. In the resource, this is the `traffic_type` attribute of `aws_flow_log.this`."
+  },
+  {
+   "resource": "aws_flow_log.this",
+   "issue": "Flow Log Maximum Aggregation Interval May Be Too Long",
+   "risk": "The `max_aggregation_interval` is sourced from `var.flow_log_max_aggregation_interval`. The AWS default is 600 seconds (10 minutes). Using a 10-minute aggregation window delays detection of active threats or ongoing attacks, reducing the timeliness of security alerting and incident response.",
+   "remediation": "Set the default value of `var.flow_log_max_aggregation_interval` to `60` (1 minute) for near-real-time visibility: `default = 60`. In the resource block `aws_flow_log.this`, the attribute is `max_aggregation_interval = var.flow_log_max_aggregation_interval`."
+  },
+  {
+   "resource": "aws_iam_policy.vpc_flow_log_cloudwatch / data.aws_iam_policy_document.vpc_flow_log_cloudwatch",
+   "issue": "Overly Permissive IAM Policy \u2014 Includes Read Permissions Not Required for Log Delivery",
+   "risk": "The IAM policy grants `logs:DescribeLogGroups` and `logs:DescribeLogStreams` in addition to the write actions needed for log delivery. These read/list permissions are not required for VPC Flow Logs to push data to CloudWatch and violate the principle of least privilege. If the role is compromised, an attacker can enumerate all log groups and streams in the account, aiding reconnaissance.",
+   "remediation": "Remove `logs:DescribeLogGroups` and `logs:DescribeLogStreams` from the `actions` list in `data.aws_iam_policy_document.vpc_flow_log_cloudwatch`. The minimum required permissions for VPC Flow Logs delivery are only `logs:CreateLogStream` and `logs:PutLogEvents`. The corrected actions block should be: `actions = [\"logs:CreateLogStream\", \"logs:PutLogEvents\"]`."
+  },
+  {
+   "resource": "data.aws_iam_policy_document.flow_log_cloudwatch_assume_role",
+   "issue": "Missing aws:SourceAccount / aws:SourceArn Condition on Trust Policy",
+   "risk": "The assume-role trust policy for the VPC Flow Logs service role allows `vpc-flow-logs.amazonaws.com` to assume the role without restricting the source account or source ARN via condition keys. This exposes the role to a confused deputy attack, where a VPC Flow Log in another AWS account could potentially assume this role and write to your CloudWatch Log Group.",
+   "remediation": "Add mandatory `aws:SourceAccount` and `aws:SourceArn` conditions to the trust policy statement. Since `var.flow_log_cloudwatch_iam_role_conditions` is a dynamic block that can accept these, ensure the variable is always populated with at minimum: `{ test = \"StringEquals\", variable = \"aws:SourceAccount\", values = [\"<your-account-id>\"] }` and `{ test = \"ArnLike\", variable = \"aws:SourceArn\", values = [\"arn:aws:ec2:<region>:<account-id>:vpc-flow-log/*\"] }`. Alternatively, hard-code these conditions directly in the `data.aws_iam_policy_document.flow_log_cloudwatch_assume_role` statement block rather than relying on a variable."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  }
+ ]
+}

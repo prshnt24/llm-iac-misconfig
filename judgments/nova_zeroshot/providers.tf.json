@@ -1,0 +1,19 @@
+{
+ "file": "providers.tf",
+ "findings": [
+  {
+   "resource": "provider.aws.plain_text_access_keys_provider",
+   "issue": "Plain Text Access Keys",
+   "risk": "Using plain text access keys in the provider configuration poses a significant security risk as it can lead to unauthorized access if the keys are exposed.",
+   "remediation": "Use AWS credentials from environment variables, shared credentials file, or IAM roles for EC2 instead of hardcoding them. Remove the `access_key` and `secret_key` attributes and rely on the default credential chain.\n\n```hcl\nprovider \"aws\" {\n  alias   = \"secure_provider\"\n  region  = \"us-west-1\"\n  // Remove access_key and secret_key\n}\n```"
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c107"
+   ]
+  }
+ ]
+}

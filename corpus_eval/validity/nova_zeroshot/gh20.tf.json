@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_wafregional_web_acl.wafacl",
+   "issue": "Default action set to ALLOW",
+   "risk": "By default, all requests not matching any rules will be allowed, which may expose the application to potential threats.",
+   "remediation": "Change the default action type from \"ALLOW\" to \"BLOCK\" to deny requests by default unless explicitly allowed by a rule."
+  }
+ }
+}

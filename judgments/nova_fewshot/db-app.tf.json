@@ -1,0 +1,81 @@
+{
+ "file": "db-app.tf",
+ "findings": [
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Publicly accessible database",
+   "risk": "The database is accessible from the public internet, increasing the attack surface.",
+   "remediation": "Set `publicly_accessible = false` to restrict access to within the VPC."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Storage not encrypted",
+   "risk": "Data at rest in the database is not encrypted, posing a risk if the storage media is compromised.",
+   "remediation": "Set `storage_encrypted = true` and provide a `kms_key_id` for the encryption key."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "No backup retention period",
+   "risk": "There are no automated backups, which means data cannot be recovered in case of accidental deletion or corruption.",
+   "remediation": "Set `backup_retention_period` to a value greater than 0, e.g., `backup_retention_period = 7`."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Weak database credentials in user data",
+   "risk": "Database credentials are exposed in the EC2 user data, which is stored in plain text and can be accessed by anyone with EC2 instance access.",
+   "remediation": "Use AWS Secrets Manager or Parameter Store to securely manage and retrieve database credentials."
+  },
+  {
+   "resource": "aws_security_group_rule.egress",
+   "issue": "Overly permissive egress rule",
+   "risk": "The egress rule allows all outbound traffic, which can be used by an attacker to exfiltrate data or communicate with external servers.",
+   "remediation": "Restrict the egress rule to only allow necessary outbound traffic, e.g., specific ports and destinations."
+  },
+  {
+   "resource": "aws_iam_role_policy.ec2policy",
+   "issue": "Overly broad IAM permissions",
+   "risk": "The IAM role associated with the EC2 instance has permissions for all S3, EC2, and RDS actions, which is a security risk if the instance is compromised.",
+   "remediation": "Limit the IAM policy to only the necessary actions and resources required by the EC2 instance."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c8"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c6"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c4",
+    "c11"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c24"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c14",
+    "c15",
+    "c16",
+    "c17"
+   ]
+  }
+ ]
+}

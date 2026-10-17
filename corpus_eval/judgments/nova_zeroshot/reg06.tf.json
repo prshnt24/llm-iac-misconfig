@@ -1,0 +1,47 @@
+{
+ "file": "reg06.tf",
+ "findings": [
+  {
+   "resource": "aws_route53_zone.this",
+   "issue": "force_destroy",
+   "risk": "Allows the zone to be deleted even if it contains records, which can lead to unintended data loss.",
+   "remediation": "Remove the 'force_destroy' attribute or set it to 'false' to prevent accidental deletion."
+  },
+  {
+   "resource": "aws_route53_zone.ignore_vpc",
+   "issue": "force_destroy",
+   "risk": "Allows the zone to be deleted even if it contains records, which can lead to unintended data loss.",
+   "remediation": "Remove the 'force_destroy' attribute or set it to 'false' to prevent accidental deletion."
+  },
+  {
+   "resource": "aws_route53_key_signing_key.this",
+   "issue": "key_management_service_arn",
+   "risk": "Using a hardcoded KMS key ARN instead of a dynamic reference can lead to key management issues and potential security risks.",
+   "remediation": "Ensure that 'key_management_service_arn' is dynamically referenced from a secure and managed KMS key."
+  },
+  {
+   "resource": "module.route53_dnssec_kms",
+   "issue": "enable_key_rotation",
+   "risk": "Disabling key rotation can lead to prolonged use of the same key, increasing the risk of compromise.",
+   "remediation": "Set 'enable_key_rotation' to 'true' to enable automatic key rotation."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  }
+ ]
+}

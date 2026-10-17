@@ -1,0 +1,204 @@
+{
+ "items": [
+  {
+   "finding": 1,
+   "known": "CKV_AWS_96 Ensure all data stored in Aurora is securely encrypted at rest (resource aws_rds_cluster.app1-rds-cluster)",
+   "issue": "Storage Encryption Not Enabled",
+   "remediation": "Add storage_encrypted = true and specify a KMS key via kms_key_id = \"<your_kms_key_arn>\" to enforce encryption at rest for all cluster data."
+  },
+  {
+   "finding": 2,
+   "known": "CKV_AWS_139 Ensure that RDS clusters have deletion protection enabled (resource aws_rds_cluster.app1-rds-cluster)",
+   "issue": "Deletion Protection Not Enabled",
+   "remediation": "Add deletion_protection = true to the resource block to prevent accidental or unauthorised deletion of the cluster."
+  },
+  {
+   "finding": 4,
+   "known": "CKV_AWS_96 Ensure all data stored in Aurora is securely encrypted at rest (resource aws_rds_cluster.app2-rds-cluster)",
+   "issue": "Storage Encryption Not Enabled",
+   "remediation": "Add storage_encrypted = true and specify a KMS key via kms_key_id = \"<your_kms_key_arn>\" to enforce encryption at rest for all cluster data."
+  },
+  {
+   "finding": 5,
+   "known": "CKV_AWS_139 Ensure that RDS clusters have deletion protection enabled (resource aws_rds_cluster.app2-rds-cluster)",
+   "issue": "Deletion Protection Not Enabled",
+   "remediation": "Add deletion_protection = true to the resource block to prevent accidental or unauthorised deletion of the cluster."
+  },
+  {
+   "finding": 6,
+   "known": "CKV_AWS_96 Ensure all data stored in Aurora is securely encrypted at rest (resource aws_rds_cluster.app3-rds-cluster)",
+   "issue": "Storage Encryption Not Enabled",
+   "remediation": "Add storage_encrypted = true and specify a KMS key via kms_key_id = \"<your_kms_key_arn>\" to enforce encryption at rest for all cluster data."
+  },
+  {
+   "finding": 7,
+   "known": "CKV_AWS_139 Ensure that RDS clusters have deletion protection enabled (resource aws_rds_cluster.app3-rds-cluster)",
+   "issue": "Deletion Protection Not Enabled",
+   "remediation": "Add deletion_protection = true to the resource block to prevent accidental or unauthorised deletion of the cluster."
+  },
+  {
+   "finding": 8,
+   "known": "CKV_AWS_96 Ensure all data stored in Aurora is securely encrypted at rest (resource aws_rds_cluster.app4-rds-cluster)",
+   "issue": "Storage Encryption Not Enabled",
+   "remediation": "Add storage_encrypted = true and specify a KMS key via kms_key_id = \"<your_kms_key_arn>\" to enforce encryption at rest for all cluster data."
+  },
+  {
+   "finding": 9,
+   "known": "CKV_AWS_139 Ensure that RDS clusters have deletion protection enabled (resource aws_rds_cluster.app4-rds-cluster)",
+   "issue": "Deletion Protection Not Enabled",
+   "remediation": "Add deletion_protection = true to the resource block to prevent accidental or unauthorised deletion of the cluster."
+  },
+  {
+   "finding": 10,
+   "known": "CKV_AWS_96 Ensure all data stored in Aurora is securely encrypted at rest (resource aws_rds_cluster.app5-rds-cluster)",
+   "issue": "Storage Encryption Not Enabled",
+   "remediation": "Add storage_encrypted = true and specify a KMS key via kms_key_id = \"<your_kms_key_arn>\" to enforce encryption at rest for all cluster data."
+  },
+  {
+   "finding": 11,
+   "known": "CKV_AWS_139 Ensure that RDS clusters have deletion protection enabled (resource aws_rds_cluster.app5-rds-cluster)",
+   "issue": "Deletion Protection Not Enabled",
+   "remediation": "Add deletion_protection = true to the resource block to prevent accidental or unauthorised deletion of the cluster."
+  },
+  {
+   "finding": 12,
+   "known": "CKV_AWS_96 Ensure all data stored in Aurora is securely encrypted at rest (resource aws_rds_cluster.app6-rds-cluster)",
+   "issue": "Storage Encryption Not Enabled",
+   "remediation": "Add storage_encrypted = true and specify a KMS key via kms_key_id = \"<your_kms_key_arn>\" to enforce encryption at rest for all cluster data."
+  },
+  {
+   "finding": 13,
+   "known": "CKV_AWS_139 Ensure that RDS clusters have deletion protection enabled (resource aws_rds_cluster.app6-rds-cluster)",
+   "issue": "Deletion Protection Not Enabled",
+   "remediation": "Add deletion_protection = true to the resource block to prevent accidental or unauthorised deletion of the cluster."
+  },
+  {
+   "finding": 14,
+   "known": "CKV_AWS_96 Ensure all data stored in Aurora is securely encrypted at rest (resource aws_rds_cluster.app7-rds-cluster)",
+   "issue": "Storage Encryption Not Enabled",
+   "remediation": "Add storage_encrypted = true and specify a KMS key via kms_key_id = \"<your_kms_key_arn>\" to enforce encryption at rest for all cluster data."
+  },
+  {
+   "finding": 15,
+   "known": "CKV_AWS_139 Ensure that RDS clusters have deletion protection enabled (resource aws_rds_cluster.app7-rds-cluster)",
+   "issue": "Deletion Protection Not Enabled",
+   "remediation": "Add deletion_protection = true to the resource block to prevent accidental or unauthorised deletion of the cluster."
+  },
+  {
+   "finding": 16,
+   "known": "CKV_AWS_96 Ensure all data stored in Aurora is securely encrypted at rest (resource aws_rds_cluster.app8-rds-cluster)",
+   "issue": "Storage Encryption Not Enabled",
+   "remediation": "Add storage_encrypted = true and specify a KMS key via kms_key_id = \"<your_kms_key_arn>\" to enforce encryption at rest for all cluster data."
+  },
+  {
+   "finding": 17,
+   "known": "CKV_AWS_139 Ensure that RDS clusters have deletion protection enabled (resource aws_rds_cluster.app8-rds-cluster)",
+   "issue": "Deletion Protection Not Enabled",
+   "remediation": "Add deletion_protection = true to the resource block to prevent accidental or unauthorised deletion of the cluster."
+  },
+  {
+   "finding": 18,
+   "known": "CKV_AWS_96 Ensure all data stored in Aurora is securely encrypted at rest (resource aws_rds_cluster.app9-rds-cluster)",
+   "issue": "Storage Encryption Not Enabled",
+   "remediation": "Add storage_encrypted = true and specify a KMS key via kms_key_id = \"<your_kms_key_arn>\" to enforce encryption at rest for all cluster data."
+  },
+  {
+   "finding": 19,
+   "known": "CKV_AWS_139 Ensure that RDS clusters have deletion protection enabled (resource aws_rds_cluster.app9-rds-cluster)",
+   "issue": "Deletion Protection Not Enabled",
+   "remediation": "Add deletion_protection = true to the resource block to prevent accidental or unauthorised deletion of the cluster."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correctly sets aws_rds_cluster storage_encrypted=true; kms_key_id is appropriate and specific."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "Correctly specifies deletion_protection = true on the cluster resource."
+  },
+  {
+   "item": 2,
+   "score": 2,
+   "reason": "Correctly sets aws_rds_cluster storage_encrypted=true; kms_key_id is appropriate and specific."
+  },
+  {
+   "item": 3,
+   "score": 2,
+   "reason": "Correctly specifies deletion_protection = true on the cluster resource."
+  },
+  {
+   "item": 4,
+   "score": 2,
+   "reason": "Correctly sets aws_rds_cluster storage_encrypted=true; kms_key_id is appropriate and specific."
+  },
+  {
+   "item": 5,
+   "score": 2,
+   "reason": "Correctly specifies deletion_protection = true on the cluster resource."
+  },
+  {
+   "item": 6,
+   "score": 2,
+   "reason": "Correctly sets aws_rds_cluster storage_encrypted=true; kms_key_id is appropriate and specific."
+  },
+  {
+   "item": 7,
+   "score": 2,
+   "reason": "Correctly specifies deletion_protection = true on the cluster resource."
+  },
+  {
+   "item": 8,
+   "score": 2,
+   "reason": "Correctly sets aws_rds_cluster storage_encrypted=true; kms_key_id is appropriate and specific."
+  },
+  {
+   "item": 9,
+   "score": 2,
+   "reason": "Correctly specifies deletion_protection = true on the cluster resource."
+  },
+  {
+   "item": 10,
+   "score": 2,
+   "reason": "Correctly sets aws_rds_cluster storage_encrypted=true; kms_key_id is appropriate and specific."
+  },
+  {
+   "item": 11,
+   "score": 2,
+   "reason": "Correctly specifies deletion_protection = true on the cluster resource."
+  },
+  {
+   "item": 12,
+   "score": 2,
+   "reason": "Correctly sets aws_rds_cluster storage_encrypted=true; kms_key_id is appropriate and specific."
+  },
+  {
+   "item": 13,
+   "score": 2,
+   "reason": "Correctly specifies deletion_protection = true on the cluster resource."
+  },
+  {
+   "item": 14,
+   "score": 2,
+   "reason": "Correctly sets aws_rds_cluster storage_encrypted=true; kms_key_id is appropriate and specific."
+  },
+  {
+   "item": 15,
+   "score": 2,
+   "reason": "Correctly specifies deletion_protection = true on the cluster resource."
+  },
+  {
+   "item": 16,
+   "score": 2,
+   "reason": "Correctly sets aws_rds_cluster storage_encrypted=true; kms_key_id is appropriate and specific."
+  },
+  {
+   "item": 17,
+   "score": 2,
+   "reason": "Correctly specifies deletion_protection = true on the cluster resource."
+  }
+ ]
+}

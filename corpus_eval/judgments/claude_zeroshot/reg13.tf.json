@@ -1,0 +1,157 @@
+{
+ "file": "reg13.tf",
+ "findings": [
+  {
+   "resource": "aws_kms_key.this",
+   "issue": "Key rotation may be disabled",
+   "risk": "The enable_key_rotation attribute is driven entirely by var.enable_key_rotation. If that variable defaults to false, automatic annual key rotation is disabled, increasing the risk of cryptographic exposure from long-lived key material.",
+   "remediation": "Set var.enable_key_rotation to true by default in the variable definition, or hard-code enable_key_rotation = true in the resource block. AWS recommends enabling rotation for all symmetric KMS keys."
+  },
+  {
+   "resource": "aws_kms_key.this",
+   "issue": "bypass_policy_lockout_safety_check may be enabled",
+   "risk": "If var.bypass_policy_lockout_safety_check is true, Terraform can apply a key policy that removes all administrative access, permanently locking out all principals and making the key unmanageable.",
+   "remediation": "Set the default value of var.bypass_policy_lockout_safety_check to false and avoid setting it to true in any environment. The attribute bypass_policy_lockout_safety_check should be removed or explicitly set to false in the resource block."
+  },
+  {
+   "resource": "aws_kms_external_key.this",
+   "issue": "bypass_policy_lockout_safety_check may be enabled",
+   "risk": "Same risk as aws_kms_key.this: enabling this flag on an external key can result in an irrecoverable lockout of all key administrators.",
+   "remediation": "Ensure var.bypass_policy_lockout_safety_check defaults to false. Set bypass_policy_lockout_safety_check = false explicitly in the resource block."
+  },
+  {
+   "resource": "aws_kms_replica_key.this",
+   "issue": "bypass_policy_lockout_safety_check may be enabled",
+   "risk": "Enabling this flag on a replica key can permanently lock out administrators from managing the replica, making it impossible to update or delete the key policy.",
+   "remediation": "Ensure var.bypass_policy_lockout_safety_check defaults to false. Set bypass_policy_lockout_safety_check = false explicitly in the resource block."
+  },
+  {
+   "resource": "aws_kms_replica_external_key.this",
+   "issue": "bypass_policy_lockout_safety_check may be enabled",
+   "risk": "Same lockout risk as other key types. An irrecoverable policy lockout on a replica external key means the key cannot be administered or deleted.",
+   "remediation": "Ensure var.bypass_policy_lockout_safety_check defaults to false. Set bypass_policy_lockout_safety_check = false explicitly in the resource block."
+  },
+  {
+   "resource": "aws_kms_external_key.this",
+   "issue": "Key material expiry (valid_to) may not be set",
+   "risk": "If var.valid_to is null or empty, the imported key material never expires. Long-lived external key material increases the blast radius of a key compromise because there is no forced rotation.",
+   "remediation": "Set a value for var.valid_to (e.g., a date one year in the future) and implement a process to re-import fresh key material before expiry. The valid_to attribute should always be populated for external keys."
+  },
+  {
+   "resource": "aws_kms_replica_external_key.this",
+   "issue": "Key material expiry (valid_to) may not be set",
+   "risk": "Same risk as aws_kms_external_key.this: without an expiry date on the imported key material, there is no enforced rotation, increasing long-term exposure.",
+   "remediation": "Populate var.valid_to with a near-future date and automate re-import of key material before expiry."
+  },
+  {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "Default key policy grants kms:* to the account root",
+   "risk": "When var.enable_default_policy is true, the policy allows all KMS actions (kms:*) to the account root principal. While this follows the AWS default, it is overly permissive and means any IAM principal in the account that has been granted kms:* via IAM policies can perform all key operations, including deletion and policy modification.",
+   "remediation": "Replace the wildcard kms:* action with the minimum set of actions required (e.g., separate administrative and usage actions). At minimum, restrict the default statement to administrative actions only and require explicit grants for cryptographic operations."
+  },
+  {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "KeyOwner statement grants kms:* without conditions",
+   "risk": "Granting kms:* unconditionally to all principals listed in var.key_owners allows those principals to perform every KMS operation, including scheduling key deletion, importing key material, and modifying the key policy, without any additional safeguards such as MFA or source IP conditions.",
+   "remediation": "Add a condition block requiring MFA authentication (aws:MultiFactorAuthPresent = true) for destructive actions, or split the statement into separate administrative and usage statements with least-privilege action sets."
+  },
+  {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "KeyAdministration statement includes kms:Delete* and kms:ImportKeyMaterial without MFA condition",
+   "risk": "Administrators can schedule key deletion or import arbitrary key material without requiring MFA. A compromised administrator credential could be used to destroy key material or replace it with attacker-controlled material, leading to data loss or decryption by an adversary.",
+   "remediation": "Add a condition block to the KeyAdministration statement requiring MFA for sensitive actions: test = \"Bool\", variable = \"aws:MultiFactorAuthPresent\", values = [\"true\"]. Alternatively, split destructive actions (kms:Delete*, kms:ImportKeyMaterial, kms:ScheduleKeyDeletion) into a separate statement with stricter conditions."
+  },
+  {
+   "resource": "aws_kms_grant.this",
+   "issue": "Grants may be created without encryption context constraints",
+   "risk": "If var.grants entries do not include constraints (encryption_context_equals or encryption_context_subset), the granted operations can be performed against any ciphertext encrypted under the key, not just ciphertext belonging to the intended service or resource. This broadens the attack surface for privilege escalation via grants.",
+   "remediation": "Require that all grant definitions in var.grants include a constraints block with at least encryption_context_subset specifying the expected context key-value pairs. Validate this in a variable validation rule or enforce it in the grant creation process."
+  },
+  {
+   "resource": "aws_kms_key.this",
+   "issue": "deletion_window_in_days may be set to the minimum value",
+   "risk": "If var.deletion_window_in_days is set to 7 (the AWS minimum), there is a very short window to detect and cancel an accidental or malicious key deletion before key material is permanently destroyed and all data encrypted under the key becomes irrecoverable.",
+   "remediation": "Set the default value of var.deletion_window_in_days to 30 (the maximum) to provide the longest possible recovery window. Add a variable validation rule: condition = var.deletion_window_in_days >= 14."
+  },
+  {
+   "resource": "aws_kms_external_key.this",
+   "issue": "deletion_window_in_days may be set to the minimum value",
+   "risk": "Same irrecoverable data loss risk as aws_kms_key.this if the deletion window is too short.",
+   "remediation": "Default var.deletion_window_in_days to 30 and enforce a minimum of 14 via variable validation."
+  },
+  {
+   "resource": "aws_kms_replica_key.this",
+   "issue": "deletion_window_in_days may be set to the minimum value",
+   "risk": "A short deletion window on a replica key reduces the time available to detect and cancel accidental deletion.",
+   "remediation": "Default var.deletion_window_in_days to 30 and enforce a minimum of 14 via variable validation."
+  },
+  {
+   "resource": "aws_kms_replica_external_key.this",
+   "issue": "deletion_window_in_days may be set to the minimum value",
+   "risk": "Same irrecoverable data loss risk as other key types with a short deletion window.",
+   "remediation": "Default var.deletion_window_in_days to 30 and enforce a minimum of 14 via variable validation."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  },
+  {
+   "finding": 7,
+   "candidates": []
+  },
+  {
+   "finding": 8,
+   "candidates": []
+  },
+  {
+   "finding": 9,
+   "candidates": []
+  },
+  {
+   "finding": 10,
+   "candidates": []
+  },
+  {
+   "finding": 11,
+   "candidates": []
+  },
+  {
+   "finding": 12,
+   "candidates": []
+  },
+  {
+   "finding": 13,
+   "candidates": []
+  },
+  {
+   "finding": 14,
+   "candidates": []
+  }
+ ]
+}

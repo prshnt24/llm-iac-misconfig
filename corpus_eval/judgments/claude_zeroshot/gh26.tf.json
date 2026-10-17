@@ -1,0 +1,69 @@
+{
+ "file": "gh26.tf",
+ "findings": [
+  {
+   "resource": "aws_iam_user_login_profile.default",
+   "issue": "Password Reset Not Enforced",
+   "risk": "If 'password_reset_required' is set to false (or defaults to false), the IAM user can continue using the initial provisioned password indefinitely without being forced to set a personal password. This increases the risk of credential compromise since the initial password may be shared or stored insecurely during provisioning.",
+   "remediation": "Set 'password_reset_required = true' as the default value for the variable 'var.password_reset_required', or hard-code it to 'true' in the resource block. The 'ignore_changes' lifecycle rule on 'password_reset_required' is acceptable to prevent Terraform drift after the user resets it, but the initial value must be 'true'."
+  },
+  {
+   "resource": "aws_iam_user_login_profile.default",
+   "issue": "Potentially Insufficient Password Length",
+   "risk": "The password length is driven entirely by 'var.password_length' with no enforced minimum in the Terraform code. If the variable defaults to a low value (e.g., 8), the generated password may not meet AWS IAM password policy requirements or organisational security standards, making brute-force attacks more feasible.",
+   "remediation": "Add a validation block to the 'password_length' variable enforcing a minimum of 16 characters: 'validation { condition = var.password_length >= 16 error_message = \"Password length must be at least 16 characters.\" }'. Alternatively, hard-code 'password_length = 20' in the resource block."
+  },
+  {
+   "resource": "aws_iam_user_login_profile.default",
+   "issue": "PGP Key May Be Absent or Unset",
+   "risk": "If 'var.pgp_key' is empty or not provided, the IAM console password will be stored in Terraform state in plaintext. Anyone with access to the Terraform state file (e.g., in an S3 backend) can retrieve the cleartext password, leading to credential exposure.",
+   "remediation": "Add a validation block to the 'pgp_key' variable to enforce a non-empty value: 'validation { condition = length(var.pgp_key) > 0 error_message = \"A PGP key or Keybase username must be provided to encrypt the password.\" }'. Ensure the Terraform state backend is also encrypted (e.g., S3 with SSE and restricted bucket policy)."
+  },
+  {
+   "resource": "aws_iam_user.default",
+   "issue": "IAM User Without Permissions Boundary Enforcement",
+   "risk": "The 'permissions_boundary' attribute is optional and driven by 'var.permissions_boundary'. If not set, the IAM user can be granted policies up to the maximum AWS permissions, violating the principle of least privilege and enabling potential privilege escalation if the user or their access keys are compromised.",
+   "remediation": "Add a validation block to the 'permissions_boundary' variable to require a valid IAM policy ARN, or set a default organisation-wide boundary policy ARN. Example: 'validation { condition = length(var.permissions_boundary) > 0 error_message = \"A permissions boundary must be specified for all IAM users.\" }'."
+  },
+  {
+   "resource": "aws_iam_user.default",
+   "issue": "No MFA Enforcement",
+   "risk": "The IAM user is created with console login capability (via 'aws_iam_user_login_profile') but there is no IAM policy attached that enforces Multi-Factor Authentication (MFA). Without MFA enforcement, a compromised password alone is sufficient to access the AWS console and APIs, significantly increasing the blast radius of a credential leak.",
+   "remediation": "Attach an IAM policy to the user (or to the groups in 'aws_iam_user_group_membership') that denies all actions except 'iam:CreateVirtualMFADevice', 'iam:EnableMFADevice', and 'iam:GetUser' when MFA is not present. Use a condition key such as 'aws:MultiFactorAuthPresent = false' with a 'Deny' effect to enforce this."
+  },
+  {
+   "resource": "aws_iam_user.default",
+   "issue": "Long-Lived IAM User Credentials (Human User Anti-Pattern)",
+   "risk": "Creating IAM users with console login profiles and potentially access keys represents a long-lived credential anti-pattern. Long-lived credentials increase the window of exposure if compromised and are harder to rotate consistently. AWS recommends using IAM Identity Center (SSO) with temporary credentials for human users.",
+   "remediation": "Replace the IAM user with AWS IAM Identity Center (formerly AWS SSO) for human access, which issues short-lived, temporary credentials. If IAM users are required, ensure access key rotation policies are enforced and consider adding an 'aws_iam_user_policy' that denies actions if credentials are older than a defined threshold using the 'aws:TokenIssueTime' or credential report monitoring."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c97"
+   ]
+  }
+ ]
+}

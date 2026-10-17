@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "gh30.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:16:18",
+  "response": "```json\n[\n  {\n    \"resource\": \"aws_security_group.loadtest\",\n    \"issue\": \"Unrestricted Ingress Rule\",\n    \"risk\": \"Allowing all inbound traffic (port 0, protocol -1) can expose the instance to unauthorized access.\",\n    \"remediation\": \"Remove or restrict the ingress block allowing all traffic:\\n```hcl\\n  ingress {\\n    from_port = 0\\n    to_port   = 0\\n    protocol  = \\\"-1\\\"\\n    self      = true\\n  }\\n```\"\n  },\n  {\n    \"resource\": \"aws_security_group.loadtest\",\n    \"issue\": \"Unrestricted Egress Rule\",\n    \"risk\": \"Allowing all outbound traffic can enable data exfiltration and unauthorized communication.\",\n    \"remediation\": \"Restrict the egress block to specific ports and protocols as needed:\\n```hcl\\n  egress {\\n    from_port   = 0\\n    to_port     = 0\\n    protocol    = \\\"-1\\\"\\n    cidr_blocks = [\\\"0.0.0.0/0\\\"]\\n  }\\n```\"\n  },\n  {\n    \"resource\": \"tls_private_key.loadtest\",\n    \"issue\": \"Weak Key Size\",\n    \"risk\": \"Using a 4096-bit RSA key may be considered weak depending on future cryptographic standards and should be reviewed for strength.\",\n    \"remediation\": \"Consider increasing the key size or using a more secure algorithm if necessary:\\n```hcl\\nresource \\\"tls_private_key\\\" \\\"loadtest\\\" {\\n  algorithm = \\\"RSA\\\"\\n  rsa_bits  = 8192 # or another appropriate size\\n}\\n```\"\n  }\n]\n```"
+}

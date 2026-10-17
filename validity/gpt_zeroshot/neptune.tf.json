@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 1,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "1": {
+   "resource": "aws_neptune_cluster.default",
+   "issue": "Final snapshot disabled on deletion",
+   "risk": "Deleting the cluster will skip creation of a final snapshot, which can cause irreversible data loss and hinder forensic recovery after accidental or malicious deletion.",
+   "remediation": "Set `skip_final_snapshot = false` in `aws_neptune_cluster.default` and provide a `final_snapshot_identifier` value."
+  }
+ }
+}

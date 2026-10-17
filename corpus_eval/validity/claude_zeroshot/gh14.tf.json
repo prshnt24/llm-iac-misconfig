@@ -1,0 +1,36 @@
+{
+ "labels": [
+  {
+   "finding": 3,
+   "label": "INVALID"
+  },
+  {
+   "finding": 5,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 6,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "3": {
+   "resource": "aws_subnet.terra_sub",
+   "issue": "Auto-assignment of public IP addresses on instance launch (map_public_ip_on_launch = true implied by variable)",
+   "risk": "Any EC2 instance launched in this subnet automatically receives a public IP address, directly exposing it to the internet and increasing the attack surface unnecessarily.",
+   "remediation": "Set map_public_ip_on_launch = false in the aws_subnet.terra_sub resource (or ensure var.map_public_ip_on_launch defaults to false). Use an Elastic IP or NAT Gateway pattern to control public exposure explicitly."
+  },
+  "5": {
+   "resource": "aws_vpc.terra_vpc",
+   "issue": "DNS hostnames not explicitly enabled",
+   "risk": "Without explicit configuration, DNS hostname resolution behaviour is undefined and may default to disabled, but more importantly the absence of explicit hardening settings (enable_dns_support, enable_dns_hostnames) indicates a lack of deliberate security baseline configuration.",
+   "remediation": "Explicitly set enable_dns_hostnames = false and enable_dns_support = true in the aws_vpc.terra_vpc resource to enforce a known, intentional DNS configuration baseline."
+  },
+  "6": {
+   "resource": "aws_route_table.terra_rt",
+   "issue": "Default route (0.0.0.0/0) points directly to an Internet Gateway making this a fully public subnet",
+   "risk": "All instances in the associated subnet are directly reachable from and can reach the internet, maximising the blast radius of any compromise. There is no NAT Gateway or private subnet separation.",
+   "remediation": "Separate public and private subnets. Move workloads that do not need inbound internet access to a private subnet with a NAT Gateway for outbound-only internet access. Remove the 0.0.0.0/0 -> igw route from subnets hosting sensitive resources."
+  }
+ }
+}

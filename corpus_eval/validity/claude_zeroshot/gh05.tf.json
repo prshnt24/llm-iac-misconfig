@@ -1,0 +1,76 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "VALID"
+  },
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 4,
+   "label": "INVALID"
+  },
+  {
+   "finding": 5,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 6,
+   "label": "INVALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "data.aws_iam_policy_document.ses_policy",
+   "issue": "Overly Permissive IAM Permissions via Variable",
+   "risk": "The IAM policy actions are driven entirely by var.iam_permissions with no constraints enforced in the Terraform code itself. If that variable is misconfigured or left at a broad default (e.g., 'ses:*'), it grants excessive SES privileges to the user/group, violating least-privilege and potentially allowing email sending from any identity, reading suppression lists, or modifying sending quotas.",
+   "remediation": "Restrict the actions inline to only the minimum required, for example: actions = [\"ses:SendEmail\", \"ses:SendRawEmail\"]. Remove reliance on var.iam_permissions for security-sensitive action lists, or add a validation block in the variable definition to allowlist only known-safe SES actions."
+  },
+  "1": {
+   "resource": "data.aws_iam_policy_document.ses_policy",
+   "issue": "Wildcard / Unbounded Resources via var.iam_allowed_resources",
+   "risk": "The resources list is constructed by concatenating the SES domain ARN with var.iam_allowed_resources. If var.iam_allowed_resources contains '*' or unintended ARNs, the policy grants SES send permissions against all identities in the account, enabling abuse of other verified domains or identities.",
+   "remediation": "Remove var.iam_allowed_resources from the resources list or add a variable validation block that rejects '*' and enforces an ARN pattern. The resources block should be: resources = aws_ses_domain_identity.ses_domain[*].arn"
+  },
+  "2": {
+   "resource": "aws_iam_user_policy.sending_emails",
+   "issue": "IAM Policy Attached Directly to IAM User",
+   "risk": "Attaching policies directly to IAM users rather than groups or roles makes permission management harder to audit, increases the risk of privilege creep, and is flagged as a CIS AWS Foundations control violation. The skip comment acknowledges this but does not mitigate the risk.",
+   "remediation": "Prefer attaching the policy to the IAM group (aws_iam_group_policy.ses_group_policy) and adding the user to that group. If a standalone user is required, use an IAM role with a trust policy scoped to the specific workload instead of a long-lived IAM user with a directly attached policy."
+  },
+  "3": {
+   "resource": "module.ses_user",
+   "issue": "Long-Lived IAM Access Key Creation",
+   "risk": "When var.iam_create_access_key is true, a static, long-lived IAM access key is created for the system user. Static credentials are a common source of credential leakage (e.g., committed to source control, exposed in CI logs) and do not rotate automatically, violating CIS AWS 1.14.",
+   "remediation": "Set create_iam_access_key = false and use IAM roles with short-lived STS credentials wherever possible. If SMTP credentials are required for SES, store the generated SMTP password exclusively in AWS Secrets Manager or SSM Parameter Store with restricted access, and enforce automatic rotation."
+  },
+  "4": {
+   "resource": "module.ses_user",
+   "issue": "SES SMTP Password Stored in SSM Without Enforced Encryption",
+   "risk": "When var.iam_create_ses_smtp_password is true, the derived SMTP password is written to SSM Parameter Store. If the underlying cloudposse module stores it as a standard String parameter rather than a SecureString, the secret is stored in plaintext and visible to any principal with ssm:GetParameter access.",
+   "remediation": "Ensure the cloudposse/iam-system-user module version in use writes the SMTP password as an SSM SecureString parameter encrypted with a customer-managed KMS key. Verify by reviewing the module source or pinning to a version that explicitly sets type = \"SecureString\" and key_id = <kms_key_arn>."
+  },
+  "5": {
+   "resource": "aws_ses_domain_mail_from.custom_mail_from",
+   "issue": "Permissive MX Failure Behavior Controlled by Variable",
+   "risk": "The behavior_on_mx_failure attribute is set from var.custom_from_behavior_on_mx_failure. If this defaults to or is set to 'UseDefaultValue', SES will fall back to sending from the amazonses.com domain when MX records are missing, bypassing the custom MAIL FROM domain and potentially undermining SPF/DMARC alignment, which weakens email authentication and increases phishing risk.",
+   "remediation": "Hardcode behavior_on_mx_failure = \"RejectMessage\" or add a variable validation block enforcing only \"RejectMessage\" is accepted. This ensures mail is rejected rather than silently downgraded when the MAIL FROM domain is misconfigured."
+  },
+  "6": {
+   "resource": "aws_route53_record.amazonses_spf_record",
+   "issue": "SPF Record Uses ~all (Softfail) Implicitly Possible via Variable Misconfiguration",
+   "risk": "The SPF record is hardcoded to 'v=spf1 include:amazonses.com -all' which is correct. However, there is no DMARC TXT record resource in this configuration. Without a DMARC record, receiving mail servers cannot enforce policy on SPF/DKIM failures, leaving the domain vulnerable to spoofing and phishing even when SPF and DKIM are configured.",
+   "remediation": "Add an aws_route53_record resource for a DMARC TXT record, for example: name = \"_dmarc.${var.domain}\", type = \"TXT\", records = [\"v=DMARC1; p=reject; rua=mailto:dmarc-reports@${var.domain}; adkim=s; aspf=s\"]. Start with p=quarantine during rollout and move to p=reject once alignment is confirmed."
+  }
+ }
+}

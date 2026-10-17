@@ -1,0 +1,249 @@
+{
+ "file": "s3.tf",
+ "findings": [
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "Missing S3 Block Public Access",
+   "risk": "The bucket could be exposed to the public internet through ACLs or bucket policies, leading to unauthorized access to stored data.",
+   "remediation": "Add an aws_s3_bucket_public_access_block resource for aws_s3_bucket.data with block_public_acls=true, ignore_public_acls=true, block_public_policy=true, and restrict_public_buckets=true."
+  },
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "Missing server-side encryption",
+   "risk": "Data stored in the bucket may be exposed if underlying storage is accessed improperly or if encryption requirements are mandated for sensitive data.",
+   "remediation": "Add a server_side_encryption_configuration block to aws_s3_bucket.data and set apply_server_side_encryption_by_default.sse_algorithm to aws:kms or AES256."
+  },
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "Missing access logging",
+   "risk": "Object-level and request activity will not be logged, reducing visibility for detecting unauthorized access or supporting forensic investigations.",
+   "remediation": "Add a logging block to aws_s3_bucket.data with target_bucket set to a dedicated log bucket such as aws_s3_bucket.logs.id and an appropriate target_prefix."
+  },
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "Versioning disabled",
+   "risk": "Accidental deletion, overwrite, or ransomware-style modification of objects may be irreversible.",
+   "remediation": "Add a versioning block to aws_s3_bucket.data with enabled = true."
+  },
+  {
+   "resource": "aws_s3_bucket.data",
+   "issue": "Force destroy enabled",
+   "risk": "The bucket and all contents can be deleted by Terraform without manual cleanup, increasing the risk of destructive data loss.",
+   "remediation": "Set force_destroy = false on aws_s3_bucket.data."
+  },
+  {
+   "resource": "aws_s3_bucket_object.data_object",
+   "issue": "Sensitive object stored without explicit server-side encryption controls",
+   "risk": "The uploaded object may be stored unencrypted because the destination bucket has no default encryption, exposing sensitive file contents such as customer data.",
+   "remediation": "Either enable default bucket encryption on aws_s3_bucket.data or set server_side_encryption = \"aws:kms\" (or \"AES256\") on aws_s3_bucket_object.data_object and specify kms_key_id if using KMS."
+  },
+  {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "Missing server-side encryption",
+   "risk": "Sensitive financial data may be stored unencrypted at rest, increasing exposure in the event of unauthorized access or noncompliance.",
+   "remediation": "Add a server_side_encryption_configuration block to aws_s3_bucket.financials and set apply_server_side_encryption_by_default.sse_algorithm to aws:kms or AES256."
+  },
+  {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "Missing access logging",
+   "risk": "Access to sensitive financial data will not be logged, limiting monitoring and incident investigation capabilities.",
+   "remediation": "Add a logging block to aws_s3_bucket.financials with target_bucket set to a dedicated log bucket such as aws_s3_bucket.logs.id and an appropriate target_prefix."
+  },
+  {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "Versioning disabled",
+   "risk": "Accidental or malicious changes to financial data may not be recoverable.",
+   "remediation": "Add a versioning block to aws_s3_bucket.financials with enabled = true."
+  },
+  {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "Missing S3 Block Public Access",
+   "risk": "Even with a private ACL, the bucket can still be made public through bucket policies or future ACL changes.",
+   "remediation": "Add an aws_s3_bucket_public_access_block resource for aws_s3_bucket.financials with block_public_acls=true, ignore_public_acls=true, block_public_policy=true, and restrict_public_buckets=true."
+  },
+  {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "Force destroy enabled",
+   "risk": "The bucket and all financial data can be deleted by Terraform without additional safeguards, causing irreversible data loss.",
+   "remediation": "Set force_destroy = false on aws_s3_bucket.financials."
+  },
+  {
+   "resource": "aws_s3_bucket.operations",
+   "issue": "Missing server-side encryption",
+   "risk": "Operational data may be stored unencrypted at rest, increasing the impact of unauthorized access and weakening data protection controls.",
+   "remediation": "Add a server_side_encryption_configuration block to aws_s3_bucket.operations and set apply_server_side_encryption_by_default.sse_algorithm to aws:kms or AES256."
+  },
+  {
+   "resource": "aws_s3_bucket.operations",
+   "issue": "Missing access logging",
+   "risk": "Access events will not be captured, reducing the ability to audit activity and investigate suspicious behavior.",
+   "remediation": "Add a logging block to aws_s3_bucket.operations with target_bucket set to a dedicated log bucket such as aws_s3_bucket.logs.id and an appropriate target_prefix."
+  },
+  {
+   "resource": "aws_s3_bucket.operations",
+   "issue": "Missing S3 Block Public Access",
+   "risk": "The bucket may still become publicly accessible via policy or ACL changes despite acl being set to private.",
+   "remediation": "Add an aws_s3_bucket_public_access_block resource for aws_s3_bucket.operations with block_public_acls=true, ignore_public_acls=true, block_public_policy=true, and restrict_public_buckets=true."
+  },
+  {
+   "resource": "aws_s3_bucket.operations",
+   "issue": "Force destroy enabled",
+   "risk": "Terraform can delete the bucket and all operational data without manual confirmation, increasing the chance of accidental data loss.",
+   "remediation": "Set force_destroy = false on aws_s3_bucket.operations."
+  },
+  {
+   "resource": "aws_s3_bucket.data_science",
+   "issue": "Missing server-side encryption",
+   "risk": "Data science data may be stored unencrypted at rest, exposing potentially sensitive datasets.",
+   "remediation": "Add a server_side_encryption_configuration block to aws_s3_bucket.data_science and set apply_server_side_encryption_by_default.sse_algorithm to aws:kms or AES256."
+  },
+  {
+   "resource": "aws_s3_bucket.data_science",
+   "issue": "Missing S3 Block Public Access",
+   "risk": "The bucket can still be exposed publicly through bucket policy or ACL changes even though acl is private.",
+   "remediation": "Add an aws_s3_bucket_public_access_block resource for aws_s3_bucket.data_science with block_public_acls=true, ignore_public_acls=true, block_public_policy=true, and restrict_public_buckets=true."
+  },
+  {
+   "resource": "aws_s3_bucket.data_science",
+   "issue": "Force destroy enabled",
+   "risk": "The bucket and its datasets can be destroyed automatically by Terraform, causing preventable data loss.",
+   "remediation": "Set force_destroy = false on aws_s3_bucket.data_science."
+  },
+  {
+   "resource": "aws_s3_bucket.logs",
+   "issue": "Missing S3 Block Public Access",
+   "risk": "Log data could be exposed publicly through ACL or policy misconfiguration, disclosing sensitive access patterns and metadata.",
+   "remediation": "Add an aws_s3_bucket_public_access_block resource for aws_s3_bucket.logs with block_public_acls=true, ignore_public_acls=true, block_public_policy=true, and restrict_public_buckets=true."
+  },
+  {
+   "resource": "aws_s3_bucket.logs",
+   "issue": "Missing access logging",
+   "risk": "Access to the log bucket itself will not be recorded, limiting visibility into unauthorized access to audit data.",
+   "remediation": "Add a logging block to aws_s3_bucket.logs with target_bucket set to a separate dedicated log bucket and an appropriate target_prefix."
+  },
+  {
+   "resource": "aws_s3_bucket.logs",
+   "issue": "Force destroy enabled",
+   "risk": "Audit logs can be deleted automatically by Terraform, undermining retention and forensic requirements.",
+   "remediation": "Set force_destroy = false on aws_s3_bucket.logs."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c192"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c196"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c197"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c198"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c222"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": [
+    "c208"
+   ]
+  },
+  {
+   "finding": 7,
+   "candidates": [
+    "c209"
+   ]
+  },
+  {
+   "finding": 8,
+   "candidates": [
+    "c210"
+   ]
+  },
+  {
+   "finding": 9,
+   "candidates": [
+    "c204"
+   ]
+  },
+  {
+   "finding": 10,
+   "candidates": []
+  },
+  {
+   "finding": 11,
+   "candidates": [
+    "c220"
+   ]
+  },
+  {
+   "finding": 12,
+   "candidates": [
+    "c221"
+   ]
+  },
+  {
+   "finding": 13,
+   "candidates": [
+    "c216"
+   ]
+  },
+  {
+   "finding": 14,
+   "candidates": []
+  },
+  {
+   "finding": 15,
+   "candidates": [
+    "c203"
+   ]
+  },
+  {
+   "finding": 16,
+   "candidates": [
+    "c199"
+   ]
+  },
+  {
+   "finding": 17,
+   "candidates": []
+  },
+  {
+   "finding": 18,
+   "candidates": [
+    "c211"
+   ]
+  },
+  {
+   "finding": 19,
+   "candidates": [
+    "c215"
+   ]
+  },
+  {
+   "finding": 20,
+   "candidates": []
+  }
+ ]
+}

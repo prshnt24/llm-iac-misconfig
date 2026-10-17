@@ -1,0 +1,8 @@
+{
+  "model": "global.openai.gpt-5.4",
+  "strategy": "fewshot",
+  "file": "rds.tf",
+  "temperature": null,
+  "timestamp": "2026-10-16T21:47:55",
+  "response": "[\n  {\n    \"resource\": \"aws_rds_cluster.app1-rds-cluster\",\n    \"issue\": \"Backups disabled\",\n    \"risk\": \"Setting backup_retention_period to 0 disables automated backups, preventing point-in-time recovery and increasing the impact of data loss, corruption, or ransomware.\",\n    \"remediation\": \"Change the backup_retention_period attribute from 0 to a value greater than 0, for example backup_retention_period = 7 or higher according to retention requirements.\"\n  }\n]"
+}

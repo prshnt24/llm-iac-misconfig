@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_rds_cluster.app1-rds-cluster",
+   "issue": "Backup retention period disabled (set to 0)",
+   "risk": "A retention period of 0 disables automated backups entirely, meaning there is no point-in-time recovery capability. Data loss from accidental deletion, corruption, or ransomware cannot be recovered.",
+   "remediation": "Set backup_retention_period to a value between 7 and 35 (e.g., backup_retention_period = 7) to enable automated backups."
+  }
+ }
+}

@@ -1,0 +1,4 @@
+run,scored_findings,gpt54_mean,gpt54_share_2,sonnet55_mean,sonnet55_share_2,mean_of_judges
+claude_zeroshot,16,1.94,0.938,2.0,1.0,1.97
+gpt_zeroshot,5,1.8,0.8,1.4,0.4,1.6
+nova_zeroshot,4,1.25,0.5,1.25,0.25,1.25

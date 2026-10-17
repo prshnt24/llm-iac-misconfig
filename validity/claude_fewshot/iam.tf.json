@@ -1,0 +1,36 @@
+{
+ "labels": [
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "INVALID"
+  },
+  {
+   "finding": 4,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "1": {
+   "resource": "aws_iam_access_key.user",
+   "issue": "Unencrypted or plaintext IAM access key with no rotation policy",
+   "risk": "Long-lived static IAM access keys are a high-value target. Without enforced rotation, a leaked key (e.g., committed to source control or exposed in logs) provides persistent unauthorized access. The output block exposes the encrypted_secret in Terraform state, which may be stored insecurely.",
+   "remediation": "Avoid creating long-lived programmatic access keys where possible; prefer IAM roles with temporary credentials (STS). If access keys are required, enforce rotation by setting a max age policy, store the secret in AWS Secrets Manager rather than Terraform outputs, and ensure the Terraform state backend is encrypted and access-controlled. Remove or mark the 'secret' output as sensitive=true."
+  },
+  "2": {
+   "resource": "output.secret",
+   "issue": "Sensitive IAM access key secret exposed in Terraform output without sensitive flag",
+   "risk": "The access key encrypted_secret is written to Terraform state and displayed in CLI output in plaintext. Anyone with access to the state file or CI/CD logs can retrieve the credential, leading to unauthorized account access.",
+   "remediation": "Add sensitive=true to the output block (e.g., sensitive = true) to suppress it from CLI output, and ensure the Terraform state backend (e.g., S3) has encryption at rest, versioning, and strict access controls enabled. Consider removing this output entirely and delivering the secret via a secrets manager instead."
+  },
+  "4": {
+   "resource": "aws_iam_user_policy.userpolicy",
+   "issue": "Inline IAM policy instead of managed policy",
+   "risk": "Inline policies are harder to audit, reuse, and track across the organization. They increase the risk of inconsistent permission boundaries and make it more difficult to detect privilege escalation during security reviews.",
+   "remediation": "Replace the inline aws_iam_user_policy with an aws_iam_policy resource containing least-privilege permissions, and attach it using aws_iam_user_policy_attachment. This enables centralized policy management, versioning, and reuse."
+  }
+ }
+}

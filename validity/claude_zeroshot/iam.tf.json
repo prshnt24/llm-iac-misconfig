@@ -1,0 +1,46 @@
+{
+ "labels": [
+  {
+   "finding": 1,
+   "label": "VALID"
+  },
+  {
+   "finding": 2,
+   "label": "VALID"
+  },
+  {
+   "finding": 3,
+   "label": "INVALID"
+  },
+  {
+   "finding": 4,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "1": {
+   "resource": "aws_iam_access_key.user",
+   "issue": "Unencrypted IAM Access Key Secret / Long-lived Programmatic Credentials",
+   "risk": "Creating long-lived static IAM access keys increases the attack surface. If the key is leaked (e.g., committed to source control, exposed in logs), it provides persistent programmatic access. The key has no automatic rotation and no expiry, making it a high-value target.",
+   "remediation": "Avoid creating long-lived IAM access keys. Prefer IAM roles with temporary credentials (STS) for programmatic access. If access keys are absolutely required, encrypt the secret using a PGP key by adding the 'pgp_key' attribute to 'aws_iam_access_key.user', enable key rotation, and store the secret in a secrets manager rather than in Terraform state or outputs."
+  },
+  "2": {
+   "resource": "aws_iam_access_key.user",
+   "issue": "IAM Access Key Secret Stored in Terraform State",
+   "risk": "The access key secret is stored in plaintext in the Terraform state file. Anyone with read access to the state (e.g., an S3 bucket without strict access controls) can retrieve the secret and use it to authenticate as the IAM user.",
+   "remediation": "Set the 'pgp_key' attribute on 'aws_iam_access_key.user' to encrypt the secret at rest. Ensure the Terraform state backend (e.g., S3) has encryption enabled, versioning enabled, and strict bucket policies. Consider using AWS Secrets Manager or SSM Parameter Store to manage credentials instead."
+  },
+  "3": {
+   "resource": "output.secret",
+   "issue": "Sensitive Value Exposed in Terraform Output Without Sensitive Flag",
+   "risk": "The IAM access key encrypted secret is output without marking it as sensitive. This causes the value to be printed in plaintext in CLI output, CI/CD logs, and any system that reads Terraform outputs, potentially leaking credentials.",
+   "remediation": "Add 'sensitive = true' to the 'output.secret' block to suppress the value from being displayed in logs and CLI output. Example: add the attribute 'sensitive = true' inside the output block for 'secret'."
+  },
+  "4": {
+   "resource": "aws_iam_user_policy.userpolicy",
+   "issue": "Inline IAM Policy Instead of Managed Policy",
+   "risk": "Inline policies are harder to audit, reuse, and track across the organisation. They are not visible in the IAM managed policies list, making it easier to overlook excessive permissions during security reviews.",
+   "remediation": "Replace the inline 'aws_iam_user_policy' resource with an 'aws_iam_policy' resource containing a least-privilege policy document, and attach it using 'aws_iam_user_policy_attachment'. This improves visibility, reusability, and auditability."
+  }
+ }
+}

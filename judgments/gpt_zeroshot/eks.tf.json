@@ -1,0 +1,63 @@
+{
+ "file": "eks.tf",
+ "findings": [
+  {
+   "resource": "aws_subnet.eks_subnet1",
+   "issue": "Public subnet for EKS due to automatic public IP assignment",
+   "risk": "Resources launched in this subnet, including worker nodes if placed here, can receive public IP addresses and be directly reachable from the internet, increasing exposure to remote attack and misconfiguration abuse.",
+   "remediation": "Set the subnet attribute `map_public_ip_on_launch = false` and use private subnets for EKS nodes and cluster networking."
+  },
+  {
+   "resource": "aws_subnet.eks_subnet2",
+   "issue": "Public subnet for EKS due to automatic public IP assignment",
+   "risk": "Resources launched in this subnet, including worker nodes if placed here, can receive public IP addresses and be directly reachable from the internet, increasing exposure to remote attack and misconfiguration abuse.",
+   "remediation": "Set the subnet attribute `map_public_ip_on_launch = false` and use private subnets for EKS nodes and cluster networking."
+  },
+  {
+   "resource": "aws_eks_cluster.eks_cluster",
+   "issue": "EKS control plane logging not enabled",
+   "risk": "Without EKS control plane logs, security monitoring, incident investigation, and detection of unauthorized or suspicious Kubernetes API activity are significantly reduced.",
+   "remediation": "Add an `enabled_cluster_log_types` attribute to the `aws_eks_cluster` resource and enable appropriate logs such as `[\"api\", \"audit\", \"authenticator\", \"controllerManager\", \"scheduler\"]`."
+  },
+  {
+   "resource": "output.endpoint",
+   "issue": "Cluster endpoint exposed as Terraform output",
+   "risk": "Exporting the Kubernetes API endpoint increases the chance of sensitive infrastructure details being disclosed through CLI output, logs, shared state consumers, or CI/CD pipelines.",
+   "remediation": "Remove the `output \"endpoint\"` block if not required, or restrict exposure by marking it `sensitive = true`."
+  },
+  {
+   "resource": "output.kubeconfig-certificate-authority-data",
+   "issue": "Cluster certificate authority data exposed as Terraform output",
+   "risk": "Exposing cluster access configuration details can assist attackers in reconnaissance and may leak sensitive connection material through Terraform output and downstream systems consuming state or logs.",
+   "remediation": "Remove the `output \"kubeconfig-certificate-authority-data\"` block if not strictly needed, or mark it `sensitive = true`."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c56"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c57"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c52"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  }
+ ]
+}

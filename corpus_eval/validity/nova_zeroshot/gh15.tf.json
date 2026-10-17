@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_security_group_rule.ecs_allow_http",
+   "issue": "Unrestricted Ingress Rule",
+   "risk": "Allowing traffic from 0.0.0.0/0 exposes the ECS instance to the entire internet, increasing the risk of unauthorized access and attacks.",
+   "remediation": "Restrict the cidr_blocks to only trusted IP ranges. Example:\n```hcl\ncidr_blocks = [\"192.0.2.0/24\"]\n```"
+  },
+  "2": {
+   "resource": "aws_kms_key.main",
+   "issue": "Lack of Key Deletion Protection",
+   "risk": "Without deletion protection, the KMS key can be accidentally or maliciously deleted, leading to data loss.",
+   "remediation": "Enable deletion protection by adding the attribute:\n```hcl\nenable_key_rotation = true\ndeletion_window_in_days = 7\n```"
+  }
+ }
+}

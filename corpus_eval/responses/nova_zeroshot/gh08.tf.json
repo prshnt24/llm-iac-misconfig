@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "gh08.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:15:29",
+  "response": "[\n  {\n    \"resource\": \"data.aws_iam_policy_document.ecr\",\n    \"issue\": \"Wildcard Resource\",\n    \"risk\": \"Allows access to all ECR resources, not just the intended ones.\",\n    \"remediation\": \"Replace `resources = [\\\"*\\\"]` with the specific ARN of the ECR repository to limit access.\"\n  },\n  {\n    \"resource\": \"aws_ecr_repository.example\",\n    \"issue\": \"Insecure Tag Value\",\n    \"risk\": \"Using `true` as a tag value may not be correctly interpreted in all contexts.\",\n    \"remediation\": \"Change the tag value from `true` to a string like `\\\"true\\\"`.\"\n  }\n]"
+}

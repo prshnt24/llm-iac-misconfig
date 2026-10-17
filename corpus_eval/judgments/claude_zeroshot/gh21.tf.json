@@ -1,0 +1,119 @@
+{
+ "file": "gh21.tf",
+ "findings": [
+  {
+   "resource": "aws_lambda_function.main_update",
+   "issue": "Lambda function missing code signing configuration",
+   "risk": "Without code signing, there is no guarantee that the deployment package has not been tampered with or replaced by an unauthorized party, enabling supply-chain attacks.",
+   "remediation": "Create an `aws_lambda_code_signing_config` resource with trusted signing profiles and reference it via the `code_signing_config_arn` attribute in `aws_lambda_function.main_update`."
+  },
+  {
+   "resource": "aws_lambda_function.main_update",
+   "issue": "Lambda function not configured inside a VPC",
+   "risk": "The function runs in the default AWS-managed network with direct internet access, increasing the attack surface and preventing use of VPC-level network controls such as security groups and NACLs.",
+   "remediation": "Add a `vpc_config` block to `aws_lambda_function.main_update` specifying `subnet_ids` and `security_group_ids` to place the function inside a private VPC subnet."
+  },
+  {
+   "resource": "aws_lambda_function.main_update",
+   "issue": "Lambda environment variables not encrypted with a customer-managed KMS key",
+   "risk": "Environment variables are encrypted at rest using the default AWS-managed key. If the account is compromised, there is no additional key-policy-based access control over the sensitive configuration data stored in environment variables.",
+   "remediation": "Add the `kms_key_arn` attribute to `aws_lambda_function.main_update`, referencing a customer-managed KMS key, to enforce envelope encryption of environment variables with a key you control."
+  },
+  {
+   "resource": "aws_lambda_function.main_update",
+   "issue": "Lambda runtime python3.9 is approaching or at end-of-life",
+   "risk": "Python 3.9 is no longer receiving security patches from AWS Lambda. Running an EOL runtime exposes the function to unpatched vulnerabilities in the runtime environment.",
+   "remediation": "Update the `runtime` attribute in `aws_lambda_function.main_update` to a currently supported version such as `python3.12`."
+  },
+  {
+   "resource": "aws_lambda_function.main_update",
+   "issue": "X-Ray tracing not enabled",
+   "risk": "Without active tracing, there is limited visibility into function execution, making it harder to detect anomalous behaviour, latency spikes, or security-relevant events during invocation.",
+   "remediation": "Add a `tracing_config` block with `mode = \"Active\"` to `aws_lambda_function.main_update` to enable AWS X-Ray tracing."
+  },
+  {
+   "resource": "aws_lambda_function.main_update",
+   "issue": "Reserved concurrent executions not set",
+   "risk": "Without a concurrency limit, a runaway or maliciously triggered invocation loop could exhaust the account-level Lambda concurrency quota, causing a denial-of-service for other Lambda-dependent workloads.",
+   "remediation": "Set the `reserved_concurrent_executions` attribute in `aws_lambda_function.main_update` to an appropriate positive integer that reflects the expected maximum concurrency for this function."
+  },
+  {
+   "resource": "aws_cloudwatch_log_group.main_update",
+   "issue": "CloudWatch Log Group KMS key is optional and may be unset",
+   "risk": "If `var.cloudwatch_kms_arn` is empty or null, log data is encrypted only with the default AWS-managed key, removing customer control over key rotation and access revocation for potentially sensitive log output.",
+   "remediation": "Ensure `var.cloudwatch_kms_arn` is always populated with a customer-managed KMS key ARN, or add a validation rule to the variable definition to enforce a non-empty value. The `kms_key_id` attribute in `aws_cloudwatch_log_group.main_update` must reference a valid CMK."
+  },
+  {
+   "resource": "aws_cloudwatch_log_group.main_update",
+   "issue": "Log retention period controlled by a variable with no enforced minimum",
+   "risk": "If `var.cloudwatch_logs_retention_days` is set to 0 (never expire) or a very short value, logs may be retained indefinitely consuming cost, or deleted before they can be used for security investigations and compliance audits.",
+   "remediation": "Add a `validation` block to the `cloudwatch_logs_retention_days` variable enforcing an accepted value from the AWS-allowed set (e.g., 7, 14, 30, 90, 180, 365) and ensure a minimum of 90 days is required by policy."
+  },
+  {
+   "resource": "aws_iam_role_policy.main_update",
+   "issue": "s3HeadObject statement grants s3:ListBucket on all objects in the bucket in addition to the bucket itself",
+   "risk": "The wildcard resource `arn:...:s3:::${var.av_definition_s3_bucket}/*` is unnecessary for `s3:ListBucket`, which only requires the bucket ARN. Including the object ARN is redundant and may indicate overly broad policy authoring practices that could be exploited if the policy is later extended.",
+   "remediation": "In `data.aws_iam_policy_document.main_update`, remove the `arn:...:s3:::${var.av_definition_s3_bucket}/*` entry from the `s3HeadObject` statement's `resources` list, leaving only the bucket ARN `arn:...:s3:::${var.av_definition_s3_bucket}`."
+  },
+  {
+   "resource": "aws_cloudwatch_event_target.main_update",
+   "issue": "CloudWatch Event Target has no dead-letter queue (DLQ) configured",
+   "risk": "If the Lambda invocation fails, the event is silently dropped with no retry or alerting mechanism. This could allow malicious or corrupted definition updates to go undetected, leaving antivirus definitions stale.",
+   "remediation": "Add a `dead_letter_config` block to `aws_cloudwatch_event_target.main_update` referencing an SQS queue ARN so that failed invocation events are captured and can trigger alerts."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c85"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c83"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c84"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c86"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c87"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c81"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  },
+  {
+   "finding": 7,
+   "candidates": []
+  },
+  {
+   "finding": 8,
+   "candidates": []
+  },
+  {
+   "finding": 9,
+   "candidates": []
+  }
+ ]
+}

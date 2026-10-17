@@ -1,0 +1,46 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "INVALID"
+  },
+  {
+   "finding": 1,
+   "label": "INVALID"
+  },
+  {
+   "finding": 2,
+   "label": "INVALID"
+  },
+  {
+   "finding": 3,
+   "label": "INVALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_appautoscaling_target.table_read",
+   "issue": "Unrestricted Max Capacity",
+   "risk": "Allowing an unrestricted maximum capacity can lead to unexpected costs if the autoscaling policy scales up excessively.",
+   "remediation": "Set a reasonable maximum capacity limit using the `max_capacity` attribute."
+  },
+  "1": {
+   "resource": "aws_appautoscaling_target.table_write",
+   "issue": "Unrestricted Max Capacity",
+   "risk": "Allowing an unrestricted maximum capacity can lead to unexpected costs if the autoscaling policy scales up excessively.",
+   "remediation": "Set a reasonable maximum capacity limit using the `max_capacity` attribute."
+  },
+  "2": {
+   "resource": "aws_appautoscaling_target.index_read",
+   "issue": "Unrestricted Max Capacity",
+   "risk": "Allowing an unrestricted maximum capacity can lead to unexpected costs if the autoscaling policy scales up excessively.",
+   "remediation": "Set a reasonable maximum capacity limit using the `max_capacity` attribute."
+  },
+  "3": {
+   "resource": "aws_appautoscaling_target.index_write",
+   "issue": "Unrestricted Max Capacity",
+   "risk": "Allowing an unrestricted maximum capacity can lead to unexpected costs if the autoscaling policy scales up excessively.",
+   "remediation": "Set a reasonable maximum capacity limit using the `max_capacity` attribute."
+  }
+ }
+}

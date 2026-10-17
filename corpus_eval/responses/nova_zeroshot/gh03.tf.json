@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "gh03.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:15:20",
+  "response": "```json\n[\n  {\n    \"resource\": \"data.aws_iam_policy_document.lambda_write_logs\",\n    \"issue\": \"Wildcard resource in IAM policy\",\n    \"risk\": \"Allows the Lambda function to write to any CloudWatch Logs group, which could lead to unauthorized access or data leakage.\",\n    \"remediation\": \"Specify the exact ARN of the CloudWatch Logs group that the Lambda function should write to. Replace \\\"arn:aws:logs:*:*:*\\\" with the specific ARN.\"\n  },\n  {\n    \"resource\": \"module.role\",\n    \"issue\": \"Use of full name in IAM role\",\n    \"risk\": \"Using the full name in IAM roles can lead to longer ARNs which might be harder to manage and could potentially expose more information than necessary.\",\n    \"remediation\": \"Set `use_fullname` to `false` to use a simpler and more manageable name for the IAM role.\"\n  }\n]\n```"
+}

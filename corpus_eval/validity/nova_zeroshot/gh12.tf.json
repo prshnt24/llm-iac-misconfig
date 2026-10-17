@@ -1,0 +1,36 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "VALID"
+  },
+  {
+   "finding": 2,
+   "label": "INVALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_ecs_cluster.default",
+   "issue": "Logging not enabled",
+   "risk": "Unable to audit ECS cluster activities",
+   "remediation": "Enable CloudWatch logs for the ECS cluster by adding the appropriate configuration."
+  },
+  "1": {
+   "resource": "module.alb",
+   "issue": "Access logs disabled",
+   "risk": "Unable to audit ALB activities",
+   "remediation": "Set `access_logs_enabled` to `true` and configure the S3 bucket for storing logs."
+  },
+  "2": {
+   "resource": "module.test_policy",
+   "issue": "Overly permissive IAM policy",
+   "risk": "Potential for unauthorized access",
+   "remediation": "Refine `iam_policy_statements` to include specific actions and resources instead of using wildcards."
+  }
+ }
+}

@@ -1,0 +1,50 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_17 Ensure all data stored in RDS is not publicly accessible (resource aws_db_instance.default)",
+   "issue": "Publicly accessible database",
+   "remediation": "Set `publicly_accessible = false` to restrict access to within the VPC."
+  },
+  {
+   "finding": 1,
+   "known": "CKV_AWS_16 Ensure all data stored in the RDS is securely encrypted at rest (resource aws_db_instance.default)",
+   "issue": "Storage not encrypted",
+   "remediation": "Set `storage_encrypted = true` and provide a `kms_key_id` for the encryption key."
+  },
+  {
+   "finding": 4,
+   "known": "CKV_AWS_382 Ensure no security groups allow egress from 0.0.0.0:0 to port -1 (resource aws_security_group_rule.egress)",
+   "issue": "Overly permissive egress rule",
+   "remediation": "Restrict the egress rule to only allow necessary outbound traffic, e.g., specific ports and destinations."
+  },
+  {
+   "finding": 5,
+   "known": "CKV_AWS_355 Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions (resource aws_iam_role_policy.ec2policy)",
+   "issue": "Overly broad IAM permissions",
+   "remediation": "Limit the IAM policy to only the necessary actions and resources required by the EC2 instance."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Setting publicly_accessible = false is exactly the fix for CKV_AWS_17."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "storage_encrypted = true fixes CKV_AWS_16. The kms_key_id is optional but a good addition."
+  },
+  {
+   "item": 2,
+   "score": 1,
+   "reason": "Right direction (restrict egress), but it names no attribute or value, such as narrowing cidr_blocks or ports. The advice is vague."
+  },
+  {
+   "item": 3,
+   "score": 1,
+   "reason": "Right idea (least privilege), but it does not say to replace Resource \"*\" with specific ARNs or narrow the s3:*, ec2:* and rds:* actions. Too generic."
+  }
+ ]
+}

@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 2,
+   "label": "VALID"
+  },
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "2": {
+   "resource": "aws_neptune_cluster.default",
+   "issue": "Final snapshot skipped on cluster deletion",
+   "risk": "Setting skip_final_snapshot = true means no snapshot is taken when the cluster is deleted. This can result in permanent, unrecoverable data loss if the cluster is accidentally or maliciously destroyed.",
+   "remediation": "Set skip_final_snapshot = false and provide a final_snapshot_identifier value so a snapshot is automatically created before the cluster is deleted."
+  },
+  "3": {
+   "resource": "aws_neptune_cluster.default",
+   "issue": "No VPC security group or subnet group specified",
+   "risk": "Without explicitly assigning vpc_security_group_ids and a neptune_subnet_group_name, the cluster may be placed in the default VPC with default security groups, potentially allowing unintended network access to the Neptune endpoint.",
+   "remediation": "Add vpc_security_group_ids referencing a restrictive security group that limits inbound access to port 8182 from known sources only, and set neptune_subnet_group_name to a subnet group composed of private subnets."
+  }
+ }
+}

@@ -1,0 +1,37 @@
+{
+ "file": "gh07.tf",
+ "findings": [
+  {
+   "resource": "module.nlb_sg",
+   "issue": "Unrestricted Egress",
+   "risk": "Allows all outbound traffic, which can be exploited for data exfiltration or lateral movement within the network.",
+   "remediation": "Restrict egress traffic to only necessary destinations. Replace `egress_with_cidr_blocks = [{ rule = \"all-all\", cidr_blocks = \"0.0.0.0/0\" }]` with specific egress rules."
+  },
+  {
+   "resource": "module.cluster_sg",
+   "issue": "Unrestricted Egress",
+   "risk": "Allows all outbound traffic, which can be exploited for data exfiltration or lateral movement within the network.",
+   "remediation": "Restrict egress traffic to only necessary destinations. Replace `egress_with_cidr_blocks = [{ rule = \"all-all\", cidr_blocks = \"0.0.0.0/0\" }]` with specific egress rules."
+  },
+  {
+   "resource": "module.cluster_sg",
+   "issue": "Unrestricted Ingress from External Clients",
+   "risk": "Allows direct API traffic from external clients, which can expose the Kubernetes and Talos APIs to potential attacks.",
+   "remediation": "Restrict ingress traffic to only necessary sources. Remove or restrict `ingress_cidr_blocks = var.external_source_cidrs` and `ingress_with_cidr_blocks` for ports 6443 and 50000."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  }
+ ]
+}

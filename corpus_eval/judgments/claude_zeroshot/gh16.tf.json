@@ -1,0 +1,87 @@
+{
+ "file": "gh16.tf",
+ "findings": [
+  {
+   "resource": "locals (userdata template)",
+   "issue": "Tailscale auth key embedded in EC2 user data in plaintext",
+   "risk": "The Tailscale OAuth client key or tailnet key is rendered directly into the EC2 instance user data via a template file. User data is stored unencrypted and is retrievable by anyone with ec2:DescribeInstanceAttribute permissions or access to the instance metadata service (IMDSv1), exposing the auth key and allowing unauthorized nodes to join the tailnet.",
+   "remediation": "Store the auth key in AWS Secrets Manager or SSM Parameter Store as a SecureString (KMS-encrypted). Pass only the secret ARN/path into user data and have the instance retrieve the secret at runtime using its IAM role. Remove the 'authkey' field from the templatefile() call and instead write it to a SecureString parameter via a 'aws_ssm_parameter' resource, then have the userdata.sh.tmpl fetch it with 'aws ssm get-parameter --with-decryption'."
+  },
+  {
+   "resource": "module.ssm_state",
+   "issue": "SSM SecureString parameter not encrypted with a customer-managed KMS key",
+   "risk": "The Tailscaled state parameter is stored as a SecureString but relies on the default AWS-managed key (aws/ssm). Without a customer-managed KMS key (CMK), there is no ability to audit, rotate, or revoke key access independently, and the blast radius of a compromised AWS account is larger. Any principal with SSM access can decrypt the parameter without additional KMS controls.",
+   "remediation": "Create an 'aws_kms_key' resource with key rotation enabled and a restrictive key policy, then pass its ARN to the SSM parameter store module via the 'kms_key_id' parameter (or equivalent attribute exposed by 'cloudposse/ssm-parameter-store/aws'). Example: add 'kms_key_id = aws_kms_key.ssm_state.arn' to the parameter_write block."
+  },
+  {
+   "resource": "module.ssm_state",
+   "issue": "SSM parameter initial value is an empty JSON object stored in state",
+   "risk": "The parameter is initialised with value '{}' which is written into Terraform state. Although ignore_value_changes = true prevents drift detection, the initial write still goes through Terraform and the value (even if trivial now) is recorded in the state file. If the state file is not encrypted or access-controlled, any sensitive state written later by tailscaled could be exposed if the ignore flag were ever removed.",
+   "remediation": "Ensure the Terraform state backend (e.g. S3) has server-side encryption and strict bucket policies. Additionally, confirm 'ignore_value_changes = true' remains set so that the runtime secret value written by tailscaled is never captured in state. Consider using a null/placeholder value and enforcing encryption at the backend level with 'encrypt = true' and a CMK."
+  },
+  {
+   "resource": "module.tailscale_subnet_router",
+   "issue": "associate_public_ip_address is a passthrough variable with no enforced default of false",
+   "risk": "If the caller sets 'var.associate_public_ip_address = true' (or if the upstream module defaults to true), the subnet router EC2 instance will receive a public IP address, directly exposing it to the internet. A Tailscale subnet router should only be reachable via the tailnet and should never have a public IP.",
+   "remediation": "Override the variable with a hardcoded value of 'false' in the module call: 'associate_public_ip_address = false'. Remove the passthrough of 'var.associate_public_ip_address' to prevent callers from enabling a public IP on this security-sensitive instance."
+  },
+  {
+   "resource": "module.tailscale_subnet_router",
+   "issue": "EC2 instance monitoring not enforced (detailed monitoring passthrough)",
+   "risk": "Detailed CloudWatch monitoring is passed through as a variable ('var.monitoring_enabled'). If a caller sets this to false, the instance will only emit metrics at 5-minute intervals, reducing visibility into anomalous CPU/network behaviour that could indicate compromise or misuse of the subnet router.",
+   "remediation": "Hardcode 'monitoring_enabled = true' in the module call instead of passing through 'var.monitoring_enabled', ensuring detailed monitoring is always active for this security-critical instance."
+  },
+  {
+   "resource": "module.ssm_policy",
+   "issue": "IAM policy grants ssm:PutParameter without a condition restricting the parameter path",
+   "risk": "The policy allows the instance role to call ssm:PutParameter on the specific state parameter ARN, which is correctly scoped. However, there is no 'StringEquals' condition on 'ssm:ResourceTag' or a path-based resource constraint beyond the single ARN. If the ARN resolution were ever incorrect (e.g. during a plan with unknown values), the resource could inadvertently broaden to '*', allowing the instance to overwrite arbitrary SSM parameters.",
+   "remediation": "Add an explicit IAM condition to the policy statement to enforce the parameter path prefix: add a 'conditions' block with 'StringLike' on 'ssm:Name' matching '/tailscale/${module.this.id}/*'. This provides defence-in-depth even if the ARN reference changes. Example: conditions = [{ test = \"StringLike\", variable = \"ssm:Name\", values = [\"/tailscale/${module.this.id}/*\"] }]."
+  },
+  {
+   "resource": "resource.tailscale_tailnet_key.default",
+   "issue": "Tailnet key may be reusable and non-ephemeral depending on variable values",
+   "risk": "If 'var.authkey_config.tailscale_tailnet_key.reusable = true' and 'ephemeral = false', the generated key can be used to authenticate an unlimited number of devices and persists after the device leaves the tailnet. A leaked key could allow an attacker to add rogue nodes to the tailnet indefinitely until the key is manually revoked.",
+   "remediation": "Enforce 'reusable = false' and 'ephemeral = true' by hardcoding these values rather than passing them through variables, or add variable validation rules that reject reusable=true/ephemeral=false combinations. For a subnet router (single instance), a one-time ephemeral key is sufficient and significantly reduces the impact of key exposure."
+  },
+  {
+   "resource": "resource.tailscale_oauth_client.default / resource.tailscale_tailnet_key.default",
+   "issue": "Sensitive Tailscale credentials stored in Terraform state in plaintext",
+   "risk": "The 'key' attribute of both 'tailscale_oauth_client' and 'tailscale_tailnet_key' resources is a sensitive secret that Terraform writes to the state file. If the state backend lacks encryption or has overly permissive access controls, these credentials can be extracted and used to authenticate malicious nodes to the tailnet.",
+   "remediation": "Ensure the Terraform state backend enforces encryption at rest (e.g. S3 with 'encrypt = true' and a CMK via 'kms_key_id') and strict access policies. Additionally, set the shortest viable 'expiry' on the tailnet key so that any leaked credential has a limited window of validity. Consider using Terraform Cloud/Enterprise with encrypted state as the backend."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  },
+  {
+   "finding": 7,
+   "candidates": []
+  }
+ ]
+}

@@ -1,0 +1,86 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "INVALID"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 4,
+   "label": "VALID"
+  },
+  {
+   "finding": 6,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 7,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 8,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_security_group.postgresql",
+   "issue": "No ingress or egress rules defined in the security group",
+   "risk": "Without explicit ingress/egress rules the security group may rely on default permissive rules or, conversely, block all traffic unexpectedly. More critically, there is no restriction on which sources can reach the database port, and no explicit egress restriction, potentially allowing unrestricted outbound traffic or leaving the database access control undefined.",
+   "remediation": "Add an explicit ingress rule restricted to the database port (e.g. 5432) and limited to trusted CIDR blocks or source security groups, and an explicit egress rule. Example: add an `ingress` block with `from_port = var.database_port`, `to_port = var.database_port`, `protocol = \"tcp\"`, `cidr_blocks = [var.allowed_cidr]` and an `egress` block with `from_port = 0`, `to_port = 0`, `protocol = \"-1\"`, `cidr_blocks = [\"0.0.0.0/0\"]` (or restrict egress further)."
+  },
+  "1": {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "Storage encryption not enforced (storage_encrypted delegated to variable)",
+   "risk": "If `var.storage_encrypted` is set to `false` (which is the Terraform default for this attribute), data at rest in the RDS instance is unencrypted, exposing sensitive data if the underlying storage media is compromised.",
+   "remediation": "Hard-code `storage_encrypted = true` in the resource block, or ensure the variable default is `true` and add a validation block: `validation { condition = var.storage_encrypted == true; error_message = \"Storage must be encrypted.\" }`. Additionally, specify `kms_key_id` to use a customer-managed KMS key rather than the AWS-managed default."
+  },
+  "2": {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "No KMS key specified for storage encryption",
+   "risk": "Even when `storage_encrypted = true`, omitting `kms_key_id` causes RDS to use the AWS-managed default key (`aws/rds`). This prevents fine-grained key rotation control, key policy management, and cross-account sharing restrictions that a customer-managed KMS key (CMK) provides.",
+   "remediation": "Add `kms_key_id = var.kms_key_arn` (or a direct `aws_kms_key` resource ARN) to the `aws_db_instance.postgresql` resource block to enforce use of a customer-managed KMS key."
+  },
+  "3": {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "Publicly accessible attribute not explicitly set to false",
+   "risk": "The `publicly_accessible` attribute defaults to `false` in Terraform, but without explicitly setting it, a future change to the default or a misconfigured variable could expose the RDS instance directly to the internet, allowing unauthorised access attempts against the database endpoint.",
+   "remediation": "Explicitly add `publicly_accessible = false` to the `aws_db_instance.postgresql` resource block to ensure the instance is never reachable from the public internet regardless of default changes."
+  },
+  "4": {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "Database password stored as plain-text variable",
+   "risk": "Passing the database password via `var.database_password` means it is stored in Terraform state in plain text and may appear in CI/CD logs or version-controlled variable files, leading to credential exposure.",
+   "remediation": "Remove the `password` attribute from the resource and instead use AWS Secrets Manager or SSM Parameter Store. Reference the secret with a `data \"aws_secretsmanager_secret_version\"` data source, or use `manage_master_user_password = true` (available in newer AWS provider versions) to let RDS manage the password in Secrets Manager automatically. Mark the variable as `sensitive = true` as a minimum interim measure."
+  },
+  "6": {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "Backup retention period not enforced to a minimum value",
+   "risk": "If `var.backup_retention_period` is set to `0`, automated backups are disabled entirely. This eliminates the ability to perform point-in-time recovery after data corruption, accidental deletion, or a ransomware attack.",
+   "remediation": "Add a variable validation to enforce a minimum retention period: `validation { condition = var.backup_retention_period >= 7; error_message = \"Backup retention must be at least 7 days.\" }`. For production workloads, 7\u201335 days is recommended."
+  },
+  "7": {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "Auto minor version upgrade delegated to variable without enforced default",
+   "risk": "If `var.auto_minor_version_upgrade` is `false`, the instance will not automatically receive minor engine patches that include security fixes, leaving the database vulnerable to known CVEs.",
+   "remediation": "Hard-code `auto_minor_version_upgrade = true` or ensure the variable defaults to `true` with a validation block enforcing it."
+  },
+  "8": {
+   "resource": "aws_db_instance.postgresql",
+   "issue": "skip_final_snapshot delegated to variable without enforced default",
+   "risk": "If `var.skip_final_snapshot` is `true`, destroying the Terraform resource will delete the RDS instance without creating a final snapshot, resulting in permanent, unrecoverable data loss.",
+   "remediation": "Hard-code `skip_final_snapshot = false` or enforce `default = false` with a validation block. Ensure `final_snapshot_identifier` is always set to a meaningful, unique name."
+  }
+ }
+}

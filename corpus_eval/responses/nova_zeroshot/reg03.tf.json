@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "reg03.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:16:26",
+  "response": "```json\n[\n  {\n    \"resource\": \"aws_sns_topic_policy.this\",\n    \"issue\": \"Overly permissive policy\",\n    \"risk\": \"Allows any AWS principal to perform actions on the SNS topic\",\n    \"remediation\": \"Restrict the 'identifiers' attribute under 'principals' to specific AWS account IDs or IAM roles instead of using ['*']\"\n  }\n]\n```"
+}

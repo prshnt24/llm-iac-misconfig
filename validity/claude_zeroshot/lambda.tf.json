@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 6,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "6": {
+   "resource": "aws_iam_role.iam_for_lambda",
+   "issue": "Lambda IAM Role Lacks a Permission Boundary",
+   "risk": "Without a permissions boundary on the IAM role, if the Lambda function is compromised or the role is misconfigured with overly broad policies, there is no secondary control to limit the maximum permissions the role can exercise. This can lead to privilege escalation beyond the intended scope.",
+   "remediation": "Add a 'permissions_boundary' attribute to the aws_iam_role resource: permissions_boundary = aws_iam_policy.lambda_boundary.arn. Define the boundary policy to restrict the role to only the AWS services and actions required by the Lambda function."
+  }
+ }
+}

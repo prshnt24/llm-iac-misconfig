@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "kms.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-16T23:05:04",
+  "response": "```json\n[\n  {\n    \"resource\": \"aws_kms_key.logs_key\",\n    \"issue\": \"Key rotation not enabled\",\n    \"risk\": \"Without key rotation, the KMS key remains static, increasing the risk of compromise over time. Regular rotation of encryption keys reduces the window of opportunity for an attacker to use a compromised key.\",\n    \"remediation\": \"Enable key rotation by adding the `enable_key_rotation = true` attribute to the `aws_kms_key` resource block.\"\n  }\n]\n```"
+}

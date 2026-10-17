@@ -1,0 +1,67 @@
+{
+ "file": "reg03.tf",
+ "findings": [
+  {
+   "resource": "aws_sns_topic.this",
+   "issue": "KMS encryption not enforced",
+   "risk": "The KMS master key ID is sourced entirely from a variable with no default enforcement. If var.kms_master_key_id is null or empty, SNS messages are stored and transmitted without server-side encryption at rest, exposing sensitive message content to anyone with access to the underlying AWS infrastructure or in the event of a data breach.",
+   "remediation": "Set a non-null default for var.kms_master_key_id (e.g. 'alias/aws/sns' for the AWS-managed key) or add a validation block to the variable to reject null/empty values. In the resource block ensure: kms_master_key_id = coalesce(var.kms_master_key_id, 'alias/aws/sns')"
+  },
+  {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "Overly permissive SNS topic policy \u2013 wildcard principal",
+   "risk": "The default policy statement uses principals { type = 'AWS'; identifiers = ['*'] }, which grants every AWS principal (any account, any role, any user) the listed permissions including sns:Publish, sns:DeleteTopic, sns:SetTopicAttributes, and sns:RemovePermission. Even with the AWS:SourceAccount condition, the wildcard principal means any identity in that account \u2013 including compromised or low-privilege roles \u2013 can perform destructive or data-exfiltration actions on the topic.",
+   "remediation": "Replace the wildcard principal with the specific IAM ARNs or roles that legitimately need access. At minimum scope the principal to the account root ARN: identifiers = ['arn:aws:iam::${data.aws_caller_identity.current[0].account_id}:root']. Further restrict by removing sns:DeleteTopic, sns:SetTopicAttributes, and sns:RemovePermission from the default statement and grant those only to dedicated admin roles via separate statements."
+  },
+  {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "Dangerous administrative actions included in default topic policy",
+   "risk": "The default statement grants sns:DeleteTopic, sns:SetTopicAttributes, sns:RemovePermission, and sns:AddPermission to all principals matching the condition. This allows any principal in the account to delete the topic, alter its configuration, or modify its access policy, enabling privilege escalation, denial-of-service, or policy tampering.",
+   "remediation": "Remove sns:DeleteTopic, sns:SetTopicAttributes, sns:RemovePermission, and sns:AddPermission from the default statement. Create a separate, tightly scoped statement that grants these administrative actions only to specific, named IAM admin roles or the account root, protected by additional conditions such as aws:MultiFactorAuthPresent = true."
+  },
+  {
+   "resource": "aws_sns_topic_subscription.this",
+   "issue": "Subscription protocol not validated \u2013 plaintext HTTP allowed",
+   "risk": "The protocol attribute is taken directly from var.subscriptions with no restriction. If protocol is set to 'http' (rather than 'https'), messages are delivered over an unencrypted channel, exposing message content to interception via man-in-the-middle attacks.",
+   "remediation": "Add a validation rule to the subscriptions variable or add a precondition in the resource block to reject 'http' as a protocol value. Example precondition: condition = each.value.protocol != 'http' with error_message = 'HTTP subscriptions are not permitted; use HTTPS.'"
+  },
+  {
+   "resource": "aws_sns_topic_subscription.this",
+   "issue": "endpoint_auto_confirms not restricted",
+   "risk": "endpoint_auto_confirms is passed through directly from variables. When set to true for HTTP/HTTPS endpoints, SNS automatically confirms the subscription without requiring the endpoint owner to explicitly confirm, which can allow an attacker who controls a URL to subscribe it to the topic and receive all published messages.",
+   "remediation": "Default endpoint_auto_confirms to false in the variable definition and add a validation or precondition that prevents it from being true for HTTP/HTTPS protocols. Only allow auto-confirmation for protocols that inherently require it (e.g. 'sqs', 'lambda')."
+  },
+  {
+   "resource": "aws_sns_topic.this",
+   "issue": "Tracing not enforced (tracing_config)",
+   "risk": "tracing_config is sourced from a variable with no enforced default. Without active tracing (PassThrough or Active), there is no visibility into message flows, making it difficult to detect anomalous publish patterns, data exfiltration, or abuse of the topic.",
+   "remediation": "Set a default value of 'PassThrough' or 'Active' for var.tracing_config in the variable definition, or hardcode tracing_config = 'PassThrough' in the resource block to ensure baseline observability is always enabled."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  }
+ ]
+}

@@ -1,0 +1,36 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "INVALID"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_iam_role.eventbridge",
+   "issue": "Wildcard Action in IAM Role Policy",
+   "risk": "Allows the role to perform any action, which can lead to unauthorized access and potential security breaches.",
+   "remediation": "Remove the wildcard action and specify only the necessary actions required for the role."
+  },
+  "1": {
+   "resource": "data.aws_iam_policy_document.ecs",
+   "issue": "Wildcard Resource in IAM Policy Document",
+   "risk": "Allows the role to access any ECS resource, which can lead to unauthorized access and potential security breaches.",
+   "remediation": "Specify the exact ECS resources that the role needs to access instead of using a wildcard."
+  },
+  "2": {
+   "resource": "resource.aws_iam_policy.ecs",
+   "issue": "Wildcard Resource in IAM Policy",
+   "risk": "Allows the role to access any ECS resource, which can lead to unauthorized access and potential security breaches.",
+   "remediation": "Specify the exact ECS resources that the role needs to access instead of using a wildcard."
+  }
+ }
+}

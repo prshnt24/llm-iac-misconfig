@@ -1,0 +1,27 @@
+{
+ "file": "gh03.tf",
+ "findings": [
+  {
+   "resource": "data.aws_iam_policy_document.lambda_write_logs",
+   "issue": "Wildcard resource in IAM policy",
+   "risk": "Allows the Lambda function to write to any CloudWatch Logs group, which could lead to unauthorized access or data leakage.",
+   "remediation": "Specify the exact ARN of the CloudWatch Logs group that the Lambda function should write to. Replace \"arn:aws:logs:*:*:*\" with the specific ARN."
+  },
+  {
+   "resource": "module.role",
+   "issue": "Use of full name in IAM role",
+   "risk": "Using the full name in IAM roles can lead to longer ARNs which might be harder to manage and could potentially expose more information than necessary.",
+   "remediation": "Set `use_fullname` to `false` to use a simpler and more manageable name for the IAM role."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  }
+ ]
+}

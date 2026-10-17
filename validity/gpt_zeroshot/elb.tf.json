@@ -1,0 +1,36 @@
+{
+ "labels": [
+  {
+   "finding": 1,
+   "label": "VALID"
+  },
+  {
+   "finding": 2,
+   "label": "VALID"
+  },
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "1": {
+   "resource": "aws_elb.weblb",
+   "issue": "Backend connection from load balancer to instances uses unencrypted HTTP",
+   "risk": "Traffic between the load balancer and EC2 instances is unencrypted, which can expose sensitive internal application data to interception within the VPC or by compromised network components.",
+   "remediation": "Change the listener block to encrypt backend traffic by setting `instance_protocol = \"https\"` and `instance_port` to the application's TLS port, and configure the instances to serve HTTPS."
+  },
+  "2": {
+   "resource": "aws_elb.weblb",
+   "issue": "Health check uses unencrypted HTTP",
+   "risk": "Health check requests are performed over cleartext HTTP, which is inconsistent with secure transport requirements and may expose application endpoints or metadata in transit.",
+   "remediation": "Update the `health_check` block `target` from `\"HTTP:8000/\"` to an HTTPS endpoint such as `\"HTTPS:443/\"` or the appropriate TLS-enabled backend port."
+  },
+  "3": {
+   "resource": "aws_elb.weblb",
+   "issue": "Sensitive data exposed in resource tags",
+   "risk": "Tags include potentially sensitive metadata such as `git_last_modified_by` with an email address and detailed repository information, which can leak internal identities and source control details to users or systems that can read resource tags.",
+   "remediation": "Remove sensitive tag entries from the `tags` block, especially `git_last_modified_by`, and avoid storing personal data or internal repository metadata in tags."
+  }
+ }
+}

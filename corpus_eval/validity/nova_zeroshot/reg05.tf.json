@@ -1,0 +1,36 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_acm_certificate.this",
+   "issue": "Certificate Transparency Logging Disabled",
+   "risk": "Disabling certificate transparency logging can hide the issuance of the certificate, which may be a security risk if malicious certificates are issued.",
+   "remediation": "Set `certificate_transparency_logging_preference` to `ENABLED` to ensure transparency logging is enabled.\n```\noptions {\n  certificate_transparency_logging_preference = \"ENABLED\"\n  export                                      = var.export\n}\n```"
+  },
+  "1": {
+   "resource": "aws_acm_certificate.this",
+   "issue": "Use of Insecure Key Algorithm",
+   "risk": "Using an insecure key algorithm can lead to vulnerabilities in the certificate, making it easier for attackers to compromise the security of the communications.",
+   "remediation": "Ensure `key_algorithm` is set to a secure algorithm like `RSA_2048` or `EC_prime256v1`.\n```\nkey_algorithm             = \"RSA_2048\"\n```"
+  },
+  "2": {
+   "resource": "aws_route53_record.validation",
+   "issue": "Overwriting Existing DNS Records",
+   "risk": "Allowing overwrite of existing DNS records can lead to unintended changes and potential security issues.",
+   "remediation": "Set `allow_overwrite` to `false` to prevent overwriting existing records.\n```\nallow_overwrite = false\n```"
+  }
+ }
+}

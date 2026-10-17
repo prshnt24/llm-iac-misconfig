@@ -1,0 +1,196 @@
+{
+ "file": "db-app.tf",
+ "findings": [
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Storage Not Encrypted",
+   "risk": "Data at rest is stored in plaintext. If the underlying storage media is compromised or improperly decommissioned, sensitive database contents can be exposed.",
+   "remediation": "Set `storage_encrypted = true` and optionally specify `kms_key_id` to use a customer-managed KMS key for encryption at rest."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Publicly Accessible RDS Instance",
+   "risk": "The database is reachable from the public internet, dramatically increasing the attack surface and exposure to brute-force, credential-stuffing, and exploitation attacks.",
+   "remediation": "Set `publicly_accessible = false`. Place the RDS instance in private subnets and use a bastion host or VPN for administrative access."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Backups Disabled (backup_retention_period = 0)",
+   "risk": "With no automated backups, there is no recovery point in the event of data corruption, accidental deletion, or a ransomware attack, leading to potential permanent data loss.",
+   "remediation": "Set `backup_retention_period` to a value of at least 7 (days), e.g. `backup_retention_period = 7`, and configure `backup_window` to a suitable maintenance window."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Multi-AZ Disabled",
+   "risk": "A single-AZ deployment has no automatic failover. A hardware failure, AZ outage, or maintenance event will cause unplanned downtime and potential data loss.",
+   "remediation": "Set `multi_az = true` to enable synchronous replication and automatic failover to a standby replica in a different Availability Zone."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Enhanced Monitoring Disabled (monitoring_interval = 0)",
+   "risk": "Without OS-level metrics from Enhanced Monitoring, anomalous resource consumption (e.g., caused by an attacker or runaway query) may go undetected.",
+   "remediation": "Set `monitoring_interval` to a non-zero value (e.g., `60`) and provide a valid `monitoring_role_arn` pointing to an IAM role that has the `AmazonRDSEnhancedMonitoringRole` policy attached."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Final Snapshot Disabled (skip_final_snapshot = true)",
+   "risk": "If the database is accidentally or maliciously destroyed, no final snapshot is taken, making full data recovery impossible.",
+   "remediation": "Set `skip_final_snapshot = false` and specify `final_snapshot_identifier` with a meaningful name so a snapshot is always created before deletion."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Hardcoded Admin Username",
+   "risk": "Using the well-known default username `admin` makes credential-guessing attacks easier. Attackers routinely target common default usernames.",
+   "remediation": "Change `username` to a non-default, non-guessable value and supply it via a Terraform variable (e.g., `username = var.db_username`) rather than a hardcoded string."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "No Deletion Protection",
+   "risk": "Without deletion protection enabled, the database instance can be destroyed by a `terraform destroy` or an accidental API call, causing irreversible data loss.",
+   "remediation": "Add `deletion_protection = true` to the `aws_db_instance` resource block."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "CloudWatch Logs Export Not Enabled",
+   "risk": "Without exporting audit, error, general, or slow-query logs to CloudWatch, there is no centralised, tamper-resistant audit trail for security investigations or compliance.",
+   "remediation": "Add `enabled_cloudwatch_logs_exports = [\"audit\", \"error\", \"general\", \"slowquery\"]` to the `aws_db_instance` resource block."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "IAM Database Authentication Not Enabled",
+   "risk": "Relying solely on static username/password authentication increases the risk of credential theft. IAM authentication provides short-lived tokens and centralised access control.",
+   "remediation": "Add `iam_database_authentication_enabled = true` to the `aws_db_instance` resource block and update application code to use IAM auth tokens."
+  },
+  {
+   "resource": "aws_security_group_rule.egress",
+   "issue": "Unrestricted Outbound Access (0.0.0.0/0)",
+   "risk": "Allowing all outbound traffic enables data exfiltration, C2 call-backs, and lateral movement if the RDS host or an associated resource is compromised.",
+   "remediation": "Restrict `cidr_blocks` to only the specific IP ranges and ports required (e.g., limit egress to the application subnet on the MySQL port). Remove the catch-all `0.0.0.0/0` rule."
+  },
+  {
+   "resource": "aws_iam_role_policy.ec2policy",
+   "issue": "Overly Permissive IAM Policy (Wildcard Actions and Resources)",
+   "risk": "Granting `s3:*`, `ec2:*`, and `rds:*` on `Resource: *` violates least privilege. A compromised EC2 instance can read/delete all S3 buckets, terminate instances, drop databases, and more.",
+   "remediation": "Replace wildcard actions with only the specific actions the application requires (e.g., `s3:GetObject` on a specific bucket ARN, `rds:DescribeDBInstances` on the specific DB ARN). Never use `Resource: *` with broad service wildcards."
+  },
+  {
+   "resource": "aws_instance.db_app",
+   "issue": "Plaintext Database Credentials in EC2 User Data",
+   "risk": "The DB username and password are interpolated directly into the instance user data script. User data is stored in plaintext and is retrievable by anyone with `ec2:DescribeInstanceAttribute` permissions or access to the instance metadata service, leading to credential exposure.",
+   "remediation": "Remove credentials from user data entirely. Store the password in AWS Secrets Manager or SSM Parameter Store (SecureString) and have the application retrieve it at runtime using the AWS SDK. Reference the secret ARN in user data at most, never the secret value."
+  },
+  {
+   "resource": "aws_instance.db_app",
+   "issue": "IMDSv2 Not Enforced on EC2 Instance",
+   "risk": "Without requiring IMDSv2 (session-oriented metadata), the instance is vulnerable to SSRF attacks that can retrieve IAM credentials from the metadata service (169.254.169.254).",
+   "remediation": "Add a `metadata_options` block to `aws_instance.db_app`: `metadata_options { http_endpoint = \"enabled\"; http_tokens = \"required\" }` to enforce IMDSv2."
+  },
+  {
+   "resource": "aws_instance.db_app",
+   "issue": "EBS Root Volume Not Encrypted",
+   "risk": "Without EBS encryption, data written to the root volume (including swap, temp files, and application data) is stored in plaintext, risking exposure if the volume snapshot or underlying media is accessed.",
+   "remediation": "Add a `root_block_device` block with `encrypted = true` and optionally `kms_key_id` to `aws_instance.db_app`, or enable default EBS encryption for the account/region."
+  },
+  {
+   "resource": "aws_instance.db_app",
+   "issue": "No VPC Monitoring / Detailed Monitoring Disabled",
+   "risk": "Without detailed monitoring enabled on the EC2 instance, metric granularity is reduced to 5-minute intervals, delaying detection of anomalous activity.",
+   "remediation": "Add `monitoring = true` to `aws_instance.db_app` to enable detailed CloudWatch monitoring at 1-minute intervals."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c6"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c8"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c4"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c5"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c2"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  },
+  {
+   "finding": 7,
+   "candidates": [
+    "c10"
+   ]
+  },
+  {
+   "finding": 8,
+   "candidates": [
+    "c3"
+   ]
+  },
+  {
+   "finding": 9,
+   "candidates": [
+    "c7"
+   ]
+  },
+  {
+   "finding": 10,
+   "candidates": [
+    "c24"
+   ]
+  },
+  {
+   "finding": 11,
+   "candidates": [
+    "c14",
+    "c15",
+    "c16",
+    "c17"
+   ]
+  },
+  {
+   "finding": 12,
+   "candidates": []
+  },
+  {
+   "finding": 13,
+   "candidates": [
+    "c20"
+   ]
+  },
+  {
+   "finding": 14,
+   "candidates": [
+    "c21"
+   ]
+  },
+  {
+   "finding": 15,
+   "candidates": [
+    "c18"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 2,
+   "label": "VALID"
+  },
+  {
+   "finding": 9,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "2": {
+   "resource": "aws_ebs_snapshot.example_snapshot",
+   "issue": "Snapshot created from unencrypted volume",
+   "risk": "The snapshot inherits the lack of encryption from the source volume, which can expose backed-up data if accessed or shared improperly.",
+   "remediation": "Encrypt the source volume by setting `aws_ebs_volume.web_host_storage.encrypted = true` and recreate the snapshot. If creating a separate encrypted copy, use an encrypted snapshot/copy workflow with a KMS key."
+  },
+  "9": {
+   "resource": "aws_s3_bucket.flowbucket",
+   "issue": "force_destroy enabled on log bucket",
+   "risk": "The bucket and all contained flow logs can be deleted during Terraform destroy or misconfiguration, causing loss of audit evidence and weakening forensic capabilities.",
+   "remediation": "Set `force_destroy = false` on `aws_s3_bucket.flowbucket` to prevent automatic deletion of non-empty log buckets."
+  }
+ }
+}

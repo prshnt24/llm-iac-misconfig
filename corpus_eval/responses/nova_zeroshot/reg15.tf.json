@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "reg15.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:17:03",
+  "response": "```json\n[\n  {\n    \"resource\": \"aws_sqs_queue.this\",\n    \"issue\": \"Unencrypted Queue\",\n    \"risk\": \"Data in the queue is not encrypted at rest, which can lead to unauthorized access if the queue data is intercepted.\",\n    \"remediation\": \"Set `sqs_managed_sse_enabled = true` or provide a `kms_master_key_id` to enable encryption.\"\n  },\n  {\n    \"resource\": \"aws_sqs_queue.dlq\",\n    \"issue\": \"Unencrypted Dead Letter Queue\",\n    \"risk\": \"Data in the dead letter queue is not encrypted at rest, which can lead to unauthorized access if the queue data is intercepted.\",\n    \"remediation\": \"Set `sqs_managed_sse_enabled = true` or provide a `kms_master_key_id` to enable encryption.\"\n  }\n]\n```"
+}

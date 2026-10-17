@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "data.aws_iam_policy_document.replication_sts",
+   "issue": "Unrestricted Service Principal",
+   "risk": "Allowing the s3.amazonaws.com service principal to assume the role without conditions can lead to unauthorized access if the service is compromised.",
+   "remediation": "Add conditions to the assume_role_policy to restrict access, such as source IP or MFA requirements."
+  },
+  "1": {
+   "resource": "data.aws_iam_policy_document.replication",
+   "issue": "Overly Permissive Permissions",
+   "risk": "The policy allows broad S3 actions which could lead to unauthorized data access or modification.",
+   "remediation": "Narrow down the permissions to only the necessary actions required for replication."
+  }
+ }
+}

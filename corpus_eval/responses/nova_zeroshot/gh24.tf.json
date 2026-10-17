@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "gh24.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:16:07",
+  "response": "[\n  {\n    \"resource\": \"aws_route53_record.default\",\n    \"issue\": \"Insecure allow_overwrite\",\n    \"risk\": \"Allowing overwrite of DNS records can lead to potential DNS hijacking or unauthorized changes.\",\n    \"remediation\": \"Set `allow_overwrite` to `false` to prevent unauthorized changes to DNS records.\"\n  },\n  {\n    \"resource\": \"aws_route53_record.ipv6\",\n    \"issue\": \"Insecure allow_overwrite\",\n    \"risk\": \"Allowing overwrite of DNS records can lead to potential DNS hijacking or unauthorized changes.\",\n    \"remediation\": \"Set `allow_overwrite` to `false` to prevent unauthorized changes to DNS records.\"\n  }\n]"
+}

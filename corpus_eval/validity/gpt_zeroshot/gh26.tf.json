@@ -1,0 +1,46 @@
+{
+ "labels": [
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "VALID"
+  },
+  {
+   "finding": 4,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 5,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "1": {
+   "resource": "aws_iam_user.default",
+   "issue": "force_destroy may allow deletion of user with credentials",
+   "risk": "If var.force_destroy is true, the IAM user can be deleted along with associated access keys, login profile, and MFA devices without additional safeguards, which can bypass change controls and make destructive actions easier.",
+   "remediation": "Set force_destroy = false in aws_iam_user.default, or constrain var.force_destroy to false for production so credential-bearing IAM users cannot be forcefully removed."
+  },
+  "3": {
+   "resource": "aws_iam_user_login_profile.default",
+   "issue": "Lifecycle ignore_changes disables enforcement of password reset requirement",
+   "risk": "Ignoring changes to password_reset_required prevents Terraform from detecting and correcting drift, so a weakened setting can persist unnoticed and leave console access less secure.",
+   "remediation": "Remove password_reset_required from lifecycle.ignore_changes in aws_iam_user_login_profile.default so Terraform can enforce the intended password reset policy."
+  },
+  "4": {
+   "resource": "aws_iam_user_login_profile.default",
+   "issue": "Weak or unvalidated console password length",
+   "risk": "Because password_length is fully variable and no minimum is enforced in this configuration, a weak initial console password could be generated, increasing brute-force or guessing risk.",
+   "remediation": "Set password_length in aws_iam_user_login_profile.default to a strong minimum, such as 20 or greater, and enforce that constraint in the variable definition."
+  },
+  "5": {
+   "resource": "aws_iam_user_group_membership.default",
+   "issue": "Unvalidated IAM group assignment can grant excessive privileges",
+   "risk": "Assigning the user to arbitrary groups from var.groups without constraints can result in unintended administrative or overly broad permissions through group policies.",
+   "remediation": "Restrict var.groups to an approved allowlist and ensure aws_iam_user_group_membership.default only attaches least-privilege groups."
+  }
+ }
+}

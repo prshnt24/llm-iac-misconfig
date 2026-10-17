@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "fewshot",
+  "file": "ecr.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-16T23:05:23",
+  "response": "[\n  {\n    \"resource\": \"aws_ecr_repository.repository\",\n    \"issue\": \"Image tag mutability set to MUTABLE\",\n    \"risk\": \"Allows image tags to be overwritten, which can lead to confusion and potential security risks if an attacker manages to push a malicious image with a tag that overwrites a legitimate one.\",\n    \"remediation\": \"Change image_tag_mutability from \\\"MUTABLE\\\" to \\\"IMMUTABLE\\\"\"\n  },\n  {\n    \"resource\": \"null_resource.push_image\",\n    \"issue\": \"Use of local-exec provisioner with sensitive operations\",\n    \"risk\": \"Executing sensitive operations like docker login with AWS credentials in a local-exec provisioner can expose credentials and commands in plain text, increasing the risk of credential leakage.\",\n    \"remediation\": \"Consider using more secure methods for deploying Docker images, such as integrating with CI/CD pipelines that handle credentials securely.\"\n  }\n]"
+}

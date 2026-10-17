@@ -1,0 +1,105 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_46 Ensure no hard-coded secrets exist in EC2 user data (resource aws_instance.web_host)",
+   "issue": "Hardcoded AWS credentials in user_data",
+   "remediation": "Remove the export AWS_ACCESS_KEY_ID and export AWS_SECRET_ACCESS_KEY lines from the user_data attribute and use an IAM instance profile via the iam_instance_profile attribute with least-privilege permissions."
+  },
+  {
+   "finding": 1,
+   "known": "CKV_AWS_3 Ensure all data stored in the EBS is securely encrypted (resource aws_ebs_volume.web_host_storage)",
+   "issue": "EBS volume encryption not enabled",
+   "remediation": "Set the encrypted attribute to true in aws_ebs_volume.web_host_storage and optionally specify kms_key_id for a customer-managed KMS key."
+  },
+  {
+   "finding": 3,
+   "known": "CKV_AWS_24 Ensure no security groups allow ingress from 0.0.0.0:0 to port 22 (resource aws_security_group.web-node)",
+   "issue": "SSH ingress open to the internet",
+   "remediation": "Modify the ingress block for port 22 to replace cidr_blocks = [\"0.0.0.0/0\"] with a restricted set of trusted IP ranges, or remove the rule entirely and use AWS Systems Manager Session Manager."
+  },
+  {
+   "finding": 4,
+   "known": "CKV_AWS_382 Ensure no security groups allow egress from 0.0.0.0:0 to port -1 (resource aws_security_group.web-node)",
+   "issue": "Unrestricted egress to the internet",
+   "remediation": "Restrict the egress block by limiting protocol, ports, and cidr_blocks to only required destinations instead of from_port = 0, to_port = 0, protocol = \"-1\", cidr_blocks = [\"0.0.0.0/0\"]."
+  },
+  {
+   "finding": 5,
+   "known": "CKV_AWS_130 Ensure VPC subnets do not assign public IP by default (resource aws_subnet.web_subnet)",
+   "issue": "Automatic public IP assignment enabled",
+   "remediation": "Set map_public_ip_on_launch = false in aws_subnet.web_subnet and place internet-facing resources behind controlled entry points such as a load balancer or bastionless access pattern."
+  },
+  {
+   "finding": 6,
+   "known": "CKV_AWS_130 Ensure VPC subnets do not assign public IP by default (resource aws_subnet.web_subnet2)",
+   "issue": "Automatic public IP assignment enabled",
+   "remediation": "Set map_public_ip_on_launch = false in aws_subnet.web_subnet2 and place internet-facing resources behind controlled entry points such as a load balancer or bastionless access pattern."
+  },
+  {
+   "finding": 7,
+   "known": "CKV_AWS_145 Ensure that S3 buckets are encrypted with KMS by default (resource aws_s3_bucket.flowbucket)",
+   "issue": "S3 bucket encryption not configured",
+   "remediation": "Add a server-side encryption configuration for aws_s3_bucket.flowbucket using a aws_s3_bucket_server_side_encryption_configuration resource and enable SSE-S3 or SSE-KMS."
+  },
+  {
+   "finding": 8,
+   "known": "CKV2_AWS_6 Ensure that S3 bucket has a Public Access block (resource aws_s3_bucket.flowbucket)",
+   "issue": "Missing S3 Block Public Access",
+   "remediation": "Add an aws_s3_bucket_public_access_block resource for aws_s3_bucket.flowbucket with block_public_acls = true, ignore_public_acls = true, block_public_policy = true, and restrict_public_buckets = true."
+  },
+  {
+   "finding": 9,
+   "known": "CKV_AWS_21 Ensure all data stored in the S3 bucket have versioning enabled (resource aws_s3_bucket.flowbucket)",
+   "issue": "Bucket versioning not enabled",
+   "remediation": "Add an aws_s3_bucket_versioning resource for aws_s3_bucket.flowbucket and set versioning_configuration { status = \"Enabled\" }."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correctly targets user_data secrets and specifies using iam_instance_profile instead of hard-coded keys."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "Correct fix: set aws_ebs_volume.encrypted = true, optional kms_key_id is appropriate."
+  },
+  {
+   "item": 2,
+   "score": 2,
+   "reason": "Correctly identifies the port 22 ingress block and specifies replacing 0.0.0.0/0 with restricted CIDRs or removing it."
+  },
+  {
+   "item": 3,
+   "score": 2,
+   "reason": "Correctly addresses the egress block and calls for replacing protocol -1 and 0.0.0.0/0 with limited ports/protocols/destinations."
+  },
+  {
+   "item": 4,
+   "score": 2,
+   "reason": "Correct and specific: set map_public_ip_on_launch = false on aws_subnet.web_subnet."
+  },
+  {
+   "item": 5,
+   "score": 2,
+   "reason": "Correct and specific: set map_public_ip_on_launch = false on aws_subnet.web_subnet2."
+  },
+  {
+   "item": 6,
+   "score": 0,
+   "reason": "Check requires KMS encryption by default; remediation allows SSE-S3, which would not satisfy CKV_AWS_145."
+  },
+  {
+   "item": 7,
+   "score": 2,
+   "reason": "Correctly specifies aws_s3_bucket_public_access_block with all four required settings true."
+  },
+  {
+   "item": 8,
+   "score": 2,
+   "reason": "Correctly specifies aws_s3_bucket_versioning with status = \"Enabled\" for the bucket."
+  }
+ ]
+}

@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "consts.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-16T23:04:40",
+  "response": "[\n  {\n    \"resource\": \"variable.password\",\n    \"issue\": \"Hardcoded Sensitive Information\",\n    \"risk\": \"Hardcoding sensitive information such as passwords in Terraform configuration files poses a significant security risk. If the configuration is stored in version control, the password could be exposed to anyone with access to the repository.\",\n    \"remediation\": \"Use Terraform's sensitive attribute to mask the value and consider using a secrets management service like AWS Secrets Manager or HashiCorp Vault to store and retrieve sensitive information.\\n\\n```hcl\\nvariable \\\"password\\\" {\\n  type        = \\\"string\\\"\\n  description = \\\"Database password\\\"\\n  sensitive   = true\\n}\\n```\"\n  }\n]"
+}

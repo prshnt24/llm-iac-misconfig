@@ -1,0 +1,54 @@
+{
+ "file": "ec2.tf",
+ "findings": [
+  {
+   "resource": "aws_instance.web_host",
+   "issue": "Plain text secrets in user data",
+   "risk": "Exposes sensitive AWS credentials which can be used to gain unauthorized access to AWS resources.",
+   "remediation": "Remove the AWS credentials from the user_data script and use AWS IAM roles for EC2 instances to grant necessary permissions."
+  },
+  {
+   "resource": "aws_ebs_volume.web_host_storage",
+   "issue": "Unencrypted volume",
+   "risk": "Data at rest is not protected, which can lead to unauthorized access to sensitive data if the volume is compromised.",
+   "remediation": "Set the `encrypted` attribute to `true` and provide a `kms_key_id` for the encryption."
+  },
+  {
+   "resource": "aws_ebs_snapshot.example_snapshot",
+   "issue": "EBS snapshot without encryption",
+   "risk": "Snapshots of unencrypted volumes are also unencrypted, leading to potential data breaches.",
+   "remediation": "Set the `encrypted` attribute to `true` and provide a `kms_key_id` for the encryption."
+  },
+  {
+   "resource": "aws_security_group.web-node",
+   "issue": "Security group is open to the world on SSH port",
+   "risk": "Allows unrestricted access to the SSH port, potentially enabling unauthorized access to the instance.",
+   "remediation": "Restrict the ingress rule for port 22 to specific IP ranges or security groups that require access."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c32"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c26",
+    "c28"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c43"
+   ]
+  }
+ ]
+}

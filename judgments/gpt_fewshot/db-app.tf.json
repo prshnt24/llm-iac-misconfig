@@ -1,0 +1,112 @@
+{
+ "file": "db-app.tf",
+ "findings": [
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Database is publicly accessible",
+   "risk": "The RDS instance can be reached from outside the VPC, increasing exposure to internet-based attacks and unauthorized access if network controls are weakened or misconfigured.",
+   "remediation": "Set the aws_db_instance.default attribute publicly_accessible = false."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Storage encryption is disabled",
+   "risk": "Data at rest, including database contents, snapshots, and backups, may be exposed if underlying storage is accessed or compromised.",
+   "remediation": "Set the aws_db_instance.default attribute storage_encrypted = true and optionally specify kms_key_id for a customer-managed KMS key."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Backups are disabled",
+   "risk": "The database cannot be restored to a recent point in time after ransomware, accidental deletion, or data corruption.",
+   "remediation": "Set the aws_db_instance.default attribute backup_retention_period to a value greater than 0, such as 7 or more."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Final snapshot is skipped on deletion",
+   "risk": "Deleting the database can cause irreversible data loss with no final recovery snapshot preserved.",
+   "remediation": "Set the aws_db_instance.default attribute skip_final_snapshot = false and configure final_snapshot_identifier."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Performance Insights/Enhanced monitoring is disabled",
+   "risk": "Reduced visibility into database activity can delay detection of suspicious behavior and operational security issues.",
+   "remediation": "Enable monitoring by setting aws_db_instance.default monitoring_interval to a value greater than 0 and configure the required monitoring role; also consider enabling performance_insights_enabled = true."
+  },
+  {
+   "resource": "aws_db_instance.default",
+   "issue": "Master username is hardcoded",
+   "risk": "Using a predictable administrative username makes brute-force and credential-stuffing attacks easier.",
+   "remediation": "Replace the aws_db_instance.default attribute username = \"admin\" with a less predictable value sourced from a variable or secret management workflow."
+  },
+  {
+   "resource": "aws_iam_role_policy.ec2policy",
+   "issue": "Overly broad IAM permissions",
+   "risk": "If the EC2 instance or role is compromised, wildcard permissions allow unrestricted access to S3, EC2, and RDS resources across the account.",
+   "remediation": "Replace Action values \"s3:*\", \"ec2:*\", and \"rds:*\" with only required actions and replace Resource = \"*\" with the specific ARNs needed in aws_iam_role_policy.ec2policy."
+  },
+  {
+   "resource": "aws_instance.db_app",
+   "issue": "Plaintext database credentials in user data",
+   "risk": "Secrets in user_data can be exposed through Terraform state, instance metadata access paths, logs, or console retrieval, leading to database compromise.",
+   "remediation": "Remove DB_USERNAME and DB_PASSWORD values from aws_instance.db_app user_data and retrieve them at runtime from AWS Secrets Manager or SSM Parameter Store using an IAM role with least privilege."
+  },
+  {
+   "resource": "aws_db_subnet_group.default",
+   "issue": "Database subnet group uses web/application subnets",
+   "risk": "Placing the database in web-facing subnets increases attack surface and weakens network segmentation between application and data tiers.",
+   "remediation": "Change aws_db_subnet_group.default subnet_ids to dedicated private database subnets instead of aws_subnet.web_subnet.id and aws_subnet.web_subnet2.id."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c8"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c6"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c4",
+    "c11"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c2",
+    "c12"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": [
+    "c14",
+    "c15",
+    "c16",
+    "c17"
+   ]
+  },
+  {
+   "finding": 7,
+   "candidates": []
+  },
+  {
+   "finding": 8,
+   "candidates": []
+  }
+ ]
+}

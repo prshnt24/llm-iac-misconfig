@@ -1,0 +1,17 @@
+{
+ "file": "gh20.tf",
+ "findings": [
+  {
+   "resource": "aws_wafregional_web_acl.wafacl",
+   "issue": "Default action allows all requests",
+   "risk": "Any request that does not match a blocking rule is permitted, which weakens protection and can allow malicious traffic through if it is not explicitly covered by the configured rules.",
+   "remediation": "Change the `default_action` block from `type = \"ALLOW\"` to `type = \"BLOCK\"` and explicitly add allow rules for trusted traffic patterns."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  }
+ ]
+}

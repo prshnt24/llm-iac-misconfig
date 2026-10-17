@@ -1,0 +1,66 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 4,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 5,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_acm_certificate.this",
+   "issue": "Certificate Transparency Logging May Be Disabled",
+   "risk": "When var.certificate_transparency_logging_preference is false, certificate transparency logging is disabled. Certificate Transparency (CT) logs are a critical security control that allows domain owners and the public to detect misissued or fraudulent TLS certificates. Disabling CT logging removes the ability to audit certificate issuance and detect unauthorized certificates for your domain.",
+   "remediation": "Hardcode the certificate_transparency_logging_preference to 'ENABLED' rather than making it variable-driven. Change the options block to: certificate_transparency_logging_preference = \"ENABLED\". If a variable must be used, set its default to true and add a validation block preventing false values."
+  },
+  "1": {
+   "resource": "aws_acm_certificate.this",
+   "issue": "Weak or Uncontrolled Key Algorithm",
+   "risk": "The key_algorithm is fully controlled by var.key_algorithm with no enforced default or validation. If an operator sets this to RSA_1024 or another weak algorithm, the certificate will use insufficient cryptographic strength, making it vulnerable to factoring attacks and failing modern security benchmarks (e.g., PCI-DSS, NIST guidelines).",
+   "remediation": "Add a variable validation block to restrict acceptable values: validation { condition = contains([\"EC_prime256v1\", \"EC_secp384r1\", \"RSA_2048\", \"RSA_3072\", \"RSA_4096\"], var.key_algorithm) error_message = \"key_algorithm must be a strong algorithm such as EC_prime256v1, EC_secp384r1, RSA_2048 or higher.\" }. Prefer EC_prime256v1 or EC_secp384r1 as the default."
+  },
+  "2": {
+   "resource": "aws_acm_certificate.this",
+   "issue": "Validation Method Accepts Null or EMAIL Value Without Restriction",
+   "risk": "var.validation_method is passed directly without enforced constraints. If set to EMAIL, domain validation relies on email sent to WHOIS-listed addresses, which is less secure than DNS validation, susceptible to email interception, and deprecated by many CAs. If set to null, no validation method is specified, potentially resulting in an insecure or failed certificate issuance.",
+   "remediation": "Add a variable validation block: validation { condition = contains([\"DNS\", \"EMAIL\"], var.validation_method) error_message = \"validation_method must be DNS or EMAIL.\" }. Additionally, enforce DNS as the default and preferred method by setting default = \"DNS\" in the variable definition, and consider rejecting EMAIL via the condition block."
+  },
+  "3": {
+   "resource": "aws_route53_record.validation",
+   "issue": "DNS Record Overwrite Allowed by Default Configuration",
+   "risk": "The allow_overwrite attribute is controlled by var.validation_allow_overwrite_records. If this variable defaults to true, existing DNS validation records can be silently overwritten. An attacker or misconfigured automation with write access to Route 53 could overwrite legitimate validation records, causing certificate validation failures or enabling domain hijacking scenarios in shared hosted zone environments.",
+   "remediation": "Set the default value of var.validation_allow_overwrite_records to false. Only set allow_overwrite = true explicitly when required for multi-account or shared zone scenarios, and document the security implication. In the variable definition: default = false."
+  },
+  "4": {
+   "resource": "aws_acm_certificate.this",
+   "issue": "Missing Mandatory Tags for Security Classification and Ownership",
+   "risk": "Tags are passed entirely from var.tags with no enforcement of required keys such as Environment, Owner, DataClassification, or CostCenter. Without mandatory tags, certificates cannot be reliably attributed to teams or workloads, complicating incident response, access control via tag-based IAM policies, and compliance audits.",
+   "remediation": "Enforce required tags using a variable validation block or a local merge that injects mandatory keys: locals { required_tags = { ManagedBy = \"terraform\" } merged_tags = merge(local.required_tags, var.tags) }. Then reference local.merged_tags in the tags attribute. Additionally, add validation in the variable block to assert required keys are present."
+  },
+  "5": {
+   "resource": "aws_acm_certificate_validation.this",
+   "issue": "Certificate Validation Can Be Skipped",
+   "risk": "The aws_acm_certificate_validation resource is conditionally created based on var.validate_certificate and var.wait_for_validation. If either is false, Terraform will not wait for or confirm certificate validation before proceeding. Downstream resources may reference an unvalidated certificate, leading to runtime TLS failures or deployment of infrastructure with an invalid certificate.",
+   "remediation": "Set the default values of both var.validate_certificate and var.wait_for_validation to true in their variable definitions. If skipping validation is needed for specific use cases (e.g., private CA), document it explicitly and add a variable validation or precondition: lifecycle { precondition { condition = var.validate_certificate == true error_message = \"Certificate validation must be enabled.\" } }."
+  }
+ }
+}

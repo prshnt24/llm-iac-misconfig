@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "fewshot",
+  "file": "iam.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-16T23:05:32",
+  "response": "[\n  {\n    \"resource\": \"aws_iam_user_policy.userpolicy\",\n    \"issue\": \"Overly broad IAM permissions\",\n    \"risk\": \"The policy allows the user to perform all actions on EC2, S3, Lambda, and CloudWatch resources, which is a significant security risk if the user's credentials are compromised.\",\n    \"remediation\": \"Refine the policy to include only the necessary actions and resources. Replace the wildcard permissions with specific actions and resource ARNs that the user needs.\"\n  },\n  {\n    \"resource\": \"aws_iam_access_key.user\",\n    \"issue\": \"IAM access key without rotation policy\",\n    \"risk\": \"Long-lived access keys increase the risk of unauthorized access if the key is compromised. There is no mechanism in place to enforce regular rotation of the access key.\",\n    \"remediation\": \"Implement a rotation policy for the access key. Consider using AWS IAM best practices for managing access keys, such as enabling access key rotation and using temporary security credentials with IAM roles where possible.\"\n  },\n  {\n    \"resource\": \"output.secret\",\n    \"issue\": \"Exposure of sensitive information\",\n    \"risk\": \"The output block exposes the encrypted secret of the access key, which, although encrypted, should not be outputted in plain text due to the risk of accidental exposure.\",\n    \"remediation\": \"Remove the output block that exposes the encrypted secret. Sensitive information should not be outputted in Terraform unless absolutely necessary and should be handled with appropriate security measures.\"\n  }\n]"
+}

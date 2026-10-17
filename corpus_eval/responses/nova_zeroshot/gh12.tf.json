@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "gh12.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:15:37",
+  "response": "```json\n[\n  {\n    \"resource\": \"aws_ecs_cluster.default\",\n    \"issue\": \"Logging not enabled\",\n    \"risk\": \"Unable to audit ECS cluster activities\",\n    \"remediation\": \"Enable CloudWatch logs for the ECS cluster by adding the appropriate configuration.\"\n  },\n  {\n    \"resource\": \"module.alb\",\n    \"issue\": \"Access logs disabled\",\n    \"risk\": \"Unable to audit ALB activities\",\n    \"remediation\": \"Set `access_logs_enabled` to `true` and configure the S3 bucket for storing logs.\"\n  },\n  {\n    \"resource\": \"module.test_policy\",\n    \"issue\": \"Overly permissive IAM policy\",\n    \"risk\": \"Potential for unauthorized access\",\n    \"remediation\": \"Refine `iam_policy_statements` to include specific actions and resources instead of using wildcards.\"\n  }\n]\n```"
+}

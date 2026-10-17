@@ -1,0 +1,17 @@
+{
+ "items": [
+  {
+   "finding": 4,
+   "known": "CKV_AWS_50 X-Ray tracing is enabled for Lambda (resource aws_lambda_function.main_update)",
+   "issue": "X-Ray tracing not enabled",
+   "remediation": "Add a `tracing_config` block with `mode = \"Active\"` to `aws_lambda_function.main_update` to enable AWS X-Ray tracing."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correct resource and exact fix: add tracing_config { mode = \"Active\" } to aws_lambda_function.main_update."
+  }
+ ]
+}

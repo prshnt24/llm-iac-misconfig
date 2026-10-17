@@ -1,0 +1,39 @@
+{
+ "file": "gh25.tf",
+ "findings": [
+  {
+   "resource": "aws_security_group.main",
+   "issue": "Unrestricted internal ingress on all ports and protocols",
+   "risk": "Allows any resource within the VPC CIDR to connect to the instance on any port and protocol, increasing lateral movement risk if another VPC resource is compromised.",
+   "remediation": "Restrict the `ingress` block by changing `from_port = 0`, `to_port = 0`, and `protocol = \"-1\"` to only the specific required ports/protocols, and narrow `cidr_blocks`/`ipv6_cidr_blocks` or replace them with specific `security_groups` sources where possible."
+  },
+  {
+   "resource": "aws_security_group.main",
+   "issue": "Potentially broad SSH access from CIDR blocks",
+   "risk": "If `var.ssh_cidr_blocks.ipv4` or `var.ssh_cidr_blocks.ipv6` include overly broad ranges such as `0.0.0.0/0` or `::/0`, the instance may be exposed to internet-wide SSH brute-force and unauthorized access attempts.",
+   "remediation": "In the dynamic `ingress` block for SSH, restrict `cidr_blocks` and `ipv6_cidr_blocks` to trusted admin IP ranges only, or remove SSH access entirely by setting `var.use_ssh = false` and using AWS Systems Manager Session Manager instead."
+  },
+  {
+   "resource": "aws_security_group.main",
+   "issue": "Unrestricted egress to the internet over IPv4 and IPv6",
+   "risk": "Permits all outbound traffic to any destination, enabling data exfiltration and unrestricted command-and-control traffic if the instance is compromised.",
+   "remediation": "Tighten the `egress` block by replacing `cidr_blocks = [\"0.0.0.0/0\"]`, `ipv6_cidr_blocks = [\"::/0\"]`, and `protocol = \"-1\"` with only the required destination CIDRs, ports, and protocols. If broad egress is required for NAT functionality, use additional network controls such as NACLs, AWS Network Firewall, or egress filtering upstream."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c95"
+   ]
+  }
+ ]
+}

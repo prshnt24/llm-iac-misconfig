@@ -1,0 +1,36 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "INVALID"
+  },
+  {
+   "finding": 4,
+   "label": "INVALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_apigatewayv2_api.this",
+   "issue": "Insecure CORS Configuration",
+   "risk": "Allows cross-origin requests from any domain, potentially leading to security vulnerabilities such as CSRF attacks.",
+   "remediation": "Restrict the 'allow_origins' attribute to specific, trusted domains instead of using wildcards or allowing all origins."
+  },
+  "1": {
+   "resource": "aws_apigatewayv2_authorizer.this",
+   "issue": "Missing Authorizer for Routes",
+   "risk": "Routes may be accessible without proper authorization, leading to unauthorized access to resources.",
+   "remediation": "Ensure that the 'authorizer_id' attribute is set for each route to enforce authorization."
+  },
+  "4": {
+   "resource": "aws_apigatewayv2_vpc_link.this",
+   "issue": "Insecure VPC Link Configuration",
+   "risk": "VPC links may be configured with overly permissive security group rules, allowing unauthorized access to VPC resources.",
+   "remediation": "Review and restrict security group rules associated with VPC links to only allow necessary inbound and outbound traffic."
+  }
+ }
+}

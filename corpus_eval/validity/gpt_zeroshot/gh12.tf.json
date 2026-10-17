@@ -1,0 +1,86 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "VALID"
+  },
+  {
+   "finding": 3,
+   "label": "VALID"
+  },
+  {
+   "finding": 4,
+   "label": "VALID"
+  },
+  {
+   "finding": 5,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 6,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 7,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 8,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "module.subnets",
+   "issue": "Public subnets used without NAT and likely host internet-facing workloads",
+   "risk": "Resources deployed into these subnets can be directly exposed to the internet, increasing attack surface and risk of unauthorized access or exploitation.",
+   "remediation": "Use private subnets for ECS tasks and enable egress through NAT. Change `subnet_ids = module.subnets.public_subnet_ids` in `module.ecs_alb_service_task` to private subnet IDs from the subnet module, and set `nat_gateway_enabled = true` (or `nat_instance_enabled = true`) in `module.subnets`."
+  },
+  "1": {
+   "resource": "module.alb",
+   "issue": "Load balancer access logging disabled",
+   "risk": "Disabling ALB access logs reduces visibility into requests, attacks, and incident investigations, making detection and forensic analysis harder.",
+   "remediation": "Enable access logging in the ALB module by changing `access_logs_enabled = false` to `access_logs_enabled = true` and configure the required S3 log bucket attributes/resource inputs for the module."
+  },
+  "3": {
+   "resource": "aws_lb_listener_rule.blue_green",
+   "issue": "Listener rule attached to HTTP listener",
+   "risk": "Application traffic is served over HTTP, allowing eavesdropping, session hijacking, and man-in-the-middle attacks.",
+   "remediation": "Use an HTTPS listener instead of `module.alb.http_listener_arn`. Configure TLS on the ALB module with a certificate, create/use an HTTPS listener, and set `listener_arn` to the HTTPS listener ARN."
+  },
+  "4": {
+   "resource": "aws_lb_listener_rule.blue_green_test",
+   "issue": "Test listener rule attached to HTTP listener",
+   "risk": "Test and pre-production traffic is transmitted unencrypted, exposing potentially sensitive application behavior and data in transit.",
+   "remediation": "Replace `listener_arn = module.alb.http_listener_arn` with an HTTPS listener ARN from the ALB after enabling TLS and attaching an ACM certificate."
+  },
+  "5": {
+   "resource": "module.ecs_alb_service_task",
+   "issue": "ECS service uses default VPC security group",
+   "risk": "Using the default security group often results in overly broad or poorly governed traffic rules, increasing the chance of lateral movement or unintended exposure.",
+   "remediation": "Replace `security_group_ids = [module.vpc.vpc_default_security_group_id]` with a dedicated security group resource that allows only required inbound traffic from the ALB security group and restricted egress."
+  },
+  "6": {
+   "resource": "module.ecs_alb_service_task",
+   "issue": "ECS tasks deployed in public subnets",
+   "risk": "Running tasks in public subnets can expose workloads more directly to the internet, especially if public IPs are assigned, increasing compromise risk.",
+   "remediation": "Change `subnet_ids = module.subnets.public_subnet_ids` to private subnet IDs and keep internet exposure limited to the ALB."
+  },
+  "7": {
+   "resource": "module.ecs_alb_service_task",
+   "issue": "Task execution and task role both attach unnecessary custom policy",
+   "risk": "Attaching extra IAM policy to both task and execution roles can violate least privilege and increase the blast radius if the container or execution environment is compromised.",
+   "remediation": "Remove `task_exec_policy_arns_map = { test = module.test_policy.policy_arn }` unless explicitly required for image pull/logging/runtime execution, and scope `task_policy_arns` only to the minimum permissions needed."
+  },
+  "8": {
+   "resource": "module.test_policy",
+   "issue": "IAM policy uses wildcard resource",
+   "risk": "Using `resources = [\"*\"]` grants permissions across all resources supported by the action, which can lead to excessive access if real actions are later added or modified.",
+   "remediation": "Replace `resources = [\"*\"]` in `iam_policy_statements` with specific resource ARNs required by the workload, and scope actions to only necessary API operations."
+  }
+ }
+}

@@ -1,0 +1,71 @@
+{
+ "file": "gh26.tf",
+ "findings": [
+  {
+   "resource": "aws_iam_user.default",
+   "issue": "IAM user with long-lived credentials",
+   "risk": "Creating an AWS IAM user for human access can introduce long-lived credentials and increase the risk of credential compromise, privilege misuse, and reduced traceability compared to federated or role-based access.",
+   "remediation": "Prefer IAM roles with federation/SSO instead of provisioning aws_iam_user.default. If this user must exist, restrict its privileges using a tightly scoped permissions_boundary attribute and ensure no access keys are created for long-term use."
+  },
+  {
+   "resource": "aws_iam_user.default",
+   "issue": "force_destroy may allow deletion of user with credentials",
+   "risk": "If var.force_destroy is true, the IAM user can be deleted along with associated access keys, login profile, and MFA devices without additional safeguards, which can bypass change controls and make destructive actions easier.",
+   "remediation": "Set force_destroy = false in aws_iam_user.default, or constrain var.force_destroy to false for production so credential-bearing IAM users cannot be forcefully removed."
+  },
+  {
+   "resource": "aws_iam_user_login_profile.default",
+   "issue": "Console password may be created without enforced reset",
+   "risk": "If var.password_reset_required is false, the initial console password can remain valid indefinitely, increasing the chance of unauthorized access if the password is intercepted or mishandled during provisioning.",
+   "remediation": "Set password_reset_required = true in aws_iam_user_login_profile.default and avoid allowing this value to be disabled."
+  },
+  {
+   "resource": "aws_iam_user_login_profile.default",
+   "issue": "Lifecycle ignore_changes disables enforcement of password reset requirement",
+   "risk": "Ignoring changes to password_reset_required prevents Terraform from detecting and correcting drift, so a weakened setting can persist unnoticed and leave console access less secure.",
+   "remediation": "Remove password_reset_required from lifecycle.ignore_changes in aws_iam_user_login_profile.default so Terraform can enforce the intended password reset policy."
+  },
+  {
+   "resource": "aws_iam_user_login_profile.default",
+   "issue": "Weak or unvalidated console password length",
+   "risk": "Because password_length is fully variable and no minimum is enforced in this configuration, a weak initial console password could be generated, increasing brute-force or guessing risk.",
+   "remediation": "Set password_length in aws_iam_user_login_profile.default to a strong minimum, such as 20 or greater, and enforce that constraint in the variable definition."
+  },
+  {
+   "resource": "aws_iam_user_group_membership.default",
+   "issue": "Unvalidated IAM group assignment can grant excessive privileges",
+   "risk": "Assigning the user to arbitrary groups from var.groups without constraints can result in unintended administrative or overly broad permissions through group policies.",
+   "remediation": "Restrict var.groups to an approved allowlist and ensure aws_iam_user_group_membership.default only attaches least-privilege groups."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c97"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c96"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  }
+ ]
+}

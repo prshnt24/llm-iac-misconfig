@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 4,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "3": {
+   "resource": "output.endpoint",
+   "issue": "Cluster endpoint exposed as Terraform output",
+   "risk": "Exporting the Kubernetes API endpoint increases the chance of sensitive infrastructure details being disclosed through CLI output, logs, shared state consumers, or CI/CD pipelines.",
+   "remediation": "Remove the `output \"endpoint\"` block if not required, or restrict exposure by marking it `sensitive = true`."
+  },
+  "4": {
+   "resource": "output.kubeconfig-certificate-authority-data",
+   "issue": "Cluster certificate authority data exposed as Terraform output",
+   "risk": "Exposing cluster access configuration details can assist attackers in reconnaissance and may leak sensitive connection material through Terraform output and downstream systems consuming state or logs.",
+   "remediation": "Remove the `output \"kubeconfig-certificate-authority-data\"` block if not strictly needed, or mark it `sensitive = true`."
+  }
+ }
+}

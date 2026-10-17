@@ -1,0 +1,72 @@
+{
+ "file": "gh15.tf",
+ "findings": [
+  {
+   "resource": "module.vpc",
+   "issue": "VPC configured with only public subnets",
+   "risk": "Workloads placed in these subnets are directly exposed to the internet, increasing the attack surface and making accidental public exposure more likely.",
+   "remediation": "Add private subnets and place ECS tasks in them instead of public subnets. Update the module arguments to include `private_subnets = [...]` and use those subnet IDs for compute resources."
+  },
+  {
+   "resource": "module.ecs-service",
+   "issue": "ECS tasks deployed into public subnets",
+   "risk": "Running ECS tasks in public subnets increases exposure to internet-based attacks and makes network isolation weaker than using private subnets.",
+   "remediation": "Change `ecs_subnet_ids = module.vpc.public_subnets` to use private subnets, for example `ecs_subnet_ids = module.vpc.private_subnets` after defining private subnets in the VPC module."
+  },
+  {
+   "resource": "module.ecs-service",
+   "issue": "Public IP assignment enabled for ECS tasks",
+   "risk": "Assigning public IPs allows direct internet reachability to tasks, increasing the likelihood of unauthorized access or exploitation.",
+   "remediation": "Set `assign_public_ip = false` and place the tasks in private subnets with controlled ingress through a load balancer or other restricted entry point."
+  },
+  {
+   "resource": "aws_security_group_rule.ecs_allow_http",
+   "issue": "Ingress allowed from all IPv4 addresses",
+   "risk": "Opening application ports to `0.0.0.0/0` exposes the service to the entire internet, enabling scanning, brute force attempts, and exploitation of application vulnerabilities.",
+   "remediation": "Replace `cidr_blocks = [\"0.0.0.0/0\"]` with a restricted set of trusted CIDRs, or reference a load balancer security group using `source_security_group_id`."
+  },
+  {
+   "resource": "data.aws_iam_policy_document.cloudwatch_logs_allow_kms",
+   "issue": "KMS key policy grants overly broad administrative permissions to account root",
+   "risk": "Using `kms:*` for the account root principal violates least privilege and can enable unnecessary key administration or misuse if broadly delegated through IAM.",
+   "remediation": "Restrict the first policy statement actions from `\"kms:*\"` to only required key administration actions, and preferably grant them to specific IAM roles instead of `arn:aws:iam::<account_id>:root`."
+  },
+  {
+   "resource": "data.aws_iam_policy_document.cloudwatch_logs_allow_kms",
+   "issue": "KMS key policy allows CloudWatch Logs service access without encryption context restrictions",
+   "risk": "The logs service principal may be able to use the key more broadly than intended, increasing the chance of unintended cross-log-group or cross-service key usage.",
+   "remediation": "Add conditions to the second policy statement such as `condition` blocks restricting `kms:EncryptionContext:aws:logs:arn` to the intended log group ARN and `kms:ViaService` to `logs.${var.region}.amazonaws.com`."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c61"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c62",
+    "c63"
+   ]
+  }
+ ]
+}

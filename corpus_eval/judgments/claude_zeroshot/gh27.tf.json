@@ -1,0 +1,98 @@
+{
+ "file": "gh27.tf",
+ "findings": [
+  {
+   "resource": "aws_sns_topic_policy.billing_alert_policy",
+   "issue": "Overly Permissive SNS Subscribe Policy (Wildcard Principal)",
+   "risk": "The 'EmailSubscribe' statement allows any AWS principal ('Principal': {'AWS': '*'}) to subscribe to the SNS topic. Even with the sns:Protocol condition limiting to 'email', this allows any unauthenticated or unauthorized AWS account to subscribe, potentially exfiltrating billing alert notifications to attacker-controlled email addresses and causing information disclosure of financial data.",
+   "remediation": "Restrict the Principal to specific trusted AWS account ARNs or remove the EmailSubscribe statement entirely, relying on Terraform's aws_sns_topic_subscription resource for managing subscriptions. Change Principal from {'AWS': '*'} to {'AWS': 'arn:aws:iam::<ACCOUNT_ID>:root'} or a specific IAM role/user ARN. Also add a Condition with 'aws:SourceAccount' to restrict to your account."
+  },
+  {
+   "resource": "aws_sns_topic.billing_alert",
+   "issue": "SNS Topic Not Encrypted with KMS Customer Managed Key",
+   "risk": "The SNS topic does not have server-side encryption enabled via a KMS Customer Managed Key (CMK). Billing alert messages, which may contain sensitive financial information about AWS spending, are stored and transmitted without encryption at rest, violating data protection best practices and potentially compliance requirements (PCI-DSS, HIPAA).",
+   "remediation": "Add the 'kms_master_key_id' attribute to the aws_sns_topic resource block, referencing a KMS CMK. Create an aws_kms_key resource and set: kms_master_key_id = aws_kms_key.billing_sns_key.arn. Ensure the KMS key policy allows CloudWatch to use the key for GenerateDataKey and Decrypt operations."
+  },
+  {
+   "resource": "aws_sqs_queue.sns_dlq",
+   "issue": "SQS Dead-Letter Queue Not Encrypted with KMS Customer Managed Key",
+   "risk": "The SQS DLQ stores failed SNS notification messages without encryption at rest using a CMK. Messages in the DLQ may contain sensitive billing information. Without CMK encryption, the data is only protected by AWS-managed keys, reducing control over key rotation, access auditing, and the ability to revoke access by deleting the key.",
+   "remediation": "Add the 'kms_master_key_id' attribute to the aws_sqs_queue resource block: kms_master_key_id = aws_kms_key.billing_sqs_key.arn. Also set 'kms_data_key_reuse_period_seconds' to an appropriate value (e.g., 300). Create a corresponding aws_kms_key resource with an appropriate key policy."
+  },
+  {
+   "resource": "aws_sqs_queue_policy.sns_dlq_policy",
+   "issue": "SQS Queue Policy Missing Source ARN Condition",
+   "risk": "The SQS queue policy allows the SNS service principal to send messages without restricting which specific SNS topic can send to the queue. This is a 'confused deputy' vulnerability \u2014 any SNS topic in any AWS account could potentially send messages to this DLQ if they can reference its ARN, leading to unauthorized message injection or queue flooding.",
+   "remediation": "Add a Condition block to the SQS policy statement to restrict the source SNS topic using 'ArnEquals': Condition = { ArnEquals = { 'aws:SourceArn' = aws_sns_topic.billing_alert.arn } }. Also add 'aws:SourceAccount' condition: StringEquals = { 'aws:SourceAccount' = data.aws_caller_identity.current.account_id }."
+  },
+  {
+   "resource": "aws_cloudwatch_log_group.billing_logs",
+   "issue": "CloudWatch Log Group Not Encrypted with KMS Customer Managed Key",
+   "risk": "The CloudWatch Log Group '/aws/billing' stores billing-related log data without a KMS CMK for encryption at rest. Billing logs may contain sensitive financial and usage information. Without CMK encryption, there is no ability to enforce fine-grained access control via key policies, audit key usage, or immediately revoke access by disabling the key.",
+   "remediation": "Add the 'kms_key_id' attribute to the aws_cloudwatch_log_group resource: kms_key_id = aws_kms_key.billing_logs_key.arn. Create an aws_kms_key resource and ensure its key policy grants logs.<region>.amazonaws.com permission to use the key for Encrypt, Decrypt, ReEncrypt*, GenerateDataKey, and DescribeKey operations."
+  },
+  {
+   "resource": "aws_sns_topic_policy.billing_alert_policy",
+   "issue": "SNS Topic Policy Missing aws:SourceAccount or aws:SourceArn Condition for CloudWatch",
+   "risk": "The CloudWatchPublish statement allows the cloudwatch.amazonaws.com service principal to publish to the SNS topic without restricting the source account or source ARN. This is a confused deputy attack vector where CloudWatch alarms from other AWS accounts could potentially publish messages to this SNS topic if they obtain the topic ARN.",
+   "remediation": "Add a Condition block to the CloudWatchPublish statement: Condition = { StringEquals = { 'aws:SourceAccount' = '<ACCOUNT_ID>' } } or more specifically ArnLike = { 'aws:SourceArn' = 'arn:aws:cloudwatch:<region>:<account-id>:alarm:*' }. Use data.aws_caller_identity.current.account_id to dynamically reference the account ID."
+  },
+  {
+   "resource": "aws_cloudwatch_log_group.billing_logs",
+   "issue": "Insufficient CloudWatch Log Group Retention Period",
+   "risk": "The log retention period is set to only 14 days. Billing logs may be required for longer periods for security investigations, compliance audits (e.g., PCI-DSS requires 1 year, SOC2 may require longer), and forensic analysis of unexpected billing spikes or potential account compromise events. Logs deleted after 14 days cannot be recovered.",
+   "remediation": "Increase the 'retention_in_days' value to meet compliance and operational requirements. Common values are 90, 365, or 2557 (7 years). For billing data, a minimum of 365 days is recommended: retention_in_days = 365. Consider exporting logs to S3 with lifecycle policies for long-term archival."
+  },
+  {
+   "resource": "aws_sns_topic_subscription.sns_dlq_subscription",
+   "issue": "SNS to SQS Subscription Missing Raw Message Delivery and Redrive Policy",
+   "risk": "The SNS subscription to the SQS DLQ does not have 'raw_message_delivery' configured, meaning SNS metadata is wrapped around the message payload. More critically, the SQS queue itself is being used as a DLQ but there is no redrive policy configured on the SNS topic subscription or source queue, meaning the DLQ pattern is not properly implemented and failed messages may be silently dropped.",
+   "remediation": "Set 'raw_message_delivery = true' on the aws_sns_topic_subscription.sns_dlq_subscription resource to ensure clean message format. Additionally, configure a proper redrive policy on the source SQS queue if applicable, and consider adding a redrive_policy attribute to the aws_sqs_queue resource pointing to the DLQ ARN with an appropriate maxReceiveCount."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c101",
+    "c102"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c103",
+    "c104"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c98",
+    "c100"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": [
+    "c99"
+   ]
+  },
+  {
+   "finding": 7,
+   "candidates": []
+  }
+ ]
+}

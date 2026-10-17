@@ -1,0 +1,8 @@
+{
+  "model": "global.openai.gpt-5.4",
+  "strategy": "fewshot",
+  "file": "ecr.tf",
+  "temperature": null,
+  "timestamp": "2026-10-16T21:47:27",
+  "response": "[\n  {\n    \"resource\": \"aws_ecr_repository.repository\",\n    \"issue\": \"Image tags are mutable\",\n    \"risk\": \"Mutable tags allow existing container images to be overwritten, which can enable unauthorized or unreviewed image replacement and weaken supply chain integrity.\",\n    \"remediation\": \"Change the aws_ecr_repository.repository attribute image_tag_mutability from \\\"MUTABLE\\\" to \\\"IMMUTABLE\\\".\"\n  }\n]"
+}

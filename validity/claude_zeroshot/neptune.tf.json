@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 2,
+   "label": "VALID"
+  },
+  {
+   "finding": 6,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "2": {
+   "resource": "aws_neptune_cluster.default",
+   "issue": "Final Snapshot Skipped on Deletion",
+   "risk": "When the cluster is deleted, no final snapshot is taken. This means all data is permanently and irrecoverably lost upon accidental or malicious deletion, violating data retention and recovery requirements.",
+   "remediation": "Set `skip_final_snapshot = false` and provide a value for `final_snapshot_identifier` so a snapshot is automatically created before the cluster is destroyed."
+  },
+  "6": {
+   "resource": "aws_neptune_cluster_instance.default",
+   "issue": "Auto Minor Version Upgrade Not Explicitly Enabled",
+   "risk": "Without automatic minor version upgrades, the Neptune instance may remain on older engine versions that contain known security vulnerabilities or unpatched CVEs, increasing the attack surface.",
+   "remediation": "Add `auto_minor_version_upgrade = true` to the `aws_neptune_cluster_instance` resource to ensure security patches and minor engine updates are applied automatically."
+  }
+ }
+}

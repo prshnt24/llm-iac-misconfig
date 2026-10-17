@@ -1,0 +1,37 @@
+{
+ "file": "gh05.tf",
+ "findings": [
+  {
+   "resource": "data.aws_iam_policy_document.ses_policy",
+   "issue": "Potentially over-privileged IAM policy from unconstrained actions and additional resources",
+   "risk": "The policy grants whatever permissions are supplied in var.iam_permissions across the SES domain identity ARN plus any ARNs in var.iam_allowed_resources. If broad actions such as ses:* or wildcard resources are passed in, users or groups created by this module could gain excessive permissions, enabling unauthorized email sending, identity management, or access to unrelated AWS resources.",
+   "remediation": "Restrict the statement in data.aws_iam_policy_document.ses_policy to the minimum required SES sending actions and only the specific SES identity resources needed. Update the statement's actions attribute to specific values such as [\"ses:SendEmail\", \"ses:SendRawEmail\"] and ensure the resources attribute does not include broad or wildcard entries from var.iam_allowed_resources."
+  },
+  {
+   "resource": "module.ses_user",
+   "issue": "Long-lived IAM access keys may be created for the SES user",
+   "risk": "When create_iam_access_key is enabled via var.iam_create_access_key, the module creates long-lived IAM user credentials. Long-lived access keys increase the risk of credential theft, misuse, and persistence compared to temporary credentials or role-based access.",
+   "remediation": "Disable static access key creation by setting create_iam_access_key = false in module.ses_user, or set var.iam_create_access_key to false. Prefer using IAM roles or other short-lived credential mechanisms where possible."
+  },
+  {
+   "resource": "resource.aws_iam_user_policy.sending_emails",
+   "issue": "IAM policy attached directly to user",
+   "risk": "Directly attaching permissions to an IAM user makes access management harder to audit and control, increases the chance of privilege sprawl, and bypasses role/group-based governance patterns.",
+   "remediation": "Remove the aws_iam_user_policy.sending_emails resource and attach the policy through a group or role instead. Enable group-based access by using aws_iam_group and aws_iam_group_policy, or migrate permissions to an assumable IAM role."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  }
+ ]
+}

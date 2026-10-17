@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "reg01.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:16:21",
+  "response": "```json\n[\n  {\n    \"resource\": \"aws_iam_role.vpc_flow_log_cloudwatch\",\n    \"issue\": \"Permissions boundary not enforced\",\n    \"risk\": \"The IAM role does not have a permissions boundary, which could lead to overly permissive policies.\",\n    \"remediation\": \"Set the `permissions_boundary` attribute to a managed policy that limits the permissions the role can have.\"\n  },\n  {\n    \"resource\": \"aws_iam_role_policy_attachment.vpc_flow_log_cloudwatch\",\n    \"issue\": \"Overly permissive policy attachment\",\n    \"risk\": \"The IAM role is attached to a policy without proper review, which could grant unnecessary permissions.\",\n    \"remediation\": \"Review and ensure the attached policy `aws_iam_policy.vpc_flow_log_cloudwatch` is minimal and necessary.\"\n  },\n  {\n    \"resource\": \"aws_cloudwatch_log_group.flow_log\",\n    \"issue\": \"Log group without encryption\",\n    \"risk\": \"The CloudWatch log group does not use KMS encryption, which could expose sensitive data.\",\n    \"remediation\": \"Set the `kms_key_id` attribute to a valid KMS key ARN to encrypt the log group.\"\n  }\n]\n```"
+}

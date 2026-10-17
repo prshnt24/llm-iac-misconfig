@@ -1,0 +1,56 @@
+{
+ "labels": [
+  {
+   "finding": 4,
+   "label": "VALID"
+  },
+  {
+   "finding": 10,
+   "label": "VALID"
+  },
+  {
+   "finding": 14,
+   "label": "VALID"
+  },
+  {
+   "finding": 17,
+   "label": "VALID"
+  },
+  {
+   "finding": 20,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "4": {
+   "resource": "aws_s3_bucket.data",
+   "issue": "Force destroy enabled",
+   "risk": "The bucket and all contents can be deleted by Terraform without manual cleanup, increasing the risk of destructive data loss.",
+   "remediation": "Set force_destroy = false on aws_s3_bucket.data."
+  },
+  "10": {
+   "resource": "aws_s3_bucket.financials",
+   "issue": "Force destroy enabled",
+   "risk": "The bucket and all financial data can be deleted by Terraform without additional safeguards, causing irreversible data loss.",
+   "remediation": "Set force_destroy = false on aws_s3_bucket.financials."
+  },
+  "14": {
+   "resource": "aws_s3_bucket.operations",
+   "issue": "Force destroy enabled",
+   "risk": "Terraform can delete the bucket and all operational data without manual confirmation, increasing the chance of accidental data loss.",
+   "remediation": "Set force_destroy = false on aws_s3_bucket.operations."
+  },
+  "17": {
+   "resource": "aws_s3_bucket.data_science",
+   "issue": "Force destroy enabled",
+   "risk": "The bucket and its datasets can be destroyed automatically by Terraform, causing preventable data loss.",
+   "remediation": "Set force_destroy = false on aws_s3_bucket.data_science."
+  },
+  "20": {
+   "resource": "aws_s3_bucket.logs",
+   "issue": "Force destroy enabled",
+   "risk": "Audit logs can be deleted automatically by Terraform, undermining retention and forensic requirements.",
+   "remediation": "Set force_destroy = false on aws_s3_bucket.logs."
+  }
+ }
+}

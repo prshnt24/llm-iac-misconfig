@@ -1,0 +1,28 @@
+{
+ "items": [
+  {
+   "finding": 1,
+   "known": "CKV_AWS_5 Ensure all data stored in the Elasticsearch is securely encrypted at rest (resource aws_elasticsearch_domain.monitoring-framework)",
+   "issue": "Encryption at rest not enabled",
+   "remediation": "Add an encrypt_at_rest block with enabled = true: encrypt_at_rest { enabled = true }. Optionally specify a kms_key_id for a customer-managed KMS key."
+  },
+  {
+   "finding": 5,
+   "known": "CKV_AWS_84 Ensure Elasticsearch Domain Logging is enabled (resource aws_elasticsearch_domain.monitoring-framework)",
+   "issue": "Audit logging / CloudWatch log publishing not enabled",
+   "remediation": "Add one or more log_publishing_options blocks specifying a CloudWatch log group ARN and log_type values such as INDEX_SLOW_LOGS, SEARCH_SLOW_LOGS, ES_APPLICATION_LOGS, and AUDIT_LOGS."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correct fix: add encrypt_at_rest { enabled = true } on aws_elasticsearch_domain; kms_key_id optional."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "Correct remediation: enable domain logging via log_publishing_options with CloudWatch log group ARN and valid log_type values."
+  }
+ ]
+}

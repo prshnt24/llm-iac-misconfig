@@ -1,0 +1,136 @@
+﻿status,file,path,resource,canonical_check_id,checkov_ids,trivy_ids,checkov_names,trivy_names,checkov_occurrences,trivy_occurrences
+TRIVY ONLY,aws.tf,/terraform/aws/aws.tf,module.alb,CKV_AWS_21,,AWS-0090,,S3 Data should be versioned,0,1
+TRIVY ONLY,aws.tf,/terraform/aws/aws.tf,module.alb,CKV_AWS_23,,AWS-0124,,Missing description for security group rule.,0,2
+TRIVY ONLY,aws.tf,/terraform/aws/aws.tf,module.alb,CKV_AWS_382,,AWS-0104,,A security group rule should not allow unrestricted egress to any IP address.,0,1
+TRIVY ONLY,aws.tf,/terraform/aws/aws.tf,module.alb,AWS-0052,,AWS-0052,,Load balancers should drop invalid headers,0,1
+TRIVY ONLY,aws.tf,/terraform/aws/aws.tf,module.alb,AWS-0053,,AWS-0053,,Load balancer is exposed to the internet.,0,1
+TRIVY ONLY,aws.tf,/terraform/aws/aws.tf,module.cluster_sg,CKV_AWS_382,,AWS-0104,,A security group rule should not allow unrestricted egress to any IP address.,0,1
+TRIVY ONLY,aws.tf,/terraform/aws/aws.tf,module.nlb_sg,CKV_AWS_382,,AWS-0104,,A security group rule should not allow unrestricted egress to any IP address.,0,1
+TRIVY ONLY,aws.tf,/terraform/aws/aws.tf,module.ses_user,AWS-0143,,AWS-0143,,IAM policies should not be granted directly to users.,0,1
+TRIVY ONLY,aws.tf,/terraform/aws/aws.tf,module.tailscale_subnet_router,AWS-0017,,AWS-0017,,CloudWatch log groups should be encrypted using CMK,0,1
+TRIVY ONLY,aws.tf,/terraform/aws/aws.tf,module.vpc,CKV2_AWS_11,,AWS-0178,,"VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet ""Rejects"" for VPCs.",0,4
+TRIVY ONLY,aws.tf,/terraform/aws/aws.tf,module.vpc,CKV_AWS_130,,AWS-0164,,Instances in a subnet should not receive a public IP address by default.,0,3
+CHECKOV ONLY,gh01.tf,/terraform/aws/gh01.tf,aws_networkfirewall_firewall_policy.anfw_policy,CKV_AWS_346,CKV_AWS_346,,Ensure Network Firewall Policy defines an encryption configuration that uses a customer managed Key (CMK),,1,0
+CHECKOV ONLY,gh01.tf,/terraform/aws/gh01.tf,aws_networkfirewall_rule_group.allow_domains,CKV_AWS_345,CKV_AWS_345,,Ensure that Network firewall encryption is via a CMK,,1,0
+CHECKOV ONLY,gh01.tf,/terraform/aws/gh01.tf,aws_networkfirewall_rule_group.allow_icmp,CKV_AWS_345,CKV_AWS_345,,Ensure that Network firewall encryption is via a CMK,,1,0
+CHECKOV ONLY,gh01.tf,/terraform/aws/gh01.tf,aws_networkfirewall_rule_group.drop_remote,CKV_AWS_345,CKV_AWS_345,,Ensure that Network firewall encryption is via a CMK,,1,0
+CHECKOV ONLY,gh03.tf,/terraform/aws/gh03.tf,aws_lambda_function.default,CKV_AWS_272,CKV_AWS_272,,Ensure AWS Lambda function is configured to validate code-signing,,1,0
+CHECKOV ONLY,gh03.tf,/terraform/aws/gh03.tf,aws_lambda_permission.allow_cloudfront,CKV_AWS_364,CKV_AWS_364,,Ensure that AWS Lambda function permissions delegated to AWS services are limited by SourceArn or SourceAccount,,1,0
+CHECKOV ONLY,gh03.tf,/terraform/aws/gh03.tf,function_label,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh03.tf,/terraform/aws/gh03.tf,role,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh04.tf,/terraform/aws/gh04.tf,aws_key_pair,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh04.tf,/terraform/aws/gh04.tf,instance_profile_label,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh04.tf,/terraform/aws/gh04.tf,subnets,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh04.tf,/terraform/aws/gh04.tf,vpc,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+TRIVY ONLY,gh05.tf,/terraform/aws/gh05.tf,aws_iam_group.ses_users[0],AWS-0123,,AWS-0123,,IAM groups should have MFA enforcement activated.,0,1
+CHECKOV ONLY,gh05.tf,/terraform/aws/gh05.tf,ses_user,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh06.tf,/terraform/aws/gh06.tf,replication_label,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh07.tf,/terraform/aws/gh07.tf,aws_lb.api,CKV_AWS_150,CKV_AWS_150,,Ensure that Load Balancer has deletion protection enabled,,1,0
+CHECKOV ONLY,gh07.tf,/terraform/aws/gh07.tf,aws_lb.api,CKV_AWS_91,CKV_AWS_91,,Ensure the ELBv2 (Application/Network) has access logging enabled,,1,0
+TRIVY ONLY,gh07.tf,/terraform/aws/gh07.tf,aws_lb.api,AWS-0053,,AWS-0053,,Load balancer is exposed to the internet.,0,1
+CHECKOV ONLY,gh07.tf,/terraform/aws/gh07.tf,cluster_sg,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh07.tf,/terraform/aws/gh07.tf,nlb_sg,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CONSENSUS,gh08.tf,/terraform/aws/gh08.tf,aws_ecr_repository.example,CKV_AWS_136,CKV_AWS_136,AWS-0033,Ensure that ECR repositories are encrypted using KMS,ECR Repository should use customer managed keys to allow more control,1,1
+CONSENSUS,gh08.tf,/terraform/aws/gh08.tf,aws_ecr_repository.example,CKV_AWS_163,CKV_AWS_163,AWS-0030,Ensure ECR image scanning on push is enabled,ECR repository has image scans disabled.,1,1
+CONSENSUS,gh08.tf,/terraform/aws/gh08.tf,aws_s3_bucket.example,CKV2_AWS_6,CKV2_AWS_6,AWS-0086;AWS-0087;AWS-0091;AWS-0093;AWS-0094,Ensure that S3 bucket has a Public Access block,S3 Access Block should Ignore Public ACL;S3 Access block should block public ACL;S3 Access block should block public policy;S3 Access block should restrict public bucket to limit access;S3 buckets should each define an aws_s3_bucket_public_access_block,1,5
+CHECKOV ONLY,gh08.tf,/terraform/aws/gh08.tf,aws_s3_bucket.example,CKV2_AWS_61,CKV2_AWS_61,,Ensure that an S3 bucket has a lifecycle configuration,,1,0
+CHECKOV ONLY,gh08.tf,/terraform/aws/gh08.tf,aws_s3_bucket.example,CKV2_AWS_62,CKV2_AWS_62,,Ensure S3 buckets should have event notifications enabled,,1,0
+CHECKOV ONLY,gh08.tf,/terraform/aws/gh08.tf,aws_s3_bucket.example,CKV_AWS_144,CKV_AWS_144,,Ensure that S3 bucket has cross-region replication enabled,,1,0
+CONSENSUS,gh08.tf,/terraform/aws/gh08.tf,aws_s3_bucket.example,CKV_AWS_145,CKV_AWS_145,AWS-0132,Ensure that S3 buckets are encrypted with KMS by default,S3 encryption should use Customer Managed Keys,1,1
+CONSENSUS,gh08.tf,/terraform/aws/gh08.tf,aws_s3_bucket.example,CKV_AWS_18,CKV_AWS_18,AWS-0089,Ensure the S3 bucket has access logging enabled,S3 Bucket Logging,1,1
+CONSENSUS,gh08.tf,/terraform/aws/gh08.tf,aws_s3_bucket.example,CKV_AWS_21,CKV_AWS_21,AWS-0090,Ensure all data stored in the S3 bucket have versioning enabled,S3 Data should be versioned,1,1
+CHECKOV ONLY,gh12.tf,/terraform/aws/gh12.tf,alb,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+TRIVY ONLY,gh12.tf,/terraform/aws/gh12.tf,aws_ecs_cluster.default[0],AWS-0034,,AWS-0034,,ECS clusters should have container insights enabled,0,1
+CHECKOV ONLY,gh12.tf,/terraform/aws/gh12.tf,aws_lb_target_group.alternate,CKV_AWS_261,CKV_AWS_261,,Ensure HTTP HTTPS Target group defines Healthcheck,,1,0
+CHECKOV ONLY,gh12.tf,/terraform/aws/gh12.tf,aws_lb_target_group.alternate,CKV_AWS_378,CKV_AWS_378,,Ensure AWS Load Balancer doesn't use HTTP protocol,,1,0
+CHECKOV ONLY,gh12.tf,/terraform/aws/gh12.tf,container_definition,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh12.tf,/terraform/aws/gh12.tf,subnets,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh12.tf,/terraform/aws/gh12.tf,test_policy,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh12.tf,/terraform/aws/gh12.tf,vpc,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh13.tf,/terraform/aws/gh13.tf,eks_node_group,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh13.tf,/terraform/aws/gh13.tf,label,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh13.tf,/terraform/aws/gh13.tf,subnets,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh13.tf,/terraform/aws/gh13.tf,vpc,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh14.tf,/terraform/aws/gh14.tf,aws_security_group.terra_sg,CKV2_AWS_5,CKV2_AWS_5,,Ensure that Security Groups are attached to another resource,,1,0
+CHECKOV ONLY,gh14.tf,/terraform/aws/gh14.tf,aws_security_group.terra_sg,CKV_AWS_24,CKV_AWS_24,,Ensure no security groups allow ingress from 0.0.0.0:0 to port 22,,1,0
+CHECKOV ONLY,gh14.tf,/terraform/aws/gh14.tf,aws_security_group.terra_sg,CKV_AWS_25,CKV_AWS_25,,Ensure no security groups allow ingress from 0.0.0.0:0 to port 3389,,1,0
+CHECKOV ONLY,gh14.tf,/terraform/aws/gh14.tf,aws_security_group.terra_sg,CKV_AWS_260,CKV_AWS_260,,Ensure no security groups allow ingress from 0.0.0.0:0 to port 80,,1,0
+CONSENSUS,gh14.tf,/terraform/aws/gh14.tf,aws_security_group.terra_sg,CKV_AWS_382,CKV_AWS_382,AWS-0104,Ensure no security groups allow egress from 0.0.0.0:0 to port -1,A security group rule should not allow unrestricted egress to any IP address.,1,1
+CONSENSUS,gh14.tf,/terraform/aws/gh14.tf,aws_vpc.terra_vpc,CKV2_AWS_11,CKV2_AWS_11,AWS-0178,Ensure VPC flow logging is enabled in all VPCs,"VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet ""Rejects"" for VPCs.",1,1
+CHECKOV ONLY,gh14.tf,/terraform/aws/gh14.tf,aws_vpc.terra_vpc,CKV2_AWS_12,CKV2_AWS_12,,Ensure the default security group of every VPC restricts all traffic,,1,0
+CHECKOV ONLY,gh15.tf,/terraform/aws/gh15.tf,aws_ecs_cluster.main,CKV_AWS_65,CKV_AWS_65,,Ensure container insights are enabled on ECS cluster,,1,0
+TRIVY ONLY,gh15.tf,/terraform/aws/gh15.tf,aws_ecs_cluster.main,AWS-0034,,AWS-0034,,ECS clusters should have container insights enabled,0,1
+CHECKOV ONLY,gh15.tf,/terraform/aws/gh15.tf,aws_iam_policy_document.cloudwatch_logs_allow_kms,CKV_AWS_109,CKV_AWS_109,,Ensure IAM policies does not allow permissions management / resource exposure without constraints,,1,0
+CHECKOV ONLY,gh15.tf,/terraform/aws/gh15.tf,aws_iam_policy_document.cloudwatch_logs_allow_kms,CKV_AWS_111,CKV_AWS_111,,Ensure IAM policies does not allow write access without constraints,,1,0
+CHECKOV ONLY,gh15.tf,/terraform/aws/gh15.tf,aws_iam_policy_document.cloudwatch_logs_allow_kms,CKV_AWS_356,CKV_AWS_356,,"Ensure no IAM policies documents allow ""*"" as a statement's resource for restrictable actions",,1,0
+CHECKOV ONLY,gh15.tf,/terraform/aws/gh15.tf,aws_security_group.ecs_allow_http,CKV2_AWS_5,CKV2_AWS_5,,Ensure that Security Groups are attached to another resource,,1,0
+CONSENSUS,gh15.tf,/terraform/aws/gh15.tf,aws_security_group_rule.ecs_allow_http[0],CKV_AWS_23,CKV_AWS_23,AWS-0124,Ensure every security group and rule has a description,Missing description for security group rule.,1,1
+CONSENSUS,gh15.tf,/terraform/aws/gh15.tf,aws_security_group_rule.ecs_allow_http[1],CKV_AWS_23,CKV_AWS_23,AWS-0124,Ensure every security group and rule has a description,Missing description for security group rule.,1,1
+CHECKOV ONLY,gh15.tf,/terraform/aws/gh15.tf,vpc,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh16.tf,/terraform/aws/gh16.tf,ssm_policy,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh16.tf,/terraform/aws/gh16.tf,ssm_state,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh16.tf,/terraform/aws/gh16.tf,tailscale_subnet_router,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh17.tf,/terraform/aws/gh17.tf,aws_security_group.all_worker_mgmt,CKV2_AWS_5,CKV2_AWS_5,,Ensure that Security Groups are attached to another resource,,1,0
+CONSENSUS,gh17.tf,/terraform/aws/gh17.tf,aws_security_group.all_worker_mgmt,CKV_AWS_23,CKV_AWS_23,AWS-0099,Ensure every security group and rule has a description,Missing description for security group.,1,1
+CONSENSUS,gh17.tf,/terraform/aws/gh17.tf,aws_security_group_rule.all_worker_mgmt_egress,CKV_AWS_382,CKV_AWS_382,AWS-0104,Ensure no security groups allow egress from 0.0.0.0:0 to port -1,A security group rule should not allow unrestricted egress to any IP address.,1,1
+CONSENSUS,gh18.tf,/terraform/aws/gh18.tf,aws_vpc.project102,CKV2_AWS_11,CKV2_AWS_11,AWS-0178,Ensure VPC flow logging is enabled in all VPCs,"VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet ""Rejects"" for VPCs.",1,1
+CHECKOV ONLY,gh18.tf,/terraform/aws/gh18.tf,aws_vpc.project102,CKV2_AWS_12,CKV2_AWS_12,,Ensure the default security group of every VPC restricts all traffic,,1,0
+TRIVY ONLY,gh19.tf,/terraform/aws/gh19.tf,aws_vpc.default[0],CKV2_AWS_11,,AWS-0178,,"VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet ""Rejects"" for VPCs.",0,1
+CHECKOV ONLY,gh19.tf,/terraform/aws/gh19.tf,eigw_label,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh19.tf,/terraform/aws/gh19.tf,igw_label,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh19.tf,/terraform/aws/gh19.tf,label,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,gh20.tf,/terraform/aws/gh20.tf,aws_wafregional_web_acl.wafacl,CKV_AWS_176,CKV_AWS_176,,Ensure Logging is enabled for WAF Web Access Control Lists,,1,0
+CHECKOV ONLY,gh21.tf,/terraform/aws/gh21.tf,aws_lambda_function.main_update,CKV_AWS_115,CKV_AWS_115,,Ensure that AWS Lambda function is configured for function-level concurrent execution limit,,1,0
+CHECKOV ONLY,gh21.tf,/terraform/aws/gh21.tf,aws_lambda_function.main_update,CKV_AWS_116,CKV_AWS_116,,Ensure that AWS Lambda function is configured for a Dead Letter Queue(DLQ),,1,0
+CHECKOV ONLY,gh21.tf,/terraform/aws/gh21.tf,aws_lambda_function.main_update,CKV_AWS_117,CKV_AWS_117,,Ensure that AWS Lambda function is configured inside a VPC,,1,0
+CHECKOV ONLY,gh21.tf,/terraform/aws/gh21.tf,aws_lambda_function.main_update,CKV_AWS_173,CKV_AWS_173,,Check encryption settings for Lambda environmental variable,,1,0
+CHECKOV ONLY,gh21.tf,/terraform/aws/gh21.tf,aws_lambda_function.main_update,CKV_AWS_272,CKV_AWS_272,,Ensure AWS Lambda function is configured to validate code-signing,,1,0
+CHECKOV ONLY,gh21.tf,/terraform/aws/gh21.tf,aws_lambda_function.main_update,CKV_AWS_363,CKV_AWS_363,,Ensure Lambda Runtime is not deprecated,,1,0
+CONSENSUS,gh21.tf,/terraform/aws/gh21.tf,aws_lambda_function.main_update,CKV_AWS_50,CKV_AWS_50,AWS-0066,X-Ray tracing is enabled for Lambda,Lambda functions should have X-Ray tracing enabled,1,1
+CHECKOV ONLY,gh22.tf,/terraform/aws/gh22.tf,aws_db_instance.postgresql,CKV2_AWS_30,CKV2_AWS_30,,Ensure Postgres RDS as aws_db_instance has Query Logging enabled,,1,0
+CONSENSUS,gh22.tf,/terraform/aws/gh22.tf,aws_db_instance.postgresql,CKV_AWS_161,CKV_AWS_161,AWS-0176,Ensure RDS database has IAM authentication enabled,RDS IAM Database Authentication Disabled,1,1
+TRIVY ONLY,gh22.tf,/terraform/aws/gh22.tf,aws_db_instance.postgresql,CKV_AWS_293,,AWS-0177,,RDS Deletion Protection Disabled,0,1
+CHECKOV ONLY,gh22.tf,/terraform/aws/gh22.tf,aws_db_instance.postgresql,CKV_AWS_353,CKV_AWS_353,,Ensure that RDS instances have performance insights enabled,,1,0
+TRIVY ONLY,gh22.tf,/terraform/aws/gh22.tf,aws_db_instance.postgresql,AWS-0133,,AWS-0133,,Enable Performance Insights to detect potential problems,0,1
+CONSENSUS,gh22.tf,/terraform/aws/gh22.tf,aws_security_group.postgresql,CKV_AWS_23,CKV_AWS_23,AWS-0099,Ensure every security group and rule has a description,Missing description for security group.,1,1
+TRIVY ONLY,gh23.tf,/terraform/aws/gh23.tf,data.aws_iam_policy_document.restore_testing_policy_document[0],AWS-0342,,AWS-0342,,IAM Pass Role Filtering,0,1
+TRIVY ONLY,gh25.tf,/terraform/aws/gh25.tf,aws_security_group.main,CKV_AWS_382,,AWS-0104,,A security group rule should not allow unrestricted egress to any IP address.,0,2
+CHECKOV ONLY,gh26.tf,/terraform/aws/gh26.tf,aws_iam_user.default,CKV2_AWS_22,CKV2_AWS_22,,Ensure an IAM User does not have access to the console,,1,0
+CHECKOV ONLY,gh26.tf,/terraform/aws/gh26.tf,aws_iam_user.default,CKV_AWS_273,CKV_AWS_273,,Ensure access is controlled through SSO and not AWS IAM defined users,,1,0
+CHECKOV ONLY,gh27.tf,/terraform/aws/gh27.tf,aws_cloudwatch_log_group.billing_logs,CKV_AWS_158,CKV_AWS_158,,Ensure that CloudWatch Log Group is encrypted by KMS,,1,0
+CHECKOV ONLY,gh27.tf,/terraform/aws/gh27.tf,aws_cloudwatch_log_group.billing_logs,CKV_AWS_338,CKV_AWS_338,,Ensure CloudWatch log groups retains logs for at least 1 year,,1,0
+TRIVY ONLY,gh27.tf,/terraform/aws/gh27.tf,aws_cloudwatch_log_group.billing_logs,AWS-0017,,AWS-0017,,CloudWatch log groups should be encrypted using CMK,0,1
+CHECKOV ONLY,gh27.tf,/terraform/aws/gh27.tf,aws_sns_topic.billing_alert,CKV_AWS_26,CKV_AWS_26,,Ensure all data stored in the SNS topic is encrypted,,1,0
+TRIVY ONLY,gh27.tf,/terraform/aws/gh27.tf,aws_sns_topic.billing_alert,AWS-0095,,AWS-0095,,Unencrypted SNS topic.,0,1
+CHECKOV ONLY,gh27.tf,/terraform/aws/gh27.tf,aws_sqs_queue.sns_dlq,CKV_AWS_27,CKV_AWS_27,,Ensure all data stored in the SQS queue is encrypted,,1,0
+TRIVY ONLY,gh27.tf,/terraform/aws/gh27.tf,aws_sqs_queue.sns_dlq,AWS-0096,,AWS-0096,,Unencrypted SQS queue.,0,1
+CHECKOV ONLY,gh29.tf,/terraform/aws/gh29.tf,aws_instance.ec2,CKV2_AWS_41,CKV2_AWS_41,,Ensure an IAM role is attached to EC2 instance,,1,0
+CHECKOV ONLY,gh29.tf,/terraform/aws/gh29.tf,aws_instance.ec2,CKV_AWS_126,CKV_AWS_126,,Ensure that detailed monitoring is enabled for EC2 instances,,1,0
+CHECKOV ONLY,gh29.tf,/terraform/aws/gh29.tf,aws_instance.ec2,CKV_AWS_135,CKV_AWS_135,,Ensure that EC2 is EBS optimized,,1,0
+CHECKOV ONLY,gh29.tf,/terraform/aws/gh29.tf,aws_instance.ec2,CKV_AWS_79,CKV_AWS_79,,Ensure Instance Metadata Service Version 1 is not enabled,,1,0
+CHECKOV ONLY,gh29.tf,/terraform/aws/gh29.tf,aws_instance.ec2,CKV_AWS_8,CKV_AWS_8,,Ensure all data stored in the Launch configuration or instance Elastic Blocks Store is securely encrypted,,1,0
+CHECKOV ONLY,gh29.tf,/terraform/aws/gh29.tf,aws_instance.ec2,CKV_AWS_88,CKV_AWS_88,,EC2 instance should not have public IP.,,1,0
+TRIVY ONLY,gh29.tf,/terraform/aws/gh29.tf,aws_instance.ec2[0],CKV_AWS_79,,AWS-0028,,aws_instance should activate session tokens for Instance Metadata Service.,0,1
+TRIVY ONLY,gh29.tf,/terraform/aws/gh29.tf,aws_instance.ec2[0],CKV_AWS_8,,AWS-0131,,Instance with unencrypted block device.,0,1
+CONSENSUS,gh29.tf,/terraform/aws/gh29.tf,aws_security_group.ec2_security_group,CKV_AWS_23,CKV_AWS_23,AWS-0124,Ensure every security group and rule has a description,Missing description for security group rule.,1,4
+CONSENSUS,gh29.tf,/terraform/aws/gh29.tf,aws_security_group.ec2_security_group,CKV_AWS_24,CKV_AWS_24,AWS-0107,Ensure no security groups allow ingress from 0.0.0.0:0 to port 22,Security groups should not allow unrestricted ingress to SSH or RDP from any IP address.,1,1
+CHECKOV ONLY,gh29.tf,/terraform/aws/gh29.tf,aws_security_group.ec2_security_group,CKV_AWS_260,CKV_AWS_260,,Ensure no security groups allow ingress from 0.0.0.0:0 to port 80,,1,0
+CONSENSUS,gh29.tf,/terraform/aws/gh29.tf,aws_security_group.ec2_security_group,CKV_AWS_382,CKV_AWS_382,AWS-0104,Ensure no security groups allow egress from 0.0.0.0:0 to port -1,A security group rule should not allow unrestricted egress to any IP address.,1,1
+CHECKOV ONLY,gh30.tf,/terraform/aws/gh30.tf,aws_security_group.loadtest,CKV2_AWS_5,CKV2_AWS_5,,Ensure that Security Groups are attached to another resource,,1,0
+CONSENSUS,gh30.tf,/terraform/aws/gh30.tf,aws_security_group.loadtest,CKV_AWS_23,CKV_AWS_23,AWS-0124,Ensure every security group and rule has a description,Missing description for security group rule.,1,2
+CONSENSUS,gh30.tf,/terraform/aws/gh30.tf,aws_security_group.loadtest,CKV_AWS_382,CKV_AWS_382,AWS-0104,Ensure no security groups allow egress from 0.0.0.0:0 to port -1,A security group rule should not allow unrestricted egress to any IP address.,1,1
+CHECKOV ONLY,reg02.tf,/terraform/aws/reg02.tf,aws_security_group.this,CKV2_AWS_5,CKV2_AWS_5,,Ensure that Security Groups are attached to another resource,,1,0
+CHECKOV ONLY,reg06.tf,/terraform/aws/reg06.tf,route53_dnssec_kms,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,reg07.tf,/terraform/aws/reg07.tf,aws_secretsmanager_secret_rotation.this,CKV_AWS_304,CKV_AWS_304,,Ensure Secrets Manager secrets should be rotated within 90 days,,1,0
+CHECKOV ONLY,reg08.tf,/terraform/aws/reg08.tf,acm,CKV_TF_1,CKV_TF_1,,Ensure Terraform module sources use a commit hash,,1,0
+CHECKOV ONLY,reg08.tf,/terraform/aws/reg08.tf,aws_apigatewayv2_route.this,CKV_AWS_309,CKV_AWS_309,,Ensure API GatewayV2 routes specify an authorization type,,1,0
+TRIVY ONLY,reg08.tf,/terraform/aws/reg08.tf,aws_apigatewayv2_stage.this[0],AWS-0001,,AWS-0001,,API Gateway stages for V1 and V2 should have access logging enabled,0,1
+TRIVY ONLY,reg09.tf,/terraform/aws/reg09.tf,aws_ecr_repository.this[0],CKV_AWS_163,,AWS-0030,,ECR repository has image scans disabled.,0,1
+TRIVY ONLY,reg09.tf,/terraform/aws/reg09.tf,aws_ecr_repository.this[0],CKV_AWS_51,,AWS-0031,,ECR images tags shouldn't be mutable.,0,1
+TRIVY ONLY,reg10.tf,/terraform/aws/reg10.tf,aws_efs_file_system.this[0],AWS-0037,,AWS-0037,,EFS Encryption has not been enabled,0,1
+CHECKOV ONLY,reg10.tf,/terraform/aws/reg10.tf,aws_security_group.this[0],CKV2_AWS_5,CKV2_AWS_5,,Ensure that Security Groups are attached to another resource,,1,0
+TRIVY ONLY,reg11.tf,/terraform/aws/reg11.tf,aws_elasticache_replication_group.global[0],AWS-0045,,AWS-0045,,Elasticache Replication Group stores unencrypted data at-rest.,0,1
+TRIVY ONLY,reg11.tf,/terraform/aws/reg11.tf,aws_elasticache_replication_group.global[0],AWS-0051,,AWS-0051,,Elasticache Replication Group uses unencrypted traffic.,0,1
+TRIVY ONLY,reg11.tf,/terraform/aws/reg11.tf,aws_elasticache_replication_group.this[0],AWS-0045,,AWS-0045,,Elasticache Replication Group stores unencrypted data at-rest.,0,1
+TRIVY ONLY,reg11.tf,/terraform/aws/reg11.tf,aws_elasticache_replication_group.this[0],AWS-0051,,AWS-0051,,Elasticache Replication Group uses unencrypted traffic.,0,1
+TRIVY ONLY,reg12.tf,/terraform/aws/reg12.tf,data.aws_iam_policy_document.ecs[0],AWS-0342,,AWS-0342,,IAM Pass Role Filtering,0,1

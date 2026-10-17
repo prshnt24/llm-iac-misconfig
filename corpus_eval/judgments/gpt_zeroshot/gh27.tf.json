@@ -1,0 +1,53 @@
+{
+ "file": "gh27.tf",
+ "findings": [
+  {
+   "resource": "aws_sns_topic_policy.billing_alert_policy",
+   "issue": "Overly permissive SNS subscribe policy",
+   "risk": "Allows any AWS principal to subscribe email endpoints to the SNS topic, which can enable unauthorized subscriptions, information disclosure of billing alerts, and abuse of the topic.",
+   "remediation": "Remove the \"EmailSubscribe\" statement entirely from the policy, or restrict it to specific AWS principals/accounts using the Statement.Principal field and additional conditions such as \"AWS:SourceOwner\" or specific principal ARNs."
+  },
+  {
+   "resource": "aws_sqs_queue.sns_dlq",
+   "issue": "SQS queue encryption at rest not enabled",
+   "risk": "Messages delivered to the queue may be stored unencrypted at rest, increasing exposure of billing alert content and metadata if underlying storage is accessed improperly.",
+   "remediation": "Enable server-side encryption on the queue by adding either \"sqs_managed_sse_enabled = true\" or \"kms_master_key_id = <KMS key ARN>\" to the aws_sqs_queue.sns_dlq resource."
+  },
+  {
+   "resource": "aws_sqs_queue_policy.sns_dlq_policy",
+   "issue": "SQS queue policy lacks source restriction for SNS sender",
+   "risk": "Any SNS topic could potentially send messages to the queue because the policy allows the sns.amazonaws.com service principal without constraining the source topic, enabling queue abuse or message injection.",
+   "remediation": "Add a Condition limiting the source ARN to the intended topic, for example: \"Condition\": { \"ArnEquals\": { \"aws:SourceArn\": aws_sns_topic.billing_alert.arn } } in the policy statement of aws_sqs_queue_policy.sns_dlq_policy."
+  },
+  {
+   "resource": "aws_cloudwatch_log_group.billing_logs",
+   "issue": "CloudWatch log group encryption at rest not configured",
+   "risk": "Log data may not be protected with a customer-managed KMS key, reducing control over access to billing-related logs and weakening defense for sensitive operational data.",
+   "remediation": "Configure KMS encryption by adding the \"kms_key_id\" attribute to aws_cloudwatch_log_group.billing_logs with the ARN of an appropriate KMS key."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c103",
+    "c104"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c98",
+    "c100"
+   ]
+  }
+ ]
+}

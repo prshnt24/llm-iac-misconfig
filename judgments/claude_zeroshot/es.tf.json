@@ -1,0 +1,111 @@
+{
+ "file": "es.tf",
+ "findings": [
+  {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Outdated Elasticsearch Version",
+   "risk": "Elasticsearch 2.3 is end-of-life and contains numerous known CVEs including remote code execution and privilege escalation vulnerabilities. It no longer receives security patches.",
+   "remediation": "Upgrade to a supported version (7.x or later, or use OpenSearch 2.x). Change `elasticsearch_version = \"2.3\"` to `elasticsearch_version = \"7.10\"` or higher."
+  },
+  {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Encryption at Rest Not Enabled",
+   "risk": "Data stored on EBS volumes is not encrypted, exposing sensitive data if the underlying storage media is compromised or improperly decommissioned.",
+   "remediation": "Add an `encrypt_at_rest` block: `encrypt_at_rest { enabled = true }`. Optionally specify a KMS key via `kms_key_id`."
+  },
+  {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Node-to-Node Encryption Not Enabled",
+   "risk": "Traffic between Elasticsearch nodes is unencrypted, allowing an attacker with access to the VPC network to intercept inter-node communications and extract sensitive data.",
+   "remediation": "Add a `node_to_node_encryption` block: `node_to_node_encryption { enabled = true }`."
+  },
+  {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "HTTPS / TLS Enforcement Not Configured",
+   "risk": "Without enforcing HTTPS, clients can communicate with the domain over unencrypted HTTP, exposing data in transit to interception.",
+   "remediation": "Add a `domain_endpoint_options` block: `domain_endpoint_options { enforce_https = true tls_security_policy = \"Policy-Min-TLS-1-2-2019-07\" }`."
+  },
+  {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Domain Not Deployed Inside a VPC",
+   "risk": "A publicly accessible Elasticsearch domain is reachable from the internet. Combined with the overly permissive access policy, this exposes the domain to unauthenticated access and data exfiltration.",
+   "remediation": "Add a `vpc_options` block specifying `subnet_ids` and `security_group_ids` to place the domain inside a private VPC subnet, restricting network-level access."
+  },
+  {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Dedicated Master Node Disabled",
+   "risk": "Without dedicated master nodes, cluster stability is reduced. A single-node cluster with no dedicated master is vulnerable to split-brain scenarios and has no resilience against node failure, increasing availability risk.",
+   "remediation": "Set `dedicated_master_enabled = true` and ensure `dedicated_master_count` is set to an odd number (e.g., 3) to maintain quorum and cluster stability."
+  },
+  {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Single Availability Zone / Single Instance",
+   "risk": "A single-instance cluster with no zone awareness provides no high availability. A failure of the single node results in complete data loss and service outage.",
+   "remediation": "Increase `instance_count` to at least 2 (preferably 3) and enable zone awareness: add `zone_awareness_enabled = true` and a `zone_awareness_config { availability_zone_count = 3 }` block inside `cluster_config`."
+  },
+  {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Audit Logging / CloudWatch Log Publishing Not Enabled",
+   "risk": "Without audit logs, there is no visibility into access patterns, authentication failures, or potentially malicious queries, hindering incident detection and forensic investigation.",
+   "remediation": "Add one or more `log_publishing_options` blocks, e.g.: `log_publishing_options { log_type = \"AUDIT_LOGS\" cloudwatch_log_group_arn = aws_cloudwatch_log_group.es_logs.arn }`. Also enable `INDEX_SLOW_LOGS` and `SEARCH_SLOW_LOGS` as needed."
+  },
+  {
+   "resource": "aws_elasticsearch_domain_policy.monitoring-framework-policy",
+   "issue": "Overly Permissive Access Policy \u2013 Wildcard Principal and Actions",
+   "risk": "The access policy grants `es:*` (all Elasticsearch actions) to `AWS: *` (every AWS principal in the world) on all resources. This effectively makes the domain publicly writable and readable by any AWS account, enabling data exfiltration, deletion, or injection by any unauthenticated or authenticated AWS user.",
+   "remediation": "Replace the wildcard principal with specific, least-privilege IAM principals (e.g., specific IAM role ARNs). Restrict `actions` to only those required and scope `resources` to the specific domain ARN. Example: `principals { type = \"AWS\" identifiers = [\"arn:aws:iam::123456789012:role/es-consumer-role\"] }` with `actions = [\"es:ESHttpGet\"]` and `resources = [\"${aws_elasticsearch_domain.monitoring-framework.arn}/*\"]`."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c68",
+    "c72"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c74"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c75"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c66"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": [
+    "c65"
+   ]
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  },
+  {
+   "finding": 7,
+   "candidates": [
+    "c70",
+    "c73"
+   ]
+  },
+  {
+   "finding": 8,
+   "candidates": []
+  }
+ ]
+}

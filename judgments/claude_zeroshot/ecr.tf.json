@@ -1,0 +1,73 @@
+{
+ "file": "ecr.tf",
+ "findings": [
+  {
+   "resource": "aws_ecr_repository.repository",
+   "issue": "Image Tag Mutability Enabled (MUTABLE)",
+   "risk": "Mutable image tags allow existing tags to be overwritten, enabling supply chain attacks where a trusted tag (e.g., 'latest' or a version tag) can be silently replaced with a malicious image. This undermines image integrity and auditability.",
+   "remediation": "Set `image_tag_mutability = \"IMMUTABLE\"` to prevent tags from being overwritten once pushed, ensuring image provenance and integrity."
+  },
+  {
+   "resource": "aws_ecr_repository.repository",
+   "issue": "Image Scanning on Push Not Enabled",
+   "risk": "Without automated vulnerability scanning on push, container images with known CVEs (Common Vulnerabilities and Exposures) can be stored and deployed without detection, increasing the attack surface of workloads using those images.",
+   "remediation": "Add an `image_scanning_configuration` block with `scan_on_push = true`:\n```hcl\nimage_scanning_configuration {\n  scan_on_push = true\n}\n```"
+  },
+  {
+   "resource": "aws_ecr_repository.repository",
+   "issue": "Encryption at Rest Not Configured (No KMS CMK)",
+   "risk": "By default, ECR uses AES-256 encryption managed by AWS. Without a customer-managed KMS key (CMK), the organisation has no control over key rotation, access auditing, or the ability to revoke access to encrypted data, reducing data sovereignty and compliance posture.",
+   "remediation": "Add an `encryption_configuration` block specifying a KMS CMK:\n```hcl\nencryption_configuration {\n  encryption_type = \"KMS\"\n  kms_key         = aws_kms_key.ecr_key.arn\n}\n```"
+  },
+  {
+   "resource": "aws_ecr_repository.repository",
+   "issue": "No ECR Repository Policy Restricting Access",
+   "risk": "Without an explicit repository policy, access control relies solely on IAM identity policies. This may allow unintended principals (e.g., other accounts or overly permissive roles) to pull or push images, risking data exfiltration or malicious image injection.",
+   "remediation": "Attach an `aws_ecr_repository_policy` resource with a least-privilege policy that explicitly denies cross-account access unless required and restricts push/pull to known principals:\n```hcl\nresource \"aws_ecr_repository_policy\" \"repository\" {\n  repository = aws_ecr_repository.repository.name\n  policy     = data.aws_iam_policy_document.ecr_policy.json\n}\n```"
+  },
+  {
+   "resource": "null_resource.push_image",
+   "issue": "Use of null_resource with local-exec for Docker Operations",
+   "risk": "Executing shell commands via `local-exec` provisioners introduces several risks: credentials from `aws ecr get-login-password` may be exposed in Terraform logs or process lists; the provisioner runs with the permissions of the local machine or CI runner, which may be overly broad; and there is no idempotency guarantee, making the pipeline fragile and potentially re-running with stale or malicious local build context.",
+   "remediation": "Replace the `null_resource` with a dedicated CI/CD pipeline step (e.g., GitHub Actions, CodeBuild) for building and pushing images. If Terraform must manage this, use the `kreuzwerker/docker` Terraform provider which handles authentication and image pushing natively without shell injection risk:\n```hcl\nresource \"docker_registry_image\" \"app\" {\n  name = local.docker_image\n  build {\n    context = \"${path.module}/resources\"\n  }\n}\n```"
+  },
+  {
+   "resource": "null_resource.push_image",
+   "issue": "Potential Credential Exposure in local-exec Provisioner Logs",
+   "risk": "The `aws ecr get-login-password` command output (a short-lived Docker password) is piped directly in a shell command. Terraform verbose logging (`TF_LOG=DEBUG`) or CI log capture could expose this token. Additionally, Docker login credentials may be written to `~/.docker/config.json` on the runner in plaintext.",
+   "remediation": "Ensure `TF_LOG` is never set to DEBUG in CI when this provisioner runs. Use a credential helper (e.g., `docker-credential-ecr-login`) instead of `docker login --password-stdin` to avoid storing credentials on disk. Mark any sensitive outputs with `sensitive = true` and restrict CI log access."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c51"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c50"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c49"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  }
+ ]
+}

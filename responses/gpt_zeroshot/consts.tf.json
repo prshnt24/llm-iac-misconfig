@@ -1,0 +1,8 @@
+{
+  "model": "global.openai.gpt-5.4",
+  "strategy": "zeroshot",
+  "file": "consts.tf",
+  "temperature": null,
+  "timestamp": "2026-10-16T21:39:41",
+  "response": "[\n  {\n    \"resource\": \"variable.password\",\n    \"issue\": \"Hardcoded default database password in Terraform variable\",\n    \"risk\": \"Embedding a plaintext password in Terraform code can expose credentials through version control, code review systems, Terraform plans/state, and developer workstations, increasing the risk of unauthorized database access.\",\n    \"remediation\": \"Remove the `default` attribute from `variable \\\"password\\\"`, mark the variable as sensitive with `sensitive = true`, and supply the value securely at runtime via a protected mechanism such as environment variables, a `.tfvars` file excluded from version control, or a secrets manager.\"\n  }\n]"
+}

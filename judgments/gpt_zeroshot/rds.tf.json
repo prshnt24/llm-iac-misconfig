@@ -1,0 +1,19 @@
+{
+ "file": "rds.tf",
+ "findings": [
+  {
+   "resource": "aws_rds_cluster.app1-rds-cluster",
+   "issue": "Automated backups disabled",
+   "risk": "Setting backup_retention_period to 0 disables automated backups, increasing the risk of permanent data loss and preventing point-in-time recovery after accidental deletion, corruption, or ransomware events.",
+   "remediation": "Set the attribute backup_retention_period to a value greater than 0, for example backup_retention_period = 7, in the aws_rds_cluster.app1-rds-cluster resource."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c118"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,17 @@
+{
+ "file": "reg03.tf",
+ "findings": [
+  {
+   "resource": "aws_sns_topic_policy.this",
+   "issue": "Overly permissive policy",
+   "risk": "Allows any AWS principal to perform actions on the SNS topic",
+   "remediation": "Restrict the 'identifiers' attribute under 'principals' to specific AWS account IDs or IAM roles instead of using ['*']"
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  }
+ ]
+}

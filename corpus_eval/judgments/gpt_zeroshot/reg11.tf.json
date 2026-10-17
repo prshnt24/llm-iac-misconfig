@@ -1,0 +1,95 @@
+{
+ "file": "reg11.tf",
+ "findings": [
+  {
+   "resource": "aws_elasticache_replication_group.this",
+   "issue": "In-transit encryption not enforced",
+   "risk": "If var.transit_encryption_enabled is false or unset, client and replication traffic to Redis/Valkey can be transmitted unencrypted, exposing credentials and data to interception or manipulation on the network.",
+   "remediation": "Set transit_encryption_enabled = true in aws_elasticache_replication_group.this and, for stronger protection, set transit_encryption_mode = \"required\"."
+  },
+  {
+   "resource": "aws_elasticache_replication_group.this",
+   "issue": "At-rest encryption not enforced",
+   "risk": "If var.at_rest_encryption_enabled is false or unset, cached data and snapshots may be stored unencrypted, increasing exposure if underlying storage or backups are accessed by unauthorized parties.",
+   "remediation": "Set at_rest_encryption_enabled = true in aws_elasticache_replication_group.this and provide kms_key_id = var.kms_key_arn to use a customer-managed KMS key."
+  },
+  {
+   "resource": "aws_elasticache_replication_group.this",
+   "issue": "AUTH token not enforced",
+   "risk": "If var.auth_token is unset, Redis/Valkey authentication may not be enabled, allowing clients on the network path who can reach the cluster to connect without password-based authentication.",
+   "remediation": "Set auth_token to a strong secret in aws_elasticache_replication_group.this and keep transit_encryption_enabled = true, or use user_group_ids with RBAC/ACLs."
+  },
+  {
+   "resource": "aws_elasticache_replication_group.global",
+   "issue": "In-transit encryption not enforced",
+   "risk": "If var.transit_encryption_enabled is false or unset for the global replication group primary, client and replication traffic may be sent unencrypted, exposing data and credentials in transit.",
+   "remediation": "Set transit_encryption_enabled = true in aws_elasticache_replication_group.global. For non-secondary creation paths, also enforce transit encryption consistently across the global datastore."
+  },
+  {
+   "resource": "aws_elasticache_replication_group.global",
+   "issue": "At-rest encryption not enforced",
+   "risk": "If var.at_rest_encryption_enabled is false or unset for the global replication group primary, data and snapshots may be stored unencrypted.",
+   "remediation": "Set at_rest_encryption_enabled = true in aws_elasticache_replication_group.global and provide kms_key_id = var.kms_key_arn."
+  },
+  {
+   "resource": "aws_elasticache_replication_group.global",
+   "issue": "AUTH token not enforced",
+   "risk": "If var.auth_token is unset, clients that can reach the global replication group may be able to connect without authentication.",
+   "remediation": "Set auth_token to a strong secret in aws_elasticache_replication_group.global and enforce transit_encryption_enabled = true, or use user_group_ids with RBAC/ACLs."
+  },
+  {
+   "resource": "aws_elasticache_cluster.this",
+   "issue": "Memcached in-transit encryption not enforced",
+   "risk": "For Memcached deployments, if var.transit_encryption_enabled is false or unset, cache traffic may be transmitted in cleartext and be vulnerable to interception or tampering.",
+   "remediation": "When var.engine == \"memcached\", set transit_encryption_enabled = true in aws_elasticache_cluster.this."
+  },
+  {
+   "resource": "aws_cloudwatch_log_group.this",
+   "issue": "CloudWatch log group encryption not enforced",
+   "risk": "If each log group's kms_key_id is null, engine and slow logs stored in CloudWatch Logs are encrypted only with the default service-managed controls, which may not meet organizational requirements for key management and access control.",
+   "remediation": "Set kms_key_id in aws_cloudwatch_log_group.this by providing cloudwatch_log_group_kms_key_id in var.log_delivery_configuration for each log group."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c133"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c132"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c131"
+   ]
+  },
+  {
+   "finding": 4,
+   "candidates": [
+    "c130"
+   ]
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  },
+  {
+   "finding": 6,
+   "candidates": []
+  },
+  {
+   "finding": 7,
+   "candidates": []
+  }
+ ]
+}

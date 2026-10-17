@@ -1,0 +1,37 @@
+{
+ "file": "reg05.tf",
+ "findings": [
+  {
+   "resource": "aws_acm_certificate.this",
+   "issue": "Certificate private key export may be enabled",
+   "risk": "If the certificate is exportable, its private key can be exported from ACM and mishandled or exfiltrated, increasing the risk of TLS impersonation and compromise of encrypted services.",
+   "remediation": "Set the ACM certificate options export setting to disable export. In the aws_acm_certificate.this resource, change options { export = var.export } to use a non-exportable value, e.g. options { export = \"DISABLED\" }, or ensure var.export is always set to the disabled/non-exportable option."
+  },
+  {
+   "resource": "aws_acm_certificate.this",
+   "issue": "Certificate Transparency logging can be disabled",
+   "risk": "Disabling Certificate Transparency logging reduces visibility into publicly trusted certificate issuance and can delay detection of unauthorized or fraudulent certificates for the domain.",
+   "remediation": "Enable Certificate Transparency logging. In aws_acm_certificate.this, set options { certificate_transparency_logging_preference = \"ENABLED\" } or ensure var.certificate_transparency_logging_preference is always true for public certificates."
+  },
+  {
+   "resource": "aws_route53_record.validation",
+   "issue": "DNS validation record overwrite can be enabled",
+   "risk": "Allowing overwrite of Route53 validation records can unintentionally replace existing DNS records, which may disrupt validation or be abused to alter DNS state if combined with overly broad IAM permissions.",
+   "remediation": "Disable record overwrites unless there is a strict operational need. In aws_route53_record.validation, set allow_overwrite = false or ensure var.validation_allow_overwrite_records is false."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  }
+ ]
+}

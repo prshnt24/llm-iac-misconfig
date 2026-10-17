@@ -1,0 +1,8 @@
+{
+  "model": "global.openai.gpt-5.4",
+  "strategy": "fewshot",
+  "file": "neptune.tf",
+  "temperature": null,
+  "timestamp": "2026-10-16T21:47:51",
+  "response": "[\n  {\n    \"resource\": \"aws_neptune_cluster.default\",\n    \"issue\": \"Storage encryption disabled\",\n    \"risk\": \"Neptune data and automated backups are stored unencrypted at rest, increasing exposure if underlying storage or snapshots are accessed without authorization.\",\n    \"remediation\": \"Set the aws_neptune_cluster.default attribute storage_encrypted = true and optionally specify kms_key_arn with a customer-managed KMS key.\"\n  },\n  {\n    \"resource\": \"aws_neptune_cluster.default\",\n    \"issue\": \"Final snapshot disabled on deletion\",\n    \"risk\": \"Deleting the cluster can permanently remove data without a final recovery point, increasing the impact of accidental or malicious deletion.\",\n    \"remediation\": \"Change the aws_neptune_cluster.default attribute skip_final_snapshot = false and configure final_snapshot_identifier.\"\n  },\n  {\n    \"resource\": \"aws_neptune_cluster.default\",\n    \"issue\": \"IAM database authentication disabled\",\n    \"risk\": \"Disabling IAM authentication can force reliance on less centralized authentication controls and reduce the ability to enforce short-lived, identity-based access patterns.\",\n    \"remediation\": \"Set the aws_neptune_cluster.default attribute iam_database_authentication_enabled = true if IAM database authentication is required for your access model.\"\n  }\n]"
+}

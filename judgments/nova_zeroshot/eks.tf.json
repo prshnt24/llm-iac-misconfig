@@ -1,0 +1,51 @@
+{
+ "file": "eks.tf",
+ "findings": [
+  {
+   "resource": "aws_iam_role_policy_attachment.policy_attachment-AmazonEKSClusterPolicy",
+   "issue": "Use of overly permissive managed policy",
+   "risk": "The AmazonEKSClusterPolicy managed policy provides broad permissions that may not be required, increasing the attack surface.",
+   "remediation": "Replace the managed policy with a custom policy that follows the principle of least privilege. Create a new IAM policy resource with specific permissions needed for EKS and attach it to the role."
+  },
+  {
+   "resource": "aws_iam_role_policy_attachment.policy_attachment-AmazonEKSServicePolicy",
+   "issue": "Use of overly permissive managed policy",
+   "risk": "The AmazonEKSServicePolicy managed policy provides broad permissions that may not be required, increasing the attack surface.",
+   "remediation": "Replace the managed policy with a custom policy that follows the principle of least privilege. Create a new IAM policy resource with specific permissions needed for EKS and attach it to the role."
+  },
+  {
+   "resource": "aws_subnet.eks_subnet1",
+   "issue": "Public IP assignment on launch",
+   "risk": "Assigning public IPs to instances by default can expose them to the internet, increasing the attack surface.",
+   "remediation": "Set `map_public_ip_on_launch` to `false` to prevent automatic assignment of public IPs."
+  },
+  {
+   "resource": "aws_subnet.eks_subnet2",
+   "issue": "Public IP assignment on launch",
+   "risk": "Assigning public IPs to instances by default can expose them to the internet, increasing the attack surface.",
+   "remediation": "Set `map_public_ip_on_launch` to `false` to prevent automatic assignment of public IPs."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c56"
+   ]
+  },
+  {
+   "finding": 3,
+   "candidates": [
+    "c57"
+   ]
+  }
+ ]
+}

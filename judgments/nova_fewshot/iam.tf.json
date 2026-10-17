@@ -1,0 +1,42 @@
+{
+ "file": "iam.tf",
+ "findings": [
+  {
+   "resource": "aws_iam_user_policy.userpolicy",
+   "issue": "Overly broad IAM permissions",
+   "risk": "The policy allows the user to perform all actions on EC2, S3, Lambda, and CloudWatch resources, which is a significant security risk if the user's credentials are compromised.",
+   "remediation": "Refine the policy to include only the necessary actions and resources. Replace the wildcard permissions with specific actions and resource ARNs that the user needs."
+  },
+  {
+   "resource": "aws_iam_access_key.user",
+   "issue": "IAM access key without rotation policy",
+   "risk": "Long-lived access keys increase the risk of unauthorized access if the key is compromised. There is no mechanism in place to enforce regular rotation of the access key.",
+   "remediation": "Implement a rotation policy for the access key. Consider using AWS IAM best practices for managing access keys, such as enabling access key rotation and using temporary security credentials with IAM roles where possible."
+  },
+  {
+   "resource": "output.secret",
+   "issue": "Exposure of sensitive information",
+   "risk": "The output block exposes the encrypted secret of the access key, which, although encrypted, should not be outputted in plain text due to the risk of accidental exposure.",
+   "remediation": "Remove the output block that exposes the encrypted secret. Sensitive information should not be outputted in Terraform unless absolutely necessary and should be handled with appropriate security measures."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c84",
+    "c85",
+    "c86",
+    "c87"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  }
+ ]
+}

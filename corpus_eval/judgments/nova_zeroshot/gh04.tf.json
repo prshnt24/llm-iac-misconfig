@@ -1,0 +1,57 @@
+{
+ "file": "gh04.tf",
+ "findings": [
+  {
+   "resource": "module.aws_key_pair",
+   "issue": "Automatic SSH Key Generation",
+   "risk": "Using automatically generated SSH keys can lead to security risks if the keys are not properly managed and rotated.",
+   "remediation": "Set `generate_ssh_key` to `false` and provide a predefined SSH public key via `ssh_public_key` attribute."
+  },
+  {
+   "resource": "aws_iam_role.test",
+   "issue": "Overly Permissive IAM Role",
+   "risk": "The IAM role has a trust relationship with EC2 service principal, which can be a security risk if not properly scoped.",
+   "remediation": "Restrict the trust relationship to specific EC2 instances or VPC endpoints by updating the `principals` block in `data.aws_iam_policy_document.test`."
+  },
+  {
+   "resource": "aws_network_interface.one",
+   "issue": "Default Security Group Usage",
+   "risk": "Using the default security group can expose the network interface to unintended traffic.",
+   "remediation": "Create a custom security group with specific inbound and outbound rules and assign it to the network interface."
+  },
+  {
+   "resource": "aws_network_interface.two",
+   "issue": "Default Security Group Usage",
+   "risk": "Using the default security group can expose the network interface to unintended traffic.",
+   "remediation": "Create a custom security group with specific inbound and outbound rules and assign it to the network interface."
+  },
+  {
+   "resource": "module.ec2_instance",
+   "issue": "Public IP Association",
+   "risk": "Associating a public IP address with the EC2 instance can expose it to the internet, increasing the attack surface.",
+   "remediation": "Set `associate_public_ip_address` to `false` to prevent the association of a public IP address."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  }
+ ]
+}

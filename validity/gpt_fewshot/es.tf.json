@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  },
+  {
+   "finding": 6,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Outdated Elasticsearch version",
+   "risk": "Elasticsearch 2.3 is end-of-life and contains known security vulnerabilities that could be exploited to compromise the domain or its data.",
+   "remediation": "Change the elasticsearch_version attribute from \"2.3\" to a currently supported and secure version supported by Amazon OpenSearch Service."
+  },
+  "6": {
+   "resource": "aws_elasticsearch_domain_policy.monitoring-framework-policy",
+   "issue": "Publicly permissive domain access policy",
+   "risk": "Applying a policy that allows any principal es:* access can make the Elasticsearch domain broadly accessible and fully controllable by unauthorized parties.",
+   "remediation": "Update access_policies to use a least-privilege policy: restrict principals to approved IAM ARNs, limit actions to required es: permissions, and scope resources to the specific domain ARN instead of \"*\"."
+  }
+ }
+}

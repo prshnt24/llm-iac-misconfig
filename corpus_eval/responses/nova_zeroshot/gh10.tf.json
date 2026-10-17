@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "gh10.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-17T02:15:33",
+  "response": "[\n  {\n    \"resource\": \"aws_security_group_rule.local_cidr\",\n    \"issue\": \"Overly permissive CIDR block\",\n    \"risk\": \"Allowing traffic from the entire VPC CIDR block may expose the VPC endpoints to unnecessary risks from other resources within the VPC.\",\n    \"remediation\": \"Restrict the CIDR blocks to only the necessary subnets or specific IP addresses. Modify the `cidr_blocks` attribute to include only the required subnets.\"\n  },\n  {\n    \"resource\": \"aws_vpc_endpoint.interface\",\n    \"issue\": \"Private DNS disabled\",\n    \"risk\": \"Disabling private DNS for VPC endpoints may require manual DNS configuration and can lead to complexity and potential misconfigurations.\",\n    \"remediation\": \"Enable private DNS by setting `private_dns_enabled` to `true`.\"\n  }\n]"
+}

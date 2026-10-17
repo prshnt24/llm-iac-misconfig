@@ -1,0 +1,17 @@
+{
+ "items": [
+  {
+   "finding": 11,
+   "known": "CKV_AWS_161 Ensure RDS database has IAM authentication enabled (resource aws_db_instance.postgresql)",
+   "issue": "IAM database authentication not enabled",
+   "remediation": "Add `iam_database_authentication_enabled = true` to the `aws_db_instance.postgresql` resource block and update application connection strings to use IAM token-based authentication."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Setting iam_database_authentication_enabled = true on aws_db_instance.postgresql is exactly the fix for CKV_AWS_161. The note about updating application connection strings is a useful addition."
+  }
+ ]
+}

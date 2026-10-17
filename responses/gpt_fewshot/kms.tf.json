@@ -1,0 +1,8 @@
+{
+  "model": "global.openai.gpt-5.4",
+  "strategy": "fewshot",
+  "file": "kms.tf",
+  "temperature": null,
+  "timestamp": "2026-10-16T21:47:46",
+  "response": "[\n  {\n    \"resource\": \"aws_kms_key.logs_key\",\n    \"issue\": \"KMS key rotation disabled\",\n    \"risk\": \"Without automatic key rotation, the same cryptographic key material is used indefinitely, increasing the impact of key compromise and reducing compliance with common security requirements.\",\n    \"remediation\": \"Set the aws_kms_key.logs_key attribute `enable_key_rotation = true`.\"\n  }\n]"
+}

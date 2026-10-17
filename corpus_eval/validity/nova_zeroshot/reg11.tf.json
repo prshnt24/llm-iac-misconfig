@@ -1,0 +1,66 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 4,
+   "label": "INVALID"
+  },
+  {
+   "finding": 5,
+   "label": "INVALID"
+  },
+  {
+   "finding": 6,
+   "label": "INVALID"
+  },
+  {
+   "finding": 7,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_elasticache_cluster.this",
+   "issue": "Missing Encryption at Rest",
+   "risk": "Data stored in the ElastiCache cluster is not encrypted at rest, which can lead to unauthorized access if the underlying storage is compromised.",
+   "remediation": "Set `at_rest_encryption_enabled` to `true` and provide a `kms_key_id` for encryption."
+  },
+  "1": {
+   "resource": "aws_elasticache_cluster.this",
+   "issue": "Missing Transit Encryption",
+   "risk": "Data in transit to and from the ElastiCache cluster is not encrypted, which can lead to interception and tampering by malicious actors.",
+   "remediation": "Set `transit_encryption_enabled` to `true`."
+  },
+  "4": {
+   "resource": "aws_elasticache_global_replication_group.this",
+   "issue": "Missing Encryption at Rest",
+   "risk": "Data stored in the ElastiCache global replication group is not encrypted at rest, which can lead to unauthorized access if the underlying storage is compromised.",
+   "remediation": "Ensure `at_rest_encryption_enabled` is `true` and provide a `kms_key_id` for encryption in the associated replication group."
+  },
+  "5": {
+   "resource": "aws_elasticache_global_replication_group.this",
+   "issue": "Missing Transit Encryption",
+   "risk": "Data in transit to and from the ElastiCache global replication group is not encrypted, which can lead to interception and tampering by malicious actors.",
+   "remediation": "Ensure `transit_encryption_enabled` is `true` in the associated replication group."
+  },
+  "6": {
+   "resource": "aws_security_group.this",
+   "issue": "Overly Permissive Ingress Rules",
+   "risk": "The security group allows ingress traffic from any source (`0.0.0.0/0`), which can expose the ElastiCache cluster to unauthorized access.",
+   "remediation": "Restrict the `cidr_blocks` in the ingress rules to only trusted sources."
+  },
+  "7": {
+   "resource": "aws_vpc_security_group_ingress_rule.this",
+   "issue": "Overly Permissive Ingress Rules",
+   "risk": "The security group ingress rule allows traffic from any source (`0.0.0.0/0`), which can expose the ElastiCache cluster to unauthorized access.",
+   "remediation": "Restrict the `cidr_ipv4` and `cidr_ipv6` to only trusted sources."
+  }
+ }
+}

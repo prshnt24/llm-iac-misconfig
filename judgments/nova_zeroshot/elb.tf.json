@@ -1,0 +1,40 @@
+{
+ "file": "elb.tf",
+ "findings": [
+  {
+   "resource": "aws_elb.weblb",
+   "issue": "Insecure Protocol",
+   "risk": "Using HTTP instead of HTTPS allows for man-in-the-middle attacks and data interception.",
+   "remediation": "Change the protocol to HTTPS for both instance and load balancer ports. Add SSL certificate ARN to the listener block."
+  },
+  {
+   "resource": "aws_elb.weblb",
+   "issue": "Weak Health Check Configuration",
+   "risk": "Weak health check configuration can lead to false positives or negatives, affecting the availability and reliability of the application.",
+   "remediation": "Increase the healthy_threshold and unhealthy_threshold values to ensure more reliable health checks."
+  },
+  {
+   "resource": "aws_elb.weblb",
+   "issue": "Excessive Idle Timeout",
+   "risk": "A very high idle timeout value can lead to resource wastage and potential security risks due to prolonged connections.",
+   "remediation": "Reduce the idle_timeout value to a more reasonable duration, such as 60 seconds."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c60",
+    "c61"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  }
+ ]
+}

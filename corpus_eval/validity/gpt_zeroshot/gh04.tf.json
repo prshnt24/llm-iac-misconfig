@@ -1,0 +1,56 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "VALID"
+  },
+  {
+   "finding": 4,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_network_interface.one",
+   "issue": "Use of default security group",
+   "risk": "The VPC default security group is often overly permissive and may allow unintended lateral movement or broad inbound/outbound access, increasing the attack surface of the attached instance.",
+   "remediation": "Replace `security_groups = [module.vpc.vpc_default_security_group_id]` with a dedicated least-privilege security group resource (for example `aws_security_group.ec2`) that only allows required ingress and egress rules."
+  },
+  "1": {
+   "resource": "aws_network_interface.two",
+   "issue": "Use of default security group",
+   "risk": "The VPC default security group is often overly permissive and may allow unintended lateral movement or broad inbound/outbound access, increasing the attack surface of the attached instance.",
+   "remediation": "Replace `security_groups = [module.vpc.vpc_default_security_group_id]` with a dedicated least-privilege security group resource (for example `aws_security_group.ec2`) that only allows required ingress and egress rules."
+  },
+  "2": {
+   "resource": "module.ec2_instance",
+   "issue": "Use of default security group",
+   "risk": "Attaching the instance to the VPC default security group can expose it to unintended network access and facilitate lateral movement within the VPC.",
+   "remediation": "Change `security_groups = [module.vpc.vpc_default_security_group_id]` to reference a dedicated restrictive security group resource, and define only the minimum required rules in that security group."
+  },
+  "3": {
+   "resource": "module.aws_key_pair",
+   "issue": "Terraform-managed generation of SSH key pair",
+   "risk": "Setting `generate_ssh_key = true` can cause private key material to be generated and potentially stored in Terraform state or outputs, creating a sensitive secret exposure risk if the state is accessed by unauthorized parties.",
+   "remediation": "Set `generate_ssh_key = false` and supply an existing public key via `ssh_public_key_path`, or manage private keys outside Terraform using a secure secrets or key management process."
+  },
+  "4": {
+   "resource": "module.ec2_instance",
+   "issue": "Potential public exposure through public IP or Elastic IP assignment",
+   "risk": "Allowing `associate_public_ip_address` or `assign_eip_address` can make the instance directly reachable from the internet, increasing the risk of unauthorized access, scanning, and exploitation if security groups are misconfigured.",
+   "remediation": "Set `associate_public_ip_address = false` and `assign_eip_address = false` unless direct internet exposure is explicitly required. Prefer private subnets with controlled access via bastion hosts, VPN, or SSM."
+  }
+ }
+}

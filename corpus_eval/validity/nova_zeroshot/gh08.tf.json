@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "INVALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "data.aws_iam_policy_document.ecr",
+   "issue": "Wildcard Resource",
+   "risk": "Allows access to all ECR resources, not just the intended ones.",
+   "remediation": "Replace `resources = [\"*\"]` with the specific ARN of the ECR repository to limit access."
+  },
+  "1": {
+   "resource": "aws_ecr_repository.example",
+   "issue": "Insecure Tag Value",
+   "risk": "Using `true` as a tag value may not be correctly interpreted in all contexts.",
+   "remediation": "Change the tag value from `true` to a string like `\"true\"`."
+  }
+ }
+}

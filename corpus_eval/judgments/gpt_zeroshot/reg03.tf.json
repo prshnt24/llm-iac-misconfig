@@ -1,0 +1,17 @@
+{
+ "file": "reg03.tf",
+ "findings": [
+  {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "Overly permissive SNS topic policy with wildcard principal",
+   "risk": "The default topic policy allows any AWS principal (\"*\") a broad set of SNS management and publishing actions if the condition is satisfied, increasing the risk of unauthorized topic access, message publishing, subscription changes, attribute modification, or topic deletion from principals that should not have access.",
+   "remediation": "In the dynamic statement under data.aws_iam_policy_document.this, replace principals.identifiers = [\"*\"] with explicit AWS principal ARNs or account roots that require access. Also restrict actions to the minimum necessary, removing management actions such as sns:DeleteTopic, sns:SetTopicAttributes, sns:RemovePermission, and sns:AddPermission unless explicitly required."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  }
+ ]
+}

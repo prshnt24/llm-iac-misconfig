@@ -1,0 +1,36 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "INVALID"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_iam_role_policy_attachment.ab_managed_policies",
+   "issue": "Overly permissive managed policy attachments",
+   "risk": "Allows the IAM role to assume excessive permissions which can lead to unauthorized access and potential misuse of resources.",
+   "remediation": "Review and limit the managed policies attached to the IAM role to only those necessary for its function."
+  },
+  "1": {
+   "resource": "aws_iam_policy.ab_tag_policy",
+   "issue": "Overly permissive policy",
+   "risk": "The policy allows tagging and untagging of all resources, which can lead to unauthorized changes to resource metadata.",
+   "remediation": "Limit the resources and actions allowed in the policy to only those required for the role's function."
+  },
+  "2": {
+   "resource": "aws_iam_policy.restore_testing_policy",
+   "issue": "Overly permissive custom policy",
+   "risk": "The policy allows a wide range of actions across multiple services, which can lead to unauthorized access and potential data breaches.",
+   "remediation": "Review and limit the actions and resources allowed in the policy to only those necessary for restore testing operations."
+  }
+ }
+}

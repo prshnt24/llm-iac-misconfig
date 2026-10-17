@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  },
+  {
+   "finding": 2,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_sns_topic_policy.billing_alert_policy",
+   "issue": "Overly permissive SNS subscribe policy",
+   "risk": "Allows any AWS principal to subscribe email endpoints to the SNS topic, which can enable unauthorized subscriptions, information disclosure of billing alerts, and abuse of the topic.",
+   "remediation": "Remove the \"EmailSubscribe\" statement entirely from the policy, or restrict it to specific AWS principals/accounts using the Statement.Principal field and additional conditions such as \"AWS:SourceOwner\" or specific principal ARNs."
+  },
+  "2": {
+   "resource": "aws_sqs_queue_policy.sns_dlq_policy",
+   "issue": "SQS queue policy lacks source restriction for SNS sender",
+   "risk": "Any SNS topic could potentially send messages to the queue because the policy allows the sns.amazonaws.com service principal without constraining the source topic, enabling queue abuse or message injection.",
+   "remediation": "Add a Condition limiting the source ARN to the intended topic, for example: \"Condition\": { \"ArnEquals\": { \"aws:SourceArn\": aws_sns_topic.billing_alert.arn } } in the policy statement of aws_sqs_queue_policy.sns_dlq_policy."
+  }
+ }
+}

@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "elb.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-16T23:04:53",
+  "response": "[\n  {\n    \"resource\": \"aws_elb.weblb\",\n    \"issue\": \"Insecure Protocol\",\n    \"risk\": \"Using HTTP instead of HTTPS allows for man-in-the-middle attacks and data interception.\",\n    \"remediation\": \"Change the protocol to HTTPS for both instance and load balancer ports. Add SSL certificate ARN to the listener block.\"\n  },\n  {\n    \"resource\": \"aws_elb.weblb\",\n    \"issue\": \"Weak Health Check Configuration\",\n    \"risk\": \"Weak health check configuration can lead to false positives or negatives, affecting the availability and reliability of the application.\",\n    \"remediation\": \"Increase the healthy_threshold and unhealthy_threshold values to ensure more reliable health checks.\"\n  },\n  {\n    \"resource\": \"aws_elb.weblb\",\n    \"issue\": \"Excessive Idle Timeout\",\n    \"risk\": \"A very high idle timeout value can lead to resource wastage and potential security risks due to prolonged connections.\",\n    \"remediation\": \"Reduce the idle_timeout value to a more reasonable duration, such as 60 seconds.\"\n  }\n]"
+}

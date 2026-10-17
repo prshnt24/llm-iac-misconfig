@@ -1,0 +1,136 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 4,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 5,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 6,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 7,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 8,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 9,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 10,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 11,
+   "label": "INVALID"
+  },
+  {
+   "finding": 12,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "Overly permissive default policy",
+   "risk": "Allows account-wide access to all KMS key operations, which can lead to unauthorized access and potential data breaches.",
+   "remediation": "Remove or restrict the default policy to only necessary actions and resources. Update the 'actions' and'resources' attributes in the'statement' block for the 'Default' SID."
+  },
+  "1": {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "Overly permissive KeyOwner policy",
+   "risk": "Allows all KMS key operations for specified key owners, which can lead to unauthorized access and potential data breaches.",
+   "remediation": "Restrict the KeyOwner policy to only necessary actions and resources. Update the 'actions' and'resources' attributes in the'statement' block for the 'KeyOwner' SID."
+  },
+  "2": {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "Overly permissive KeyAdministration policy",
+   "risk": "Allows all administrative KMS key operations for specified key administrators, which can lead to unauthorized changes and potential data breaches.",
+   "remediation": "Restrict the KeyAdministration policy to only necessary actions and resources. Update the 'actions' and'resources' attributes in the'statement' block for the 'KeyAdministration' SID."
+  },
+  "3": {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "Overly permissive KeyUsage policy",
+   "risk": "Allows all cryptographic KMS key operations for specified key users, which can lead to unauthorized access and potential data breaches.",
+   "remediation": "Restrict the KeyUsage policy to only necessary actions and resources. Update the 'actions' and'resources' attributes in the'statement' block for the 'KeyUsage' SID."
+  },
+  "4": {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "Overly permissive KeyServiceUsage policy",
+   "risk": "Allows grant creation, listing, and revocation for specified key service users, which can lead to unauthorized access and potential data breaches.",
+   "remediation": "Restrict the KeyServiceUsage policy to only necessary actions and resources. Update the 'actions' and'resources' attributes in the'statement' block for the 'KeyServiceUsage' SID."
+  },
+  "5": {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "Overly permissive KeyServiceRolesASG policy",
+   "risk": "Allows all cryptographic KMS key operations for specified key service roles for autoscaling, which can lead to unauthorized access and potential data breaches.",
+   "remediation": "Restrict the KeyServiceRolesASG policy to only necessary actions and resources. Update the 'actions' and 'resources' attributes in the 'statement' block for the 'KeyServiceRolesASG' SID."
+  },
+  "6": {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "Overly permissive KeyServiceRolesASGPersistentVol policy",
+   "risk": "Allows grant creation for specified key service roles for autoscaling, which can lead to unauthorized access and potential data breaches.",
+   "remediation": "Restrict the KeyServiceRolesASGPersistentVol policy to only necessary actions and resources. Update the 'actions' and'resources' attributes in the'statement' block for the 'KeyServiceRolesASGPersistentVol' SID."
+  },
+  "7": {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "Overly permissive KeySymmetricEncryption policy",
+   "risk": "Allows all symmetric encryption KMS key operations for specified key symmetric encryption users, which can lead to unauthorized access and potential data breaches.",
+   "remediation": "Restrict the KeySymmetricEncryption policy to only necessary actions and resources. Update the 'actions' and'resources' attributes in the'statement' block for the 'KeySymmetricEncryption' SID."
+  },
+  "8": {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "Overly permissive KeyHMAC policy",
+   "risk": "Allows all HMAC KMS key operations for specified key HMAC users, which can lead to unauthorized access and potential data breaches.",
+   "remediation": "Restrict the KeyHMAC policy to only necessary actions and resources. Update the 'actions' and'resources' attributes in the'statement' block for the 'KeyHMAC' SID."
+  },
+  "9": {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "Overly permissive KeyAsymmetricPublicEncryption policy",
+   "risk": "Allows all asymmetric public encryption KMS key operations for specified key asymmetric public encryption users, which can lead to unauthorized access and potential data breaches.",
+   "remediation": "Restrict the KeyAsymmetricPublicEncryption policy to only necessary actions and resources. Update the 'actions' and'resources' attributes in the'statement' block for the 'KeyAsymmetricPublicEncryption' SID."
+  },
+  "10": {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "Overly permissive KeyAsymmetricSignVerify policy",
+   "risk": "Allows all asymmetric sign and verify KMS key operations for specified key asymmetric sign and verify users, which can lead to unauthorized access and potential data breaches.",
+   "remediation": "Restrict the KeyAsymmetricSignVerify policy to only necessary actions and resources. Update the 'actions' and'resources' attributes in the'statement' block for the 'KeyAsymmetricSignVerify' SID."
+  },
+  "11": {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "Overly permissive Route53DnssecService policy",
+   "risk": "Allows describe, get public key, and sign operations for Route53 DNSSEC service, which can lead to unauthorized access and potential data breaches.",
+   "remediation": "Restrict the Route53DnssecService policy to only necessary actions and resources. Update the 'actions' and'resources' attributes in the'statement' block for the 'Route53DnssecService' SID."
+  },
+  "12": {
+   "resource": "data.aws_iam_policy_document.this",
+   "issue": "Overly permissive Route53DnssecGrant policy",
+   "risk": "Allows grant creation for Route53 DNSSEC service, which can lead to unauthorized access and potential data breaches.",
+   "remediation": "Restrict the Route53DnssecGrant policy to only necessary actions and resources. Update the 'actions' and'resources' attributes in the'statement' block for the 'Route53DnssecGrant' SID."
+  }
+ }
+}

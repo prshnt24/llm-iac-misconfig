@@ -1,0 +1,67 @@
+{
+ "file": "gh10.tf",
+ "findings": [
+  {
+   "resource": "aws_vpc_endpoint.interface",
+   "issue": "Private DNS Disabled for VPC Interface Endpoints",
+   "risk": "Setting private_dns_enabled = false means AWS-provided private DNS hostnames for the service (e.g., ec2.us-east-1.amazonaws.com) will not resolve to the interface endpoint within the VPC. Traffic intended for AWS services may route over the public internet instead of staying within the AWS network, increasing exposure to interception and data exfiltration.",
+   "remediation": "Set private_dns_enabled = true in the aws_vpc_endpoint.interface resource block. Note: this requires enableDnsSupport and enableDnsHostnames to be enabled on the VPC. If custom Route 53 PHZs are being used as a workaround, evaluate whether they fully replace the need for private DNS or whether both mechanisms should coexist."
+  },
+  {
+   "resource": "aws_security_group.allow_vpc_endpoint",
+   "issue": "No Explicit Egress Rule Defined (Implicit Allow-All Egress)",
+   "risk": "Terraform's aws_security_group resource allows all outbound traffic by default when no egress rules are specified. This means the VPC endpoint security group permits unrestricted outbound connections, violating the principle of least privilege and potentially allowing unintended data exfiltration from the endpoint ENIs.",
+   "remediation": "Add an explicit aws_security_group_rule resource with type = \"egress\" scoped to only the necessary ports and destinations, for example restricting egress to port 443 within the VPC CIDR: type = \"egress\", from_port = 443, to_port = 443, protocol = \"tcp\", cidr_blocks = [aws_vpc.spoke_vpc.cidr_block]. Alternatively, add an egress block directly inside the aws_security_group resource."
+  },
+  {
+   "resource": "aws_security_group.allow_vpc_endpoint",
+   "issue": "Security Group Description is Generic and Non-Specific",
+   "risk": "While not a direct exploit vector, a vague description reduces operational visibility and makes it harder for security teams to audit, understand the intended scope, and detect misuse or drift of the security group during incident response or compliance reviews.",
+   "remediation": "Update the description attribute to be specific about the purpose, allowed traffic, and owning team or service, e.g., description = \"Allow inbound HTTPS (443) from spoke VPC CIDR to AWS service VPC interface endpoints only\"."
+  },
+  {
+   "resource": "aws_route53_zone.interface_phz",
+   "issue": "Private Hosted Zone Not Associated with Query Logging",
+   "risk": "Without Route 53 query logging enabled for the private hosted zones, DNS lookups to internal service endpoints are not audited. This creates a blind spot for detecting DNS-based reconnaissance, data exfiltration via DNS tunnelling, or misconfigured clients resolving endpoints incorrectly.",
+   "remediation": "Create an aws_route53_query_log resource for each private hosted zone and associate it with a CloudWatch Logs log group. Example: add resource \"aws_route53_query_log\" \"interface_phz\" { cloudwatch_log_group_arn = aws_cloudwatch_log_group.dns_logs.arn zone_id = aws_route53_zone.interface_phz[each.key].zone_id } and ensure the log group has an appropriate retention policy and is encrypted with a KMS key."
+  },
+  {
+   "resource": "aws_route53_zone.interface_phz",
+   "issue": "Private Hosted Zone Lacks DNSSEC Signing",
+   "risk": "Without DNSSEC, DNS responses for internal service endpoints cannot be cryptographically validated. An attacker with access to the internal network could perform DNS spoofing or cache poisoning attacks, redirecting traffic intended for AWS service endpoints to malicious hosts.",
+   "remediation": "Enable DNSSEC signing by creating an aws_route53_key_signing_key resource backed by a KMS asymmetric key and an aws_route53_hosted_zone_dnssec resource referencing each private hosted zone. Set the signing status to SIGNING."
+  },
+  {
+   "resource": "aws_security_group_rule.local_cidr",
+   "issue": "Ingress Rule Scoped to Entire VPC CIDR Rather Than Specific Subnets",
+   "risk": "Allowing all traffic from the entire VPC CIDR block to the VPC endpoint security group is broader than necessary. Any resource in any subnet of the VPC can reach the endpoints, violating least-privilege network segmentation. A compromised workload in an unrelated subnet could abuse the endpoints.",
+   "remediation": "Restrict the cidr_blocks (or preferably use source_security_group_id) to only the specific subnets or security groups of workloads that legitimately need to consume the VPC endpoints. Replace cidr_blocks with source_security_group_id referencing the application-tier security group(s) to enforce identity-based rather than CIDR-based access control."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  },
+  {
+   "finding": 3,
+   "candidates": []
+  },
+  {
+   "finding": 4,
+   "candidates": []
+  },
+  {
+   "finding": 5,
+   "candidates": []
+  }
+ ]
+}

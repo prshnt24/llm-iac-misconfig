@@ -1,0 +1,56 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 1,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 4,
+   "label": "INVALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_s3_bucket.build_cache",
+   "issue": "S3 Bucket Versioning Disabled",
+   "risk": "Data may be permanently deleted without recovery options.",
+   "remediation": "Set `versioning_configuration { status = \"Enabled\" }` in `aws_s3_bucket_versioning` resource to ensure versioning is enabled."
+  },
+  "1": {
+   "resource": "aws_s3_bucket.build_cache",
+   "issue": "S3 Bucket Logging Disabled",
+   "risk": "Lack of logging can make it difficult to track access and changes to the bucket.",
+   "remediation": "Ensure `aws_s3_bucket_logging` resource is configured with appropriate `target_bucket` and `target_prefix`."
+  },
+  "2": {
+   "resource": "aws_s3_bucket.build_cache",
+   "issue": "S3 Bucket Replication Disabled",
+   "risk": "Data redundancy and disaster recovery options are limited.",
+   "remediation": "Configure `aws_s3_bucket_replication` resource to enable cross-region replication if needed."
+  },
+  "3": {
+   "resource": "aws_s3_bucket.build_cache",
+   "issue": "S3 Bucket Event Notifications Disabled",
+   "risk": "Lack of event notifications can hinder real-time monitoring and automation.",
+   "remediation": "Configure `aws_s3_bucket_notification` resource to set up event notifications."
+  },
+  "4": {
+   "resource": "aws_iam_policy.docker_machine_cache",
+   "issue": "IAM Policy with Overly Permissive Actions",
+   "risk": "The policy allows actions that may lead to data exfiltration or unauthorized access.",
+   "remediation": "Review and restrict the actions in the IAM policy to only those necessary for the intended use case."
+  }
+ }
+}

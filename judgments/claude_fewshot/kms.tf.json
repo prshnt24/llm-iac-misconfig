@@ -1,0 +1,41 @@
+{
+ "file": "kms.tf",
+ "findings": [
+  {
+   "resource": "aws_kms_key.logs_key",
+   "issue": "KMS key automatic rotation not enabled",
+   "risk": "Without automatic key rotation, the same cryptographic material is used indefinitely. If the key material is ever compromised, all data encrypted with it remains at risk with no periodic re-keying to limit the blast radius.",
+   "remediation": "Add 'enable_key_rotation = true' to the aws_kms_key.logs_key resource block to enable annual automatic rotation of the key material."
+  },
+  {
+   "resource": "aws_kms_key.logs_key",
+   "issue": "Excessively short KMS key deletion window",
+   "risk": "A deletion_window_in_days of 7 (the minimum) provides very little time to detect and cancel an accidental or malicious key deletion. If the key is deleted, any data encrypted with it becomes permanently unrecoverable.",
+   "remediation": "Increase 'deletion_window_in_days' to a value between 14 and 30 (e.g., 30) to provide a sufficient window to detect and cancel unintended key deletion requests."
+  },
+  {
+   "resource": "aws_kms_key.logs_key",
+   "issue": "No KMS key policy defined",
+   "risk": "Without an explicit key policy, the key falls back to the default AWS KMS key policy, which grants the AWS account root user full access. This may violate least-privilege principles and could allow any IAM principal with sufficient IAM permissions to use the key, broadening the potential attack surface.",
+   "remediation": "Add a 'policy' attribute to the aws_kms_key.logs_key resource containing an explicit key policy that restricts key administrators and key users to only the specific IAM roles/principals that require access, following the principle of least privilege."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c89"
+   ]
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": [
+    "c88"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,17 @@
+{
+ "file": "gh28.tf",
+ "findings": [
+  {
+   "resource": "data.aws_iam_policy_document.ssm_policy",
+   "issue": "Wildcard Resource in IAM Policy",
+   "risk": "Allows the SSM role to describe all EC2 instances, subnets, VPCs, and security groups, which can lead to unauthorized access and potential data breaches.",
+   "remediation": "Limit the resources to specific ARNs or use conditions to restrict the scope. Update the resources attribute to specify the exact resources needed."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  }
+ ]
+}

@@ -1,0 +1,72 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_39 Ensure Amazon EKS public endpoint disabled (resource aws_eks_cluster.eks_cluster)",
+   "issue": "EKS API server public endpoint not explicitly disabled",
+   "remediation": "Add 'endpoint_public_access = false' inside the vpc_config block. If public access is required, restrict it using 'public_access_cidrs' to known IP ranges rather than leaving it open to 0.0.0.0/0."
+  },
+  {
+   "finding": 1,
+   "known": "CKV_AWS_37 Ensure Amazon EKS control plane logging is enabled for all log types (resource aws_eks_cluster.eks_cluster)",
+   "issue": "EKS control plane logging not enabled",
+   "remediation": "Add an 'enabled_cluster_log_types' attribute to the aws_eks_cluster resource, e.g.: enabled_cluster_log_types = [\"api\", \"audit\", \"authenticator\", \"controllerManager\", \"scheduler\"]"
+  },
+  {
+   "finding": 2,
+   "known": "CKV_AWS_58 Ensure EKS Cluster has Secrets Encryption Enabled (resource aws_eks_cluster.eks_cluster)",
+   "issue": "EKS secrets not encrypted with KMS",
+   "remediation": "Add an encryption_config block to the aws_eks_cluster resource specifying a KMS key ARN for secrets: encryption_config { provider { key_arn = aws_kms_key.eks.arn } resources = [\"secrets\"] }"
+  },
+  {
+   "finding": 3,
+   "known": "CKV_AWS_130 Ensure VPC subnets do not assign public IP by default (resource aws_subnet.eks_subnet1)",
+   "issue": "Subnet auto-assigns public IP addresses",
+   "remediation": "Set 'map_public_ip_on_launch = false' in the aws_subnet.eks_subnet1 resource. Worker nodes should reside in private subnets and access the internet via a NAT gateway if needed."
+  },
+  {
+   "finding": 4,
+   "known": "CKV_AWS_130 Ensure VPC subnets do not assign public IP by default (resource aws_subnet.eks_subnet2)",
+   "issue": "Subnet auto-assigns public IP addresses",
+   "remediation": "Set 'map_public_ip_on_launch = false' in the aws_subnet.eks_subnet2 resource. Worker nodes should reside in private subnets and access the internet via a NAT gateway if needed."
+  },
+  {
+   "finding": 5,
+   "known": "CKV2_AWS_11 Ensure VPC flow logging is enabled in all VPCs (resource aws_vpc.eks_vpc)",
+   "issue": "VPC flow logs not enabled",
+   "remediation": "Create an aws_flow_log resource associated with the VPC: resource \"aws_flow_log\" \"eks_vpc\" { vpc_id = aws_vpc.eks_vpc.id traffic_type = \"ALL\" iam_role_arn = aws_iam_role.flow_log_role.arn log_destination = aws_cloudwatch_log_group.flow_log.arn }"
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Correctly identifies aws_eks_cluster.vpc_config and sets endpoint_public_access = false; public_access_cidrs note is appropriate."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "Correct fix: add enabled_cluster_log_types on aws_eks_cluster with all required EKS control plane log types."
+  },
+  {
+   "item": 2,
+   "score": 2,
+   "reason": "Correctly specifies encryption_config with provider key_arn and resources = [\"secrets\"] on aws_eks_cluster."
+  },
+  {
+   "item": 3,
+   "score": 2,
+   "reason": "Correct and specific for aws_subnet.eks_subnet1: set map_public_ip_on_launch = false."
+  },
+  {
+   "item": 4,
+   "score": 2,
+   "reason": "Correct and specific for aws_subnet.eks_subnet2: set map_public_ip_on_launch = false."
+  },
+  {
+   "item": 5,
+   "score": 2,
+   "reason": "Correct direction and resource: enable VPC flow logs by adding aws_flow_log associated with aws_vpc.eks_vpc; includes key attributes."
+  }
+ ]
+}

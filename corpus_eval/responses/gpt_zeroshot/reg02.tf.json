@@ -1,0 +1,8 @@
+{
+  "model": "global.openai.gpt-5.4",
+  "strategy": "zeroshot",
+  "file": "reg02.tf",
+  "temperature": null,
+  "timestamp": "2026-10-17T02:14:13",
+  "response": "[]"
+}

@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "zeroshot",
+  "file": "providers.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-16T23:05:09",
+  "response": "[\n  {\n    \"resource\": \"provider.aws.plain_text_access_keys_provider\",\n    \"issue\": \"Plain Text Access Keys\",\n    \"risk\": \"Using plain text access keys in the provider configuration poses a significant security risk as it can lead to unauthorized access if the keys are exposed.\",\n    \"remediation\": \"Use AWS credentials from environment variables, shared credentials file, or IAM roles for EC2 instead of hardcoding them. Remove the `access_key` and `secret_key` attributes and rely on the default credential chain.\\n\\n```hcl\\nprovider \\\"aws\\\" {\\n  alias   = \\\"secure_provider\\\"\\n  region  = \\\"us-west-1\\\"\\n  // Remove access_key and secret_key\\n}\\n```\"\n  }\n]"
+}

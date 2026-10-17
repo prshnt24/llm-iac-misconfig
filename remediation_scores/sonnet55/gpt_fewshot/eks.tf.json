@@ -1,0 +1,39 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_130 Ensure VPC subnets do not assign public IP by default (resource aws_subnet.eks_subnet1)",
+   "issue": "Public IPs automatically assigned on launch",
+   "remediation": "Change the subnet attribute map_public_ip_on_launch = false and use private subnets for EKS nodes and cluster networking."
+  },
+  {
+   "finding": 1,
+   "known": "CKV_AWS_130 Ensure VPC subnets do not assign public IP by default (resource aws_subnet.eks_subnet2)",
+   "issue": "Public IPs automatically assigned on launch",
+   "remediation": "Change the subnet attribute map_public_ip_on_launch = false and use private subnets for EKS nodes and cluster networking."
+  },
+  {
+   "finding": 2,
+   "known": "CKV_AWS_39 Ensure Amazon EKS public endpoint disabled (resource aws_eks_cluster.eks_cluster)",
+   "issue": "EKS public API endpoint not explicitly disabled",
+   "remediation": "In the vpc_config block, add endpoint_public_access = false to restrict API server access to the private endpoint only."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "Sets map_public_ip_on_launch = false on the subnet, which is the standard fix for CKV_AWS_130."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "Sets map_public_ip_on_launch = false on eks_subnet2, which is the standard fix for CKV_AWS_130."
+  },
+  {
+   "item": 2,
+   "score": 2,
+   "reason": "Adds endpoint_public_access = false in vpc_config, which is the correct fix for CKV_AWS_39. endpoint_private_access is already true."
+  }
+ ]
+}

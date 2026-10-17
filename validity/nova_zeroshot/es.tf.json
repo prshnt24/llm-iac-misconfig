@@ -1,0 +1,26 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "VALID"
+  },
+  {
+   "finding": 3,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_elasticsearch_domain.monitoring-framework",
+   "issue": "Outdated Elasticsearch Version",
+   "risk": "Using an outdated version of Elasticsearch may expose the domain to known vulnerabilities.",
+   "remediation": "Update the Elasticsearch version to the latest supported version. Change the `elasticsearch_version` attribute to a current version, e.g., `elasticsearch_version = \"7.10\"`."
+  },
+  "3": {
+   "resource": "aws_elasticsearch_domain_policy.monitoring-framework-policy",
+   "issue": "Overly Permissive Elasticsearch Domain Policy",
+   "risk": "Applying an overly permissive policy to the Elasticsearch domain can allow unauthorized access.",
+   "remediation": "Apply a more restrictive policy to the Elasticsearch domain. Update the `access_policies` to include specific actions and principals as defined in the corrected IAM policy document."
+  }
+ }
+}

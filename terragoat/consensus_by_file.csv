@@ -1,0 +1,15 @@
+﻿file,consensus_groups
+consts.tf,0
+db-app.tf,11
+ec2.tf,14
+ecr.tf,3
+eks.tf,7
+elb.tf,0
+es.tf,3
+iam.tf,0
+kms.tf,1
+lambda.tf,1
+neptune.tf,3
+providers.tf,0
+rds.tf,18
+s3.tf,14

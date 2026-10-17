@@ -1,0 +1,16 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_security_group.main",
+   "issue": "Unrestricted ingress from within VPC",
+   "risk": "Allows all inbound traffic from within the VPC, which can lead to unauthorized access and potential exploitation of resources.",
+   "remediation": "Restrict the ingress rule to specific ports and protocols required for the application. Replace the ingress block with specific rules."
+  }
+ }
+}

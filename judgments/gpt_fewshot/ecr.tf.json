@@ -1,0 +1,19 @@
+{
+ "file": "ecr.tf",
+ "findings": [
+  {
+   "resource": "aws_ecr_repository.repository",
+   "issue": "Image tags are mutable",
+   "risk": "Mutable tags allow existing container images to be overwritten, which can enable unauthorized or unreviewed image replacement and weaken supply chain integrity.",
+   "remediation": "Change the aws_ecr_repository.repository attribute image_tag_mutability from \"MUTABLE\" to \"IMMUTABLE\"."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c51"
+   ]
+  }
+ ]
+}

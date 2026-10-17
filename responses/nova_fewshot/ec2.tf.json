@@ -1,0 +1,8 @@
+{
+  "model": "apac.amazon.nova-pro-v1:0",
+  "strategy": "fewshot",
+  "file": "ec2.tf",
+  "temperature": 0,
+  "timestamp": "2026-10-16T23:05:21",
+  "response": "[\n  {\n    \"resource\": \"aws_instance.web_host\",\n    \"issue\": \"Plain text secrets in user data\",\n    \"risk\": \"AWS credentials are hardcoded in the user data script, which can be exposed if the instance metadata is accessed\",\n    \"remediation\": \"Use AWS Secrets Manager or environment variables to handle sensitive data instead of hardcoding in user data\"\n  },\n  {\n    \"resource\": \"aws_ebs_volume.web_host_storage\",\n    \"issue\": \"Unencrypted EBS volume\",\n    \"risk\": \"Data at rest on the EBS volume is not encrypted, posing a risk if the volume is accessed by unauthorized entities\",\n    \"remediation\": \"Set the `encrypted` attribute to `true` and provide a `kms_key_id` for the encryption\"\n  },\n  {\n    \"resource\": \"aws_ebs_snapshot.example_snapshot\",\n    \"issue\": \"Unencrypted EBS snapshot\",\n    \"risk\": \"Data in the EBS snapshot is not encrypted, which can be accessed if the snapshot is compromised\",\n    \"remediation\": \"Set the `encrypted` attribute to `true` and provide a `kms_key_id` for the encryption\"\n  },\n  {\n    \"resource\": \"aws_security_group.web-node\",\n    \"issue\": \"Security group open to the world on SSH port\",\n    \"risk\": \"Allowing all IP addresses to access the SSH port can lead to unauthorized access to the instance\",\n    \"remediation\": \"Restrict the `cidr_blocks` in the ingress rule for port 22 to only trusted IP ranges\"\n  }\n]"
+}

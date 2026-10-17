@@ -1,0 +1,36 @@
+{
+ "labels": [
+  {
+   "finding": 3,
+   "label": "VALID"
+  },
+  {
+   "finding": 5,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 8,
+   "label": "VALID"
+  }
+ ],
+ "findings": {
+  "3": {
+   "resource": "aws_db_instance.default",
+   "issue": "Final snapshot is skipped on deletion",
+   "risk": "Deleting the database will permanently remove data without creating a final recovery snapshot, increasing risk of irreversible data loss.",
+   "remediation": "Set `skip_final_snapshot = false` in `aws_db_instance.default` and provide `final_snapshot_identifier = \"<snapshot-name>\"`."
+  },
+  "5": {
+   "resource": "aws_db_subnet_group.default",
+   "issue": "Database subnet group uses web/application subnets",
+   "risk": "Placing the database in web-facing subnets increases exposure and weakens network segmentation, making lateral movement and unintended access more likely.",
+   "remediation": "Change `subnet_ids` in `aws_db_subnet_group.default` to use dedicated private database subnets instead of `aws_subnet.web_subnet.id` and `aws_subnet.web_subnet2.id`."
+  },
+  "8": {
+   "resource": "aws_instance.db_app",
+   "issue": "Plaintext database credentials embedded in user data",
+   "risk": "Secrets in `user_data` can be exposed through Terraform state, instance metadata access paths, console/API retrieval, logs, or backups, leading to database credential compromise.",
+   "remediation": "Remove the plaintext values from `user_data` in `aws_instance.db_app`; store the password in AWS Secrets Manager or SSM Parameter Store and retrieve it securely at runtime using the instance role."
+  }
+ }
+}

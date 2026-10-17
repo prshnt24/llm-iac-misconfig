@@ -1,0 +1,37 @@
+{
+ "file": "reg16.tf",
+ "findings": [
+  {
+   "resource": "aws_iam_role.this",
+   "issue": "Wildcard Action in Assume Role Policy",
+   "risk": "Allowing the 'sts:AssumeRole' action with a wildcard principal can lead to unauthorized access if misconfigured.",
+   "remediation": "Restrict the 'identifiers' attribute to specific trusted entities instead of using a wildcard."
+  },
+  {
+   "resource": "data.aws_iam_policy_document.logs",
+   "issue": "Wildcard Resource in CloudWatch Logs Policy",
+   "risk": "Allowing actions on all resources (*) can lead to unintended access to sensitive log data.",
+   "remediation": "Restrict the 'resources' attribute to specific log group ARNs instead of using a wildcard."
+  },
+  {
+   "resource": "aws_cloudwatch_log_group.sfn",
+   "issue": "Missing Encryption at Rest",
+   "risk": "Storing logs without encryption at rest can lead to data breaches if the logs contain sensitive information.",
+   "remediation": "Ensure the 'kms_key_id' attribute is set to a valid KMS key ARN to enable encryption at rest."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": []
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  }
+ ]
+}

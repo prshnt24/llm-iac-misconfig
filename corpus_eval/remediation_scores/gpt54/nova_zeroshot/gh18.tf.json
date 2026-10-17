@@ -1,0 +1,17 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV2_AWS_11 Ensure VPC flow logging is enabled in all VPCs (resource aws_vpc.project102)",
+   "issue": "Missing VPC Flow Logs",
+   "remediation": "Add a resource block to enable VPC Flow Logs. Example:\n\n```hcl\nresource \"aws_flow_log\" \"project102_flow_log\" {\n  traffic_type = \"ALL\"\n  resource_id = aws_vpc.project102.id\n  iam_role_arn = aws_iam_role.flow_log_role.arn\n}\n```\n\nEnsure you have an IAM role with the necessary permissions for Flow Logs."
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 1,
+   "reason": "Correct direction: adds aws_flow_log for the VPC with resource_id and traffic_type, but incomplete because Flow Logs also need a destination (e.g. log_destination/cloudwatch log group or S3) and typically log_destination_type."
+  }
+ ]
+}

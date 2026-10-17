@@ -1,0 +1,72 @@
+{
+ "items": [
+  {
+   "finding": 0,
+   "known": "CKV_AWS_21 Ensure all data stored in the S3 bucket have versioning enabled (resource aws_s3_bucket.example)",
+   "issue": "S3 Bucket Versioning Not Enabled",
+   "remediation": "Add an aws_s3_bucket_versioning resource: resource \"aws_s3_bucket_versioning\" \"example\" { bucket = aws_s3_bucket.example.id versioning_configuration { status = \"Enabled\" } }"
+  },
+  {
+   "finding": 1,
+   "known": "CKV_AWS_145 Ensure that S3 buckets are encrypted with KMS by default (resource aws_s3_bucket.example)",
+   "issue": "S3 Bucket Server-Side Encryption Not Configured",
+   "remediation": "Add an aws_s3_bucket_server_side_encryption_configuration resource: resource \"aws_s3_bucket_server_side_encryption_configuration\" \"example\" { bucket = aws_s3_bucket.example.id rule { apply_server_side_encryption_by_default { sse_algorithm = \"aws:kms\" kms_master_key_id = aws_kms_key.example.arn } bucket_key_enabled = true } }"
+  },
+  {
+   "finding": 2,
+   "known": "CKV2_AWS_6 Ensure that S3 bucket has a Public Access block (resource aws_s3_bucket.example)",
+   "issue": "S3 Bucket Public Access Block Not Configured",
+   "remediation": "Add an aws_s3_bucket_public_access_block resource: resource \"aws_s3_bucket_public_access_block\" \"example\" { bucket = aws_s3_bucket.example.id block_public_acls = true block_public_policy = true ignore_public_acls = true restrict_public_buckets = true }"
+  },
+  {
+   "finding": 3,
+   "known": "CKV_AWS_18 Ensure the S3 bucket has access logging enabled (resource aws_s3_bucket.example)",
+   "issue": "S3 Bucket Logging Not Enabled",
+   "remediation": "Add an aws_s3_bucket_logging resource: resource \"aws_s3_bucket_logging\" \"example\" { bucket = aws_s3_bucket.example.id target_bucket = aws_s3_bucket.log_bucket.id target_prefix = \"s3-access-logs/\" }"
+  },
+  {
+   "finding": 6,
+   "known": "CKV_AWS_163 Ensure ECR image scanning on push is enabled (resource aws_ecr_repository.example)",
+   "issue": "ECR Repository Image Scanning Not Enabled",
+   "remediation": "Add an image_scanning_configuration block to the resource: image_scanning_configuration { scan_on_push = true }"
+  },
+  {
+   "finding": 7,
+   "known": "CKV_AWS_136 Ensure that ECR repositories are encrypted using KMS (resource aws_ecr_repository.example)",
+   "issue": "ECR Repository Encryption Not Explicitly Configured with KMS",
+   "remediation": "Add an encryption_configuration block: encryption_configuration { encryption_type = \"KMS\" kms_key = aws_kms_key.ecr.arn }"
+  }
+ ],
+ "scores": [
+  {
+   "item": 0,
+   "score": 2,
+   "reason": "A separate aws_s3_bucket_versioning resource with status = \"Enabled\" is the standard fix."
+  },
+  {
+   "item": 1,
+   "score": 2,
+   "reason": "aws_s3_bucket_server_side_encryption_configuration with sse_algorithm = \"aws:kms\" and a KMS key satisfies the check. The referenced aws_kms_key.example is not defined in the source, but that does not change the fix."
+  },
+  {
+   "item": 2,
+   "score": 2,
+   "reason": "aws_s3_bucket_public_access_block with all four settings true is the correct fix."
+  },
+  {
+   "item": 3,
+   "score": 2,
+   "reason": "aws_s3_bucket_logging with target_bucket and target_prefix is correct. The referenced log bucket would need to exist."
+  },
+  {
+   "item": 4,
+   "score": 2,
+   "reason": "An image_scanning_configuration block with scan_on_push = true is the exact fix."
+  },
+  {
+   "item": 5,
+   "score": 2,
+   "reason": "encryption_configuration with encryption_type = \"KMS\" and kms_key is correct."
+  }
+ ]
+}

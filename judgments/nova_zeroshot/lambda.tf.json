@@ -1,0 +1,19 @@
+{
+ "file": "lambda.tf",
+ "findings": [
+  {
+   "resource": "aws_lambda_function.analysis_lambda",
+   "issue": "Plain text secrets in environment variables",
+   "risk": "Exposure of sensitive information such as AWS access keys can lead to unauthorized access and potential compromise of AWS resources.",
+   "remediation": "Use AWS Secrets Manager or AWS Systems Manager Parameter Store to store and retrieve secrets. Update the environment block to reference the secret from the secure store. Example:\n```hcl\nenvironment {\n  variables = {\n    access_key = aws_secretsmanager_secret_version.my_secret.data[\"access_key\"]\n    secret_key = aws_secretsmanager_secret_version.my_secret.data[\"secret_key\"]\n  }\n}\n```\nEnsure to create the corresponding `aws_secretsmanager_secret` and `aws_secretsmanager_secret_version` resources."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c96"
+   ]
+  }
+ ]
+}

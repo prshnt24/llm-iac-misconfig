@@ -1,0 +1,9 @@
+category,consensus_groups,percentage
+Encryption at Rest,20,26.7
+Network Exposure,13,17.3
+Storage Configuration,12,16.0
+Availability & Resilience,10,13.3
+Other,9,12.0
+Publicly Exposed Storage,6,8.0
+Logging & Monitoring,4,5.3
+Hardcoded Secrets,1,1.3

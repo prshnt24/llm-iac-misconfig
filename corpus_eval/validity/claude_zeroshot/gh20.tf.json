@@ -1,0 +1,56 @@
+{
+ "labels": [
+  {
+   "finding": 0,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 2,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 3,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 4,
+   "label": "DEBATABLE"
+  },
+  {
+   "finding": 5,
+   "label": "DEBATABLE"
+  }
+ ],
+ "findings": {
+  "0": {
+   "resource": "aws_wafregional_web_acl.wafacl",
+   "issue": "Default action is ALLOW",
+   "risk": "Any request that does not match a defined WAF rule will be allowed through by default. This means unknown or unanticipated attack patterns, new threat vectors, or misconfigured rules will result in malicious traffic reaching the backend, violating a deny-by-default security posture.",
+   "remediation": "Change the default_action block to use type = \"BLOCK\" so that only explicitly permitted traffic is allowed. If an allow-list model is required, ensure all legitimate traffic patterns are covered by ALLOW rules before switching the default to BLOCK."
+  },
+  "2": {
+   "resource": "aws_wafregional_byte_match_set.blocked_path_prefixes",
+   "issue": "URI field_to_match uses only COMPRESS_WHITE_SPACE transformation",
+   "risk": "Using only COMPRESS_WHITE_SPACE on URI path matching may allow attackers to bypass path-based blocks through URL encoding, case variation, or other evasion techniques. Without URL_DECODE or LOWERCASE transformations, encoded characters (e.g. %2F, %2e%2e) in the URI will not be normalised before matching, potentially allowing traversal or injection payloads to bypass the block rules.",
+   "remediation": "Add additional text transformations such as URL_DECODE and LOWERCASE to the byte_match_tuples blocks within aws_wafregional_byte_match_set.blocked_path_prefixes to ensure URIs are fully normalised before matching. Note that WAF Classic only supports a single text_transformation per tuple, so consider migrating to AWS WAFv2 (aws_wafv2_web_acl) which supports chained transformations."
+  },
+  "3": {
+   "resource": "aws_wafregional_byte_match_set.allowed_hosts",
+   "issue": "Host header matching uses only COMPRESS_WHITE_SPACE transformation",
+   "risk": "Relying solely on COMPRESS_WHITE_SPACE for Host header matching may allow attackers to bypass host-based access controls by submitting encoded or mixed-case Host header values that are not normalised before comparison, potentially enabling host header injection or access to restricted virtual hosts.",
+   "remediation": "Add a LOWERCASE transformation in addition to COMPRESS_WHITE_SPACE for the Host header byte match tuples to ensure case-insensitive matching. Consider migrating to aws_wafv2_web_acl which supports multiple chained transformations per rule statement."
+  },
+  "4": {
+   "resource": "aws_wafregional_web_acl.wafacl",
+   "issue": "Use of deprecated WAF Classic (Regional) instead of WAFv2",
+   "risk": "AWS WAF Classic (aws_wafregional_*) is a legacy service that lacks advanced features available in WAFv2, including managed rule groups with automatic threat intelligence updates, label-based rule chaining, JSON body inspection, and more granular rate-based rules. Continued use of WAF Classic increases the risk of undetected threats and limits the organisation's ability to respond to emerging attack patterns.",
+   "remediation": "Migrate the entire WAF configuration to AWS WAFv2 using the aws_wafv2_web_acl, aws_wafv2_rule_group, and aws_wafv2_web_acl_association Terraform resources. Enable AWS Managed Rules (e.g. AWSManagedRulesCommonRuleSet, AWSManagedRulesKnownBadInputsRuleSet) as part of the WAFv2 configuration."
+  },
+  "5": {
+   "resource": "aws_wafregional_web_acl_association.main",
+   "issue": "WAF association with ALB is conditional and may be disabled",
+   "risk": "When var.associate_alb is false, the ALB operates without any WAF protection. This exposes the application load balancer and its backend services directly to web-based attacks such as SQL injection, XSS, and DDoS without any layer-7 filtering, defeating the purpose of defining the WAF rules.",
+   "remediation": "Remove the conditional count = var.associate_alb ? 1 : 0 and enforce WAF association as mandatory (count = 1). If multiple ALBs need protection, use a for_each over a list of ARNs. Ensure WAF association is a non-negotiable deployment requirement enforced via policy or pipeline gates."
+  }
+ }
+}

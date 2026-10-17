@@ -1,0 +1,19 @@
+{
+ "file": "kms.tf",
+ "findings": [
+  {
+   "resource": "aws_kms_key.logs_key",
+   "issue": "Key rotation is not enabled",
+   "risk": "Without key rotation, the key material remains static, increasing the risk of compromise over time.",
+   "remediation": "Add `enable_key_rotation = true` to the `aws_kms_key` resource block."
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": [
+    "c89"
+   ]
+  }
+ ]
+}

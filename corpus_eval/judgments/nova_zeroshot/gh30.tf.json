@@ -1,0 +1,39 @@
+{
+ "file": "gh30.tf",
+ "findings": [
+  {
+   "resource": "aws_security_group.loadtest",
+   "issue": "Unrestricted Ingress Rule",
+   "risk": "Allowing all inbound traffic (port 0, protocol -1) can expose the instance to unauthorized access.",
+   "remediation": "Remove or restrict the ingress block allowing all traffic:\n```hcl\n  ingress {\n    from_port = 0\n    to_port   = 0\n    protocol  = \"-1\"\n    self      = true\n  }\n```"
+  },
+  {
+   "resource": "aws_security_group.loadtest",
+   "issue": "Unrestricted Egress Rule",
+   "risk": "Allowing all outbound traffic can enable data exfiltration and unauthorized communication.",
+   "remediation": "Restrict the egress block to specific ports and protocols as needed:\n```hcl\n  egress {\n    from_port   = 0\n    to_port     = 0\n    protocol    = \"-1\"\n    cidr_blocks = [\"0.0.0.0/0\"]\n  }\n```"
+  },
+  {
+   "resource": "tls_private_key.loadtest",
+   "issue": "Weak Key Size",
+   "risk": "Using a 4096-bit RSA key may be considered weak depending on future cryptographic standards and should be reviewed for strength.",
+   "remediation": "Consider increasing the key size or using a more secure algorithm if necessary:\n```hcl\nresource \"tls_private_key\" \"loadtest\" {\n  algorithm = \"RSA\"\n  rsa_bits  = 8192 # or another appropriate size\n}\n```"
+  }
+ ],
+ "matches": [
+  {
+   "finding": 0,
+   "candidates": []
+  },
+  {
+   "finding": 1,
+   "candidates": [
+    "c119"
+   ]
+  },
+  {
+   "finding": 2,
+   "candidates": []
+  }
+ ]
+}
