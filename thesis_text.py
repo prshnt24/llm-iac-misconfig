@@ -19,24 +19,17 @@ share = lambda r, j: pc(REM[r][f"{j}_share_2"])
 T = {}
 
 T["abstract"] = (
-    f"This dissertation tests how well large language models (LLMs) find security misconfigurations in Terraform code for "
-    f"Amazon Web Services (AWS) and how good their repair advice is. Claude Sonnet 4.6, GPT-5.4 and Amazon Nova Pro reviewed the "
-    f"14 files of the TerraGoat AWS module under zero-shot and few-shot prompting. All three were reached through Amazon Bedrock, because "
-    f"GPT-4o and Gemini 2.5 Pro, named in the original proposal, were not available by that route. The reference set holds the {N_CONS} "
-    f"resource-level findings on which Checkov v3.3.9 and Trivy 0.73.0 agree after a documented manual crosswalk of their policy identifiers. "
-    f"A blinded judge model mapped each model finding to the tool findings, and a sample of its decisions was checked by hand. "
-    f"Claude Sonnet 4.6 scored highest. Under zero-shot prompting it covered {v(cz,'consensus_covered')} of the {N_CONS} reference findings, with recall of "
-    f"{f2(v(cz,'recall'))}, strict precision of {f2(v(cz,'precision_strict'))} and an F1-score of {f2(v(cz,'f1_strict'))}. GPT-5.4 reached F1-scores of "
-    f"{f2(v(gz,'f1_strict'))} and {f2(v(gf,'f1_strict'))}, and Amazon Nova Pro {f2(v(nz,'f1_strict'))} and {f2(v(nf,'f1_strict'))}. Precision was similar for all "
-    f"three models, so the differences come from recall. Few-shot prompting produced no change that the data can separate from chance. "
-    f"On a second set of {C_N_FILES} files from public repositories and registry modules the ranking of the models held, but strict precision against the tools "
-    f"fell to {f2(CS[CRUNS[2]]['precision_strict'])} to {f2(CS[CRUNS[0]]['precision_strict'])}, because the models reported many more findings than the tools on code that is mostly well configured. "
-    f"Detection was strongest for storage, encryption and public exposure issues and weakest for network exposure and logging; GPT-5.4 and Nova Pro "
-    f"covered none of the {RDS_TOTAL} findings in the file of repeated RDS cluster resources. On a scale of 0 to 2, the mean remediation score for "
-    f"correctly detected issues was {rem(cz)} for Claude, {rem(gz)} to {rem(gf)} for GPT-5.4 and {rem(nz)} to {rem(nf)} for Nova Pro. Because the reference set is "
-    f"defined by two static tools, strict precision understates what the models found: most of the unmatched findings were judged valid or arguable "
-    f"security concerns that neither tool reported. The main results come from one deliberately vulnerable repository, and all of them depend on one analyst-built crosswalk, one run per "
-    f"condition and LLM-assisted judging, and should be read with those limits in mind."
+    f"This dissertation tests how well large language models (LLMs) detect security misconfigurations in Terraform code for Amazon Web Services and how good "
+    f"their repair advice is. Claude Sonnet 4.6, GPT-5.4 and Amazon Nova Pro, reached through Amazon Bedrock in place of the proposed GPT-4o and Gemini 2.5 Pro, "
+    f"reviewed the 14 TerraGoat AWS files under zero-shot and few-shot prompting. The reference set is the {N_CONS} resource-level findings on which Checkov and "
+    f"Trivy agree after a documented crosswalk of their policies, and a blinded judge model, audited by hand, matched model findings to it. Claude Sonnet 4.6 "
+    f"scored highest, with recall of {f2(v(cz,'recall'))}, strict precision of {f2(v(cz,'precision_strict'))} and an F1-score of {f2(v(cz,'f1_strict'))} under zero-shot prompting. "
+    f"GPT-5.4 reached {f2(v(gz,'f1_strict'))} to {f2(v(gf,'f1_strict'))} and Nova Pro {f2(v(nz,'f1_strict'))} to {f2(v(nf,'f1_strict'))}. Precision was similar across models, so recall separated them, and "
+    f"few-shot prompting made no detectable difference. Which categories were detected well depended on the model, and GPT-5.4 and Nova Pro covered none of "
+    f"the {RDS_TOTAL} findings in a file of repeated RDS cluster resources. Mean remediation scores for correctly detected issues were {rem(cz)}, {rem(gz)} to {rem(gf)} and "
+    f"{rem(nz)} to {rem(nf)} on a 0 to 2 scale. On {C_N_FILES} further files from public repositories and registry modules, the ranking held but strict precision fell "
+    f"to {f2(CS[CRUNS[2]]['precision_strict'])} to {f2(CS[CRUNS[0]]['precision_strict'])}, because the models reported many findings that the tools did not. The results rest on one main benchmark, an "
+    f"analyst-built crosswalk, single runs and LLM-assisted judging."
 )
 
 T["scope"] = (
@@ -56,16 +49,16 @@ T["iac_survey"] = (
     "Infrastructure as Code is the practice of defining and provisioning computing infrastructure through machine-readable configuration files, rather "
     "than through manual processes or interactive administration interfaces (Morris, 2021). The appeal is straightforward: teams can version-control their "
     "infrastructure, review changes before deployment, roll back to known states, and reproduce environments reliably across development, staging, and "
-    "production. Industry surveys point the same way. HashiCorp's 2023 survey of nearly 1,000 practitioners and decision makers found that 84% rated a "
-    "codified, consistent workflow across all infrastructure as critical to the success of a multi-cloud strategy (HashiCorp, 2023). Research on IaC "
+    "production. Industry surveys track this adoption. HashiCorp's 2023 State of Cloud Strategy Survey, run by Forrester with nearly 1,000 practitioners and decision "
+    "makers, examined how organisations manage infrastructure across multiple clouds (HashiCorp, 2023). Research on IaC "
     "security began with script-level studies. Rahman et al. (2019) analysed 1,726 IaC scripts and identified seven recurring security smells, among them "
     "hard-coded secrets and default or empty passwords, which shows that insecure patterns were already widespread before Terraform became dominant."
 )
 
 T["model_para"] = (
     "LLMs are neural networks trained on large corpora of text and source code. They have demonstrated the ability to generate, explain, and review code "
-    "across many programming languages and configuration formats (Hou et al., 2024). The models studied here are Claude Sonnet 4.6 from Anthropic (2026), "
-    "GPT-5.4 from OpenAI, and Amazon Nova Pro (Amazon Artificial General Intelligence, 2025). They were chosen from the models that the researcher could "
+    "across many programming languages and configuration formats (Hou et al., 2024). The models studied here are Claude Sonnet 4.6 from Anthropic (2026b), "
+    "GPT-5.4 from OpenAI (2026), and Amazon Nova Pro (Amazon Artificial General Intelligence, 2025). They were chosen from the models that the researcher could "
     "reach through Amazon Bedrock (Amazon Web Services, 2026a) in October 2026, and they are not a ranking of the best models in existence. The LLM landscape "
     "changes quickly, and newer models will exist by the time this dissertation is read. The evaluation is therefore time-bounded to models accessible during "
     "the research period."
@@ -117,7 +110,7 @@ T["gh_note"] = (
 )
 
 T["reg_note"] = (
-    'Sixteen root files from modules published by the terraform-aws-modules organisation, a widely used source of AWS modules for the Terraform Registry, were taken as a validation set. These modules are intended for production use and have been reviewed by many contributors, so they test whether tools and models produce excessive false positives on broadly accepted configurations. For each module, the root .tf file with the most aws resources and between 800 and 20,000 bytes was used. The size limit is higher than for the GitHub files because module root files are larger. The set is smaller than the 30 to 50 modules planned, and all of the modules come from one maintaining organisation, which limits what it can say about the Registry as a whole.'
+    'Sixteen root files from modules published by the terraform-aws-modules organisation, a widely used source of AWS modules for the Terraform Registry, were taken as a validation set. These modules are intended for production use and have been reviewed by many contributors, so they test whether tools and models produce excessive false positives on broadly accepted configurations. For each module, the root .tf file with the most aws resources was used, first among files of 800 to 10,000 bytes and then, in a second pass for modules whose root files were all larger, among files of up to 20,000 bytes, because module root files are larger than typical repository files. The set is smaller than the 30 to 50 modules planned, and all of the modules come from one maintaining organisation, which limits what it can say about the Registry as a whole.'
 )
 
 T["ground_truth"] = (
@@ -173,8 +166,9 @@ T["matching"] = [
     "likely error rate for a sample of that size and gives some confidence in the conclusions. GPT-5.4 is also one of the models being evaluated. The "
     "judge could not see which model wrote an answer, which reduces the risk of favouring its own output but does not remove it (Zheng et al., 2023).",
     "Findings that matched no tool finding were examined in an exploratory step. The same judge read the Terraform file and labelled each unmatched "
-    "finding as valid, arguable, or invalid. These labels are used only to qualify the precision figures and not to alter them. Remediation advice was "
-    "scored on the three-point rubric by two judges, GPT-5.4 and Claude Sonnet 5.5, working independently and blind to the source model. The reference fix for "
+    "finding as valid, arguable, or invalid. About 20 of these labels, including all seven labelled invalid on TerraGoat, were read as a check, and two of the invalid labels were confirmed against "
+    "the source. These labels are used only to qualify the precision figures and not to alter them. Remediation advice was "
+    "scored on the three-point rubric by two judges, GPT-5.4 (OpenAI, 2026) and Claude Sonnet 5.5 (Anthropic, 2026a), working independently and blind to the source model. The reference fix for "
     "each item is the standard correction for the matched tool check, which the judge assessed with the Terraform source in view. Both judges "
     "scored the same items so that agreement could be reported."
 ]
@@ -259,7 +253,7 @@ T["rq1"] = [
     f"Table 5.4 reports detection performance against the {N_CONS} consensus findings. Claude Sonnet 4.6 under zero-shot prompting had the highest "
     f"F1-score ({f2(v(cz,'f1_strict'))}). It reported {v(cz,'findings')} findings, {v(cz,'strict_hits')} of which matched a consensus finding, and it covered "
     f"{v(cz,'consensus_covered')} of the {N_CONS} reference findings. GPT-5.4 reached F1-scores of {f2(v(gz,'f1_strict'))} (zero-shot) and {f2(v(gf,'f1_strict'))} "
-    f"(few-shot), and Amazon Nova Pro {f2(v(nz,'f1_strict'))} and {f2(v(nf,'f1_strict'))}. Figure 5.3 shows the strict scores.",
+    f"(few-shot), and Amazon Nova Pro {f2(v(nz,'f1_strict'))} and {f2(v(nf,'f1_strict'))}.",
     f"Strict precision was similar across models, between {f2(min(prec_s))} and {f2(max(prec_s))}, so recall explains the ranking. Claude covered "
     f"{v(cz,'consensus_covered')} reference findings in the zero-shot run, GPT-5.4 {v(gz,'consensus_covered')} and Nova Pro {v(nz,'consensus_covered')}. The exact test shows how one-sided this is. "
     f"Of the reference findings that separated Claude from GPT-5.4 under zero-shot prompting, {pair(cz,gz)['only_a']} were found only by Claude and "
@@ -376,9 +370,10 @@ T["c6"] = {
         f"{f2(v(cz,'precision_strict'))}. GPT-5.4 reached {f2(v(gz,'f1_strict'))} to {f2(v(gf,'f1_strict'))} and Amazon Nova Pro {f2(v(nz,'f1_strict'))} to {f2(v(nf,'f1_strict'))}. Precision was similar across the models and recall "
         f"separated them. The tools could not be scored against a reference set they define, so the comparison is one of coverage: the strongest model "
         f"matched {cov_pct(cz)} to {cov_pct(cf)} of the findings that either tool reports and also raised valid issues that neither tool reported.",
-        f"RQ2 asked which categories LLMs identify most and least effectively, and whether few-shot prompting helps the weaker ones. Storage configuration, "
-        f"public storage exposure and hardcoded secrets were the strongest, and network exposure and logging the weakest. Few-shot prompting did not improve the weaker "
-        f"categories. The only clear gain, for GPT-5.4 on publicly exposed storage, coincides with an example about that category.",
+        f"RQ2 asked which categories LLMs identify most and least effectively, and whether few-shot prompting helps the weaker ones. Which categories were strongest depended on the model. "
+        f"Storage configuration and the single hardcoded-secret finding were covered well by all three models, while public storage exposure, availability and "
+        f"encryption were strong only for Claude, and for GPT-5.4 on public storage only with few-shot prompting. Network exposure was the weakest category for all "
+        f"three, and logging was weak for GPT-5.4 and Nova Pro. Few-shot prompting did not improve the weaker categories. The only clear gain, for GPT-5.4 on publicly exposed storage, coincides with an example about that category.",
         f"RQ3 asked how well the remediation advice matches expert-defined fixes. For correctly detected issues, Claude's advice scored {rem(cz)} on the 0 to 2 rubric, GPT-5.4's "
         f"{rem(gz)} to {rem(gf)} and Nova Pro's {rem(nz)} to {rem(nf)}. Two judges agreed closely (kappa {AGREE['kappa']:.2f}). The weaker models more often gave advice that was in the right direction but "
         "too general to apply, and occasionally advice that would not satisfy the check.",
@@ -420,7 +415,7 @@ T["c6"] = {
 T["lit_iac_research"] = (
     "Later work widened the view. A systematic mapping study of 31 IaC publications found that more than half proposed a framework or tool, which suggests "
     "that early research concentrated on building IaC tooling more than on measuring how secure the resulting code is (Rahman et al., 2018). GLITCH "
-    "(Saavedra & Ferreira, 2022) replaced single-technology smell detectors with one framework covering Ansible, Chef, Docker, Puppet and Terraform and "
+    "(Saavedra & Ferreira, 2022) replaced single-technology smell detectors with one framework covering Puppet, Ansible and Chef and "
     "reported higher precision and recall than earlier tools, but it still applies hand-written rules, so what it can find is limited to what its authors "
     "encoded. Verdet et al. (2025) measured the adoption of Terraform security practices across 812 GitHub projects using static analysis and found that "
     "access policies were the most widely adopted practice and encryption at rest the most neglected, with a positive correlation between a repository's star "

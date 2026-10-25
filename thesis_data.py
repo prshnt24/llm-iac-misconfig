@@ -58,11 +58,16 @@ for run in RUNS:
 # remediation score distribution (first judge)
 REM_DIST = {}
 for run in RUNS:
-    c = collections.Counter()
-    for f in (ROOT / "remediation_scores" / AGREE["judges"][0] / run).glob("*.json"):
-        for s in json.load(open(f, encoding="utf-8"))["scores"]:
-            c[int(s["score"])] += 1
-    REM_DIST[run] = c
+    _sc = []
+    for jd in AGREE["judges"][:2]:
+        d_ = {}
+        for f in (ROOT / "remediation_scores" / jd / run).glob("*.json"):
+            dd = json.load(open(f, encoding="utf-8"))
+            for s in dd["scores"]:
+                d_[(f.name, dd["items"][s["item"]]["finding"])] = int(s["score"])
+        _sc.append(d_)
+    both = set(_sc[0]) & set(_sc[1])  # same items as Table 5.8 (scored by both judges)
+    REM_DIST[run] = collections.Counter(_sc[0][k] for k in both)
 
 # response time stamps and size
 STAMPS = []

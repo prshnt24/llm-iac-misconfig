@@ -6,8 +6,8 @@ unchanged evaluation scripts can be run inside corpus_eval/.
 """
 import collections, csv, json, os, pathlib, shutil, subprocess
 
-CHECKOV = shutil.which("checkov") or r"C:\Users\lenovo\anaconda3\Scripts\checkov.exe"
-TRIVY = shutil.which("trivy") or r"C:\Users\lenovo\AppData\Local\Microsoft\WinGet\Packages\AquaSecurity.Trivy_Microsoft.Winget.Source_8wekyb3d8bbwe\trivy.exe"
+CHECKOV = os.environ.get("CHECKOV_PATH") or shutil.which("checkov") or "checkov"  # set CHECKOV_PATH if not on PATH
+TRIVY = os.environ.get("TRIVY_PATH") or shutil.which("trivy") or "trivy"  # set TRIVY_PATH if not on PATH
 
 ROOT = pathlib.Path(__file__).parent
 SRC = ROOT / "corpus_eval" / "terragoat" / "terraform" / "aws"

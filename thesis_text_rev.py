@@ -48,7 +48,7 @@ T["models"] = (
     "and reference set do not depend on the model, so the same pipeline can be rerun with other models by changing one identifier. Temperature was set to 0 for "
     "Claude Sonnet 4.6 and Nova Pro. GPT-5.4 rejects the temperature parameter on Bedrock, so its default sampling was used, and repeat runs of that model could "
     "differ. The maximum output length was 16,000 tokens for Claude and GPT-5.4 and 9,000 for Nova Pro, whose limit is 10,000. Each model-prompt-file "
-    f"combination was run once, giving 84 requests between {FIRST[:10]} and {LAST[:10]} on TerraGoat."
+    f"combination was run once, giving 84 requests on TerraGoat " + (f"on {FIRST[:10]}." if FIRST[:10] == LAST[:10] else f"between {FIRST[:10]} and {LAST[:10]}.")
 )
 T["prompts"] = T["prompts"].replace(
     "Two prompt strategies were evaluated. In the zero-shot condition,",

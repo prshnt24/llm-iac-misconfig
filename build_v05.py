@@ -384,7 +384,7 @@ rows = []
 for r in RUNS:
     d = REM_DIST[r]
     rows.append([NAME[r.split("_")[0]], STRAT[r.split("_")[1]], REM[r]["scored_findings"], rem(r), pc(REM[r]["gpt54_share_2"]), pc(REM[r]["sonnet55_share_2"]), f"{d[0]} / {d[1]} / {d[2]}"])
-cur.table(["Model", "Prompt", "Items scored", "Mean score", "Score 2 (judge 1)", "Score 2 (judge 2)", "Scores 0 / 1 / 2 (judge 1)"], rows, [2.2, 1.3, 1, 1, 1.2, 1.2, 1.7])
+cur.table(["Model", "Prompt", "Items scored", "Mean score (both judges)", "Score 2 (judge 1)", "Score 2 (judge 2)", "Scores 0 / 1 / 2 (judge 1)"], rows, [2.2, 1.3, 1, 1, 1.2, 1.2, 1.7])
 cur.para(T["rq3"][1])
 cur.para(T["rq3"][2])
 
@@ -426,7 +426,7 @@ while el is not None:
         ref_els.append(el)
     el = el.getnext()
 old = [P(e).text for e in ref_els]
-keep = [t for t in old if not t.startswith(("Google. (n.d.)", "OpenAI. (n.d.)", "Rahman, A., Parnin, C., & Williams, L. (2023)", "Verdet, M.", "Munshi, A.", "Bridgecrew."))]
+keep = [re.sub(r"^HashiCorp\. \(2023\)\..*$", "HashiCorp. (2023). HashiCorp state of cloud strategy survey 2023. https://www.hashicorp.com/state-of-the-cloud/2023", t.replace("Anthropic. (2026, February 17)", "Anthropic. (2026b, February 17)")) for t in old if not t.startswith(("Google. (n.d.)", "OpenAI. (n.d.)", "Rahman, A., Parnin, C., & Williams, L. (2023)", "Verdet, M.", "Munshi, A.", "Bridgecrew."))]
 bc = [t for t in old if t.startswith("Bridgecrew.")]
 for t in bc:
     keep.append(t.replace("(2020)", "(2020a)") if "Checkov" in t else t.replace("(2020)", "(2020b)"))
@@ -440,10 +440,12 @@ NEW = [
     "Cohen, J. (1968). Weighted kappa: Nominal scale agreement with provision for scaled disagreement or partial credit. Psychological Bulletin, 70(4), 213–220. https://doi.org/10.1037/h0026256",
     "Hevner, A. R., March, S. T., Park, J., & Ram, S. (2004). Design science in information systems research. MIS Quarterly, 28(1), 75–105. https://doi.org/10.2307/25148625",
     "Kon, P. T. J., Liu, J., Qiu, Y., Fan, W., He, T., Lin, L., Zhang, H., Park, O. M., Elengikal, G. S., Kang, Y., Chen, A., Chowdhury, M., Lee, M., & Wang, X. (2024). IaC-Eval: A code generation benchmark for cloud infrastructure-as-code programs. Advances in Neural Information Processing Systems, 37. https://proceedings.neurips.cc/paper_files/paper/2024/hash/f26b29298ae8acd94bd7e839688e329b-Abstract.html",
-    "Rahman, A., Mahdavi-Hezaveh, R., & Williams, L. (2018). Where are the gaps? A systematic mapping study of infrastructure as code research. arXiv. https://arxiv.org/abs/1807.04872",
+    "Rahman, A., Mahdavi-Hezaveh, R., & Williams, L. (2019). A systematic mapping study of infrastructure as code research. Information and Software Technology, 108, 65\u201377. https://doi.org/10.1016/j.infsof.2018.12.004",
     "Runeson, P., & Höst, M. (2009). Guidelines for conducting and reporting case study research in software engineering. Empirical Software Engineering, 14(2), 131–164. https://doi.org/10.1007/s10664-008-9102-8",
     "Saavedra, N., & Ferreira, J. F. (2022). GLITCH: Automated polyglot security smell detection in infrastructure as code. In Proceedings of the 37th IEEE/ACM International Conference on Automated Software Engineering. ACM. https://doi.org/10.1145/3551349.3556945",
-    "Sallou, J., Durieux, T., & Panichella, A. (2024). Breaking the silence: The threats of using LLMs in software engineering. arXiv. https://arxiv.org/abs/2312.08055",
+    "Sallou, J., Durieux, T., & Panichella, A. (2024). Breaking the silence: The threats of using LLMs in software engineering. In Proceedings of the 46th International Conference on Software Engineering: New Ideas and Emerging Results (ICSE-NIER 2024). ACM. https://arxiv.org/abs/2312.08055",
+    "OpenAI. (2026). GPT-5.4 [Large language model]. https://openai.com/",
+    "Anthropic. (2026a). Claude Sonnet 5.5 [Large language model]. https://www.anthropic.com/claude",
     "Sokolova, M., & Lapalme, G. (2009). A systematic analysis of performance measures for classification tasks. Information Processing & Management, 45(4), 427–437. https://doi.org/10.1016/j.ipm.2009.03.002",
     "Wohlin, C., Runeson, P., Höst, M., Ohlsson, M. C., Regnell, B., & Wesslén, A. (2012). Experimentation in software engineering. Springer. https://doi.org/10.1007/978-3-642-29044-2",
     "Hou, X., Zhao, Y., Liu, Y., Yang, Z., Wang, K., Li, L., Luo, X., Lo, D., Grundy, J., & Wang, H. (2024). Large language models for software engineering: A systematic literature review. arXiv. https://arxiv.org/abs/2308.10620",
@@ -453,7 +455,7 @@ NEW = [
     "Powers, D. M. W. (2011). Evaluation: From precision, recall and F-measure to ROC, informedness, markedness and correlation. Journal of Machine Learning Technologies, 2(1), 37–63.",
     "Rahman, A., Parnin, C., & Williams, L. (2019). The seven sins: Security smells in infrastructure as code scripts. In 2019 IEEE/ACM 41st International Conference on Software Engineering (ICSE) (pp. 164–175). IEEE. https://doi.org/10.1109/ICSE.2019.00033",
     "Ullah, S., Han, M., Pujar, S., Pearce, H., Coskun, A., & Stringhini, G. (2024). LLMs cannot reliably identify and reason about security vulnerabilities (yet?): A comprehensive evaluation, framework, and benchmarks. In 2024 IEEE Symposium on Security and Privacy (SP) (pp. 862–880). IEEE. https://doi.org/10.1109/SP54263.2024.00210",
-    "Verdet, A., Hamdaqa, M., Da Silva, L., & Khomh, F. (2025). Exploring security practices in infrastructure as code: An empirical study. Empirical Software Engineering, 30, Article 74. https://doi.org/10.1007/s10664-024-10610-0",
+    "Verdet, A., Hamdaqa, M., Da Silva, L., & Khomh, F. (2025). Assessing the adoption of security policies by developers in terraform across different cloud providers. Empirical Software Engineering, 30, Article 74. https://doi.org/10.1007/s10664-024-10610-0",
     "Zheng, L., Chiang, W.-L., Sheng, Y., Zhuang, S., Wu, Z., Zhuang, Y., Lin, Z., Li, Z., Li, D., Xing, E. P., Zhang, H., Gonzalez, J. E., & Stoica, I. (2023). Judging LLM-as-a-judge with MT-Bench and Chatbot Arena. Advances in Neural Information Processing Systems, 36. https://proceedings.neurips.cc/paper_files/paper/2023/hash/91f18a1287b398d378ef22505bf41832-Abstract.html",
 ]
 allrefs = sorted(keep + NEW, key=lambda t: re.sub(r"[^a-z0-9]", "", t.lower()[:60]))
@@ -463,7 +465,6 @@ for i, t in enumerate(allrefs):
     else:
         e = copy.deepcopy(ref_els[0]); ref_els[-1].addnext(e); ref_els.append(e); settext(P(e), t)
 # put a page break before References
-ref_head._p.addprevious(copy.deepcopy(tpl["pb"]))
 
 # ---------- 7. Appendices A and B ----------
 appA = find("Appendix A: API Cost Estimate")._p
@@ -617,6 +618,27 @@ for i_, (fn, purpose) in enumerate(SCRIPTS, 1):
         for r_ in pp.runs:
             r_.font.size = Pt(7.5)
 
+# ---- Table 4.2: counts from the Chapter 4 category rules (match Figures 4.1 and 4.2)
+t42 = doc.tables[2]
+for row in t42.rows[1:]:
+    fix = {"IAM Over-permissioning": ("12", "5.4%"), "Other": ("55", "24.9%")}.get(row.cells[0].text.strip())
+    if fix:
+        for cell, val in zip(row.cells[1:3], fix):
+            for r_ in cell.paragraphs[0].runs[1:]:
+                r_._r.getparent().remove(r_._r)
+            cell.paragraphs[0].runs[0].text = val
+
+# ---- remove a citation the source does not support, and disambiguate the two Rahman et al. (2019) works
+sub_in(find("Terraform, developed by HashiCorp"), " (Rahman et al., 2019)", "")
+for p_ in paras():
+    t_ = p_.text
+    if "Rahman et al., 2018" in t_:
+        sub_in(p_, "Rahman et al., 2018", "Rahman, Mahdavi-Hezaveh, & Williams, 2019")
+    if "Rahman et al., 2019" in p_.text:
+        sub_in(p_, "Rahman et al., 2019", "Rahman, Parnin, & Williams, 2019")
+    if "Rahman et al. (2019)" in p_.text:
+        sub_in(p_, "Rahman et al. (2019)", "Rahman, Parnin, and Williams (2019)")
+
 # ---------- 8b. real heading styles so the table of contents lists every chapter ----------
 def _styled(p):
     pPr = p._p.pPr
@@ -650,6 +672,21 @@ logo_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
 logo_p.paragraph_format.line_spacing = 1.0
 logo_p.paragraph_format.space_after = Pt(18)
 logo_p.add_run().add_picture(str(ROOT / "aut_logo.png"), width=Inches(1.7))
+
+# ---------- 8d. page breaks: heading-level instead of empty break paragraphs (avoids blank pages) ----------
+for el in list(body):
+    if not el.tag.endswith("}p"):
+        continue
+    txt = "".join(t.text or "" for t in el.iter(qn("w:t")))
+    if txt.strip() or not list(el.iter(qn("w:br"))) or list(el.iter(qn("w:drawing"))):
+        continue
+    nxt = el.getnext()
+    if nxt is None or not nxt.tag.endswith("}p"):
+        continue
+    np_ = P(nxt)
+    if np_.style is not None and np_.style.name in ("Heading 1",) or np_.text.strip() in ("Abstract", "Table of Contents"):
+        el.getparent().remove(el)
+        np_.paragraph_format.page_break_before = True
 
 # ---------- 9. table borders, alignment, save ----------
 for tb in doc.tables:

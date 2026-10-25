@@ -4,6 +4,9 @@ GitHub: repositories found with the GitHub search API (topic terraform, language
 2023-01-01, AWS in name or description), excluding the terraform-aws-modules organisation and vulnerable-by-design
 projects. One AWS .tf file per repository is chosen with a fixed random seed.
 Registry: root modules of the terraform-aws-modules organisation (the most used AWS modules on the Registry).
+Registry files are drawn in two passes: the first accepts root files of 800 to 10,000 bytes, and because most module root
+files are larger, a second pass (supplement_registry) accepts files up to 20,000 bytes for modules not yet sampled, until 16
+registry files are reached. Both passes were run to build the dataset used in the dissertation.
 Each file is copied to corpus_eval/terragoat/terraform/aws/<id>.tf (a layout the existing scripts already read) and
 described in corpus_manifest.csv with repository, commit and licence so the sample can be reproduced.
 """
@@ -111,5 +114,30 @@ def main():
     print("files:", len(rows))
 
 
+def supplement_registry(target=16, max_bytes=20000):
+    """Second registry pass: larger root files for modules that the first pass skipped."""
+    man = list(csv.reader(open(ROOT / "corpus_manifest.csv", encoding="utf-8")))
+    have = {r[2] for r in man[1:]}
+    m = sum(1 for r in man[1:] if r[1] == "registry")
+    for d in sorted(WORK.glob("reg_*")):
+        repo = f"terraform-aws-modules/terraform-aws-{d.name[4:]}"
+        if repo in have or m >= target:
+            continue
+        cand = [(p, len(re.findall(r'resource\s+"aws_', p.read_text(encoding="utf-8")))) for p in d.glob("*.tf") if 800 <= p.stat().st_size <= max_bytes]
+        cand = [x for x in cand if x[1] >= 2]
+        if not cand:
+            continue
+        p, _ = max(cand, key=lambda x: x[1])
+        m += 1
+        fid = f"reg{m:02d}"
+        shutil.copy(p, DEST / f"{fid}.tf")
+        sha = run("git", "rev-parse", "HEAD", cwd=d).stdout.strip()
+        man.append([fid, "registry", repo, f"https://github.com/{repo}", sha, p.name, p.stat().st_size, "", "", "Apache-2.0"])
+        print("reg", fid, d.name[4:], p.name)
+    with open(ROOT / "corpus_manifest.csv", "w", newline="", encoding="utf-8") as fh:
+        csv.writer(fh).writerows(man)
+
+
 if __name__ == "__main__":
     main()
+    supplement_registry()
